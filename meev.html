@@ -23,17 +23,18 @@
 /* ═══════════ VIEW SYSTEM ═══════════ */
 .view-container{display:none}
 .view-container.active{display:block}
+#view-login.active{display:flex;align-items:center;justify-content:center;min-height:100vh;width:100%}
 
 /* ═══════════ BODY BASE ═══════════ */
 body{font-family:'Poppins',sans-serif;min-height:100vh;margin:0}
-body.body-login{background:var(--negro);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+body.body-login{background:var(--negro);position:relative;overflow:hidden}
 body.body-app{background:var(--gris);color:var(--negro);display:flex;overflow:auto}
 body.body-facturador{background:var(--gris);color:var(--negro);display:block;overflow:auto}
 
 /* ═══════════ LOGIN VIEW STYLES ═══════════ */
 /* Background pattern */
 body.body-login::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(204,251,85,.06) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(204,251,85,.04) 0%,transparent 40%);pointer-events:none}
-body::before{content:none}
+body.body-app::before,body.body-facturador::before{content:none}
 .bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
 
 .login-wrap{position:relative;z-index:10;width:100%;max-width:420px;padding:24px}
@@ -343,20 +344,15 @@ body::before{content:none}
 
 
 /* ═══════════ FACTURADOR VIEW STYLES ═══════════ */
-body{font-family:'Poppins',sans-serif;background:var(--gris);color:var(--negro);min-height:100vh}
-
-.toolbar{background:var(--negro);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px var(--sombra)}
-.toolbar-brand{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.2rem;color:var(--verde)}
-.toolbar-brand span{color:rgba(255,255,255,.45);font-weight:400;font-size:.82rem;margin-left:8px}
-.toolbar-actions{display:flex;gap:8px;align-items:center}
-.doc-type-tabs{display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid var(--gris-m);no-print:true}
+#view-facturador .toolbar{background:var(--negro);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px var(--sombra)}
+#view-facturador .toolbar-brand{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.2rem;color:var(--verde)}
+#view-facturador .toolbar-brand span{color:rgba(255,255,255,.45);font-weight:400;font-size:.82rem;margin-left:8px}
+#view-facturador .toolbar-actions{display:flex;gap:8px;align-items:center}
+.doc-type-tabs{display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid var(--gris-m)}
 .doc-type-tab{font-family:'Poppins',sans-serif;font-size:.78rem;font-weight:600;padding:8px 22px;border:none;background:none;cursor:pointer;color:var(--gris-t);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
 .doc-type-tab.active{color:var(--negro);border-bottom-color:var(--negro)}
-.btn{font-family:'Poppins',sans-serif;font-size:.8rem;font-weight:600;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;transition:all .18s}
-.btn-primary{background:var(--verde);color:var(--negro)}
-.btn-primary:hover{background:#b8e13d;transform:translateY(-1px)}
-.btn-outline{background:transparent;color:var(--blanco);border:1.5px solid rgba(255,255,255,.22)}
-.btn-outline:hover{border-color:var(--verde);color:var(--verde)}
+#view-facturador .btn-outline{background:transparent;color:var(--blanco);border:1.5px solid rgba(255,255,255,.22)}
+#view-facturador .btn-outline:hover{border-color:var(--verde);color:var(--verde)}
 
 .layout{display:flex;gap:0;max-width:1320px;margin:28px auto;padding:0 20px 60px;align-items:flex-start}
 
@@ -1526,6 +1522,11 @@ function eliminarCliente() {
 function cerrarSesion() {
   if(!confirm('¿Cerrar sesión?')) return;
   localStorage.removeItem('meev_session');
+  document.querySelectorAll('.cli-modal-overlay, .doc-modal-overlay').forEach(m => m.classList.remove('open'));
+  const emailField = document.getElementById('loginEmail');
+  const passField = document.getElementById('loginPass');
+  if(emailField) emailField.value = '';
+  if(passField) passField.value = '';
   navigateTo('login');
 }
 
@@ -2084,18 +2085,10 @@ const _origSetMode = setMode;
   const s = localStorage.getItem('meev_session');
   if(s) {
     try {
-      const sess = JSON.parse(s);
-      const el = document.getElementById('sessionUser');
-      if(el) el.textContent = sess.nombre || sess.email;
-      const elRole = document.getElementById('sessionRole');
-      if(elRole) elRole.textContent = sess.cargo || sess.rol || '';
+      JSON.parse(s);
       navigateTo('app');
-      // Load app data
-      if(typeof loadDemoData === 'function') loadDemoData();
-      if(typeof loadDemoClients === 'function') loadDemoClients();
-      if(typeof loadAMProfile === 'function') loadAMProfile();
-      if(typeof renderFinanzas === 'function') renderFinanzas();
     } catch(e) {
+      localStorage.removeItem('meev_session');
       navigateTo('login');
     }
   } else {
