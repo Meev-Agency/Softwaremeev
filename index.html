@@ -658,6 +658,7 @@ body.body-app::before,body.body-facturador::before{content:none}
       <div id="sessionUser" style="font-size:.75rem;font-weight:700;color:var(--blanco);"></div>
       <div id="sessionRole" style="font-size:.65rem;color:rgba(255,255,255,.35);margin-top:1px;"></div>
     </div>
+    <button onclick="abrirCambiarPass()" style="display:block;width:100%;text-align:left;font-size:.72rem;color:rgba(255,255,255,.4);background:none;border:none;cursor:pointer;padding:4px 0;transition:color .2s;font-family:'Poppins',sans-serif;" onmouseover="this.style.color='var(--verde)'" onmouseout="this.style.color='rgba(255,255,255,.4)'">🔑 Cambiar contraseña</button>
     <button onclick="cerrarSesion()" style="display:block;width:100%;text-align:left;font-size:.72rem;color:rgba(255,255,255,.4);background:none;border:none;cursor:pointer;padding:4px 0;transition:color .2s;font-family:'Poppins',sans-serif;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='rgba(255,255,255,.4)'">→ Cerrar sesión</button>
   </div>
 </aside>
@@ -770,6 +771,27 @@ body.body-app::before,body.body-facturador::before{content:none}
         <button class="btn btn-outline" onclick="closeCliModal()">Cancelar</button>
         <button class="btn btn-primary" onclick="guardarCliente()">Guardar contacto</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- PASSWORD CHANGE MODAL -->
+<div class="cli-modal-overlay" id="passModalOverlay" onclick="closePassModal(event)">
+  <div class="cli-modal" style="max-width:400px" onclick="event.stopPropagation()">
+    <div class="cli-modal-header">
+      <span class="cli-modal-title">Cambiar contraseña</span>
+      <button class="cli-modal-close" onclick="closePassModal()">&times;</button>
+    </div>
+    <div class="cli-modal-body">
+      <div class="cli-form-grid">
+        <div class="cli-field full"><label>Contraseña actual</label><input id="passActual" type="password" class="cli-input"></div>
+        <div class="cli-field full"><label>Contraseña nueva</label><input id="passNueva" type="password" class="cli-input"></div>
+        <div class="cli-field full"><label>Confirmar contraseña nueva</label><input id="passConfirm" type="password" class="cli-input"></div>
+      </div>
+      <div id="passError" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:10px 14px;font-size:.75rem;color:#ef4444;margin-top:12px;display:none"></div>
+    </div>
+    <div class="cli-modal-footer">
+      <button class="btn btn-primary" onclick="cambiarPassword()">Cambiar contraseña</button>
     </div>
   </div>
 </div>
@@ -1509,6 +1531,61 @@ async function eliminarCliente() {
   await deleteCliente(cliEditId);
   closeCliModal();
   renderClientes();
+}
+
+function abrirCambiarPass() {
+  document.getElementById('passModalOverlay').classList.add('open');
+  document.getElementById('passActual').value = '';
+  document.getElementById('passNueva').value = '';
+  document.getElementById('passConfirm').value = '';
+  document.getElementById('passError').textContent = '';
+  document.getElementById('passError').style.display = 'none';
+}
+
+function closePassModal(e) {
+  if(!e || e.target === document.getElementById('passModalOverlay'))
+    document.getElementById('passModalOverlay').classList.remove('open');
+}
+
+async function cambiarPassword() {
+  const actual = document.getElementById('passActual').value;
+  const nueva = document.getElementById('passNueva').value;
+  const confirm = document.getElementById('passConfirm').value;
+  const errEl = document.getElementById('passError');
+
+  if(!actual || !nueva || !confirm) {
+    errEl.textContent = 'Completa todos los campos.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if(nueva.length < 6) {
+    errEl.textContent = 'La contraseña nueva debe tener al menos 6 caracteres.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if(nueva !== confirm) {
+    errEl.textContent = 'Las contraseñas no coinciden.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  const { error: loginErr } = await db.auth.signInWithPassword({ email: sess.email, password: actual });
+  if(loginErr) {
+    errEl.textContent = 'La contraseña actual es incorrecta.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const { error } = await db.auth.updateUser({ password: nueva });
+  if(error) {
+    errEl.textContent = 'Error al cambiar contraseña. Intenta de nuevo.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  alert('Contraseña actualizada correctamente.');
+  closePassModal();
 }
 
 async function cerrarSesion() {
