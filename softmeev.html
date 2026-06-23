@@ -647,10 +647,10 @@ body.body-app::before,body.body-facturador::before{content:none}
     <a class="nav-item" onclick="showModule('finanzas')">
       <span class="icon">💰</span> Finanzas & Ventas
     </a>
-    <a class="nav-item soon"><span class="icon">⚙️</span> Operaciones</a>
-    <a class="nav-item soon"><span class="icon">👥</span> Equipo</a>
+    <a class="nav-item" onclick="showModule('operaciones')"><span class="icon">⚙️</span> Operaciones</a>
+    <a class="nav-item" onclick="showModule('equipo')"><span class="icon">👥</span> Equipo</a>
     <div class="nav-section">Análisis</div>
-    <a class="nav-item soon"><span class="icon">📊</span> Reportes</a>
+    <a class="nav-item" onclick="showModule('reportes')"><span class="icon">📊</span> Reportes</a>
   </nav>
   <div class="sidebar-bottom">
     <div style="margin-bottom:10px;">
@@ -1077,21 +1077,56 @@ function fmtNum(n) {
   return '$' + Number(n||0).toLocaleString('es-CO', {minimumFractionDigits:0, maximumFractionDigits:0});
 }
 
-function getDocs() {
-  try { return JSON.parse(localStorage.getItem('meev_docs') || '[]'); } catch(e) { return []; }
+async function getDocs() {
+  const { data, error } = await db.from('cotizaciones').select('*').order('created_at', { ascending: false });
+  if(error || !data) return [];
+  return data.map(d => ({
+    num: d.numero, cliente: d.cliente_nombre || d.empresa, total: Number(d.total) || 0,
+    modo: d.tipo === 'factura' ? 'fac' : 'cot', fecha: d.created_at ? new Date(d.created_at).toLocaleDateString('es-CO') : '',
+    estado: d.estado, items: d.items || [], notas: d.notas, id: d.id, cliente_id: d.cliente_id,
+    factura: d.items?.factura || null, empresa: d.empresa
+  }));
+}
+
+async function getClientes() {
+  const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false });
+  if(error || !data) return [];
+  return data;
+}
+
+async function saveCliente(c) {
+  if(c.id) {
+    const { error } = await db.from('clientes').update(c).eq('id', c.id);
+    return !error;
+  } else {
+    const { error } = await db.from('clientes').insert(c);
+    return !error;
+  }
+}
+
+async function deleteCliente(id) {
+  const { error } = await db.from('clientes').delete().eq('id', id);
+  return !error;
 }
 
 function showModule(mod) {
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   event?.currentTarget?.classList.add('active');
   const btn = document.getElementById('btnNuevaCot');
-  if(btn) btn.style.display = mod === 'clientes' ? 'none' : '';
+  if(btn) btn.style.display = (mod === 'clientes' || mod === 'operaciones' || mod === 'equipo' || mod === 'reportes') ? 'none' : '';
+  document.getElementById('moduleTitle').textContent = {
+    finanzas: 'Finanzas & Ventas', clientes: 'Clientes', operaciones: 'Operaciones',
+    equipo: 'Equipo', reportes: 'Reportes'
+  }[mod] || mod;
   if(mod === 'finanzas') renderFinanzas();
   else if(mod === 'clientes') renderClientes();
+  else if(mod === 'operaciones') renderOperaciones();
+  else if(mod === 'equipo') renderEquipo();
+  else if(mod === 'reportes') renderReportes();
 }
 
-function renderFinanzas() {
-  const docs = getDocs();
+async function renderFinanzas() {
+  const docs = await getDocs();
   const cots = docs.filter(d => d.modo === 'cot');
 
   // Populate table after render
@@ -1283,23 +1318,6 @@ function renderFinanzas() {
           </table>
         </div>
 
-        <div class="modules-preview">
-          <div class="module-card">
-            <div class="module-icon">⚙️</div>
-            <div class="module-name">Operaciones</div>
-            <div class="module-desc">Gestión de proyectos activos, entregables y cronogramas.</div>
-          </div>
-          <div class="module-card">
-            <div class="module-icon">👥</div>
-            <div class="module-name">Equipo</div>
-            <div class="module-desc">Asignación de personas, carga de trabajo y áreas.</div>
-          </div>
-          <div class="module-card">
-            <div class="module-icon">📊</div>
-            <div class="module-name">Reportes</div>
-            <div class="module-desc">Ingresos por período, servicios más vendidos y clientes.</div>
-          </div>
-        </div>
       </div>
 
       <div class="section-card">
@@ -1327,44 +1345,32 @@ function renderFinanzas() {
 
 
 
-function crearCotDesdeCliente(id) {
-  const clientes = getClientes();
-  const c = clientes.find(x => x.id === id);
+async function crearCotDesdeCliente(id) {
+  const { data: c } = await db.from('clientes').select('*').eq('id', id).single();
   if(!c) return;
-  // Save preload data for cotizador
   localStorage.setItem('meev_precarga', JSON.stringify({
     nombre: c.nombre + (c.empresa ? ' — ' + c.empresa : ''),
-    pais: c.pais || '',
-    ciudad: c.ciudad || '',
-    tipoid: c.tipoid || '',
-    idnum: c.id_num || '',
-    celular: c.tel || '',
-    email: c.email || '',
-    clienteId: c.id
+    pais: c.pais || '', ciudad: c.ciudad || '',
+    celular: c.celular || '', email: c.email || '', clienteId: c.id
   }));
   navigateTo('facturador');
 }
 
-function generarFactura(cotNum) {
-  const docs = getDocs();
-  const d = docs.find(x => x.num===cotNum);
-  if(!d || d.factura) return;
-  const mitad = Math.round(d.total * 0.5);
-  d.factura = {
-    num: 'FAC-' + cotNum.replace('COT-',''),
-    total: d.total,
-    emitida: new Date().toLocaleDateString('es-CO'),
-    anticipo: { monto: mitad, pagado: false, fechaPago: null },
-    saldo:    { monto: mitad, pagado: false, fechaPago: null }
-  };
-  localStorage.setItem('meev_docs', JSON.stringify(docs));
+async function generarFactura(cotNum) {
+  const { data: cot } = await db.from('cotizaciones').select('*').eq('numero', cotNum).single();
+  if(!cot) return;
+  const facNum = 'FAC-' + cotNum.replace('COT-','');
+  await db.from('cotizaciones').insert({
+    numero: facNum, tipo: 'factura', cliente_id: cot.cliente_id,
+    cliente_nombre: cot.cliente_nombre, empresa: cot.empresa,
+    items: cot.items, total: cot.total, estado: 'emitida', notas: cot.notas
+  });
   renderFinanzas();
 }
 
-function cambiarEstCot(num, estado) {
-  const docs = getDocs();
-  const d = docs.find(x=>x.num===num);
-  if(d){d.estado=estado; localStorage.setItem('meev_docs', JSON.stringify(docs)); renderFinanzas();}
+async function cambiarEstCot(num, estado) {
+  await db.from('cotizaciones').update({ estado }).eq('numero', num);
+  renderFinanzas();
 }
 
 
@@ -1373,8 +1379,8 @@ const LOGO_VERDE  = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACKMAAAMzCAYAA
 
 function fmtN(n){ return '$'+Number(n||0).toLocaleString('es-CO',{minimumFractionDigits:0,maximumFractionDigits:0}); }
 
-function verDocumento(num) {
-  const docs = getDocs();
+async function verDocumento(num) {
+  const docs = await getDocs();
   const d = docs.find(x => x.num === num);
   if(!d) return;
 
@@ -1453,14 +1459,15 @@ function verDocumento(num) {
       </div>
     </div>`;
 
-  // Fill AM data
-  try {
-    const am = JSON.parse(localStorage.getItem('meev_am')||'{}');
-    if(am.nombre) {
+  // Fill AM data from Supabase
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  if(sess.email) {
+    const { data: am } = await db.from('Usuarios').select('*').eq('email', sess.email).single();
+    if(am && am.nombre) {
       document.getElementById('dpAMName').textContent = am.nombre;
       document.getElementById('dpAMDetail').innerHTML = [am.cargo,am.celular,am.email].filter(Boolean).join('<br>');
     }
-  } catch(e){}
+  }
 
   document.getElementById('docModalOverlay').classList.add('open');
 }
@@ -1486,27 +1493,20 @@ function toggleView(mode) {
   renderClientes();
 }
 
-function marcarHito(cotNum, hito) {
-  const docs = getDocs();
-  const d = docs.find(x => x.num === cotNum);
-  if(!d || !d.factura || !d.factura[hito]) return;
-  d.factura[hito].pagado = true;
-  d.factura[hito].fechaPago = new Date().toLocaleDateString('es-CO');
-  localStorage.setItem('meev_docs', JSON.stringify(docs));
+async function marcarHito(cotNum, hito) {
+  // Legacy factura hito - kept for compatibility
   renderFinanzas();
 }
 
-function moverEstado(cotNum, nuevoEst) {
-  const docs = getDocs();
-  const d = docs.find(x => x.num === cotNum);
-  if(d){ d.estado = nuevoEst; localStorage.setItem('meev_docs', JSON.stringify(docs)); renderFinanzas(); }
+async function moverEstado(cotNum, nuevoEst) {
+  await db.from('cotizaciones').update({ estado: nuevoEst }).eq('numero', cotNum);
+  renderFinanzas();
 }
 
-function eliminarCliente() {
+async function eliminarCliente() {
   if(!cliEditId) return;
   if(!confirm('¿Eliminar este contacto? Esta acción no se puede deshacer.')) return;
-  const clientes = getClientes().filter(x => x.id !== cliEditId);
-  saveClientes(clientes);
+  await deleteCliente(cliEditId);
   closeCliModal();
   renderClientes();
 }
@@ -1526,10 +1526,6 @@ async function cerrarSesion() {
 let cliEditId = null;
 let cliFilterEstado = 'todos';
 
-function getClientes() {
-  try { return JSON.parse(localStorage.getItem('meev_clientes') || '[]'); } catch(e) { return []; }
-}
-function saveClientes(c) { localStorage.setItem('meev_clientes', JSON.stringify(c)); }
 
 function initials(n) {
   return (n||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
@@ -1539,10 +1535,10 @@ const CANAL_ICON = {Instagram:'📸',Facebook:'📘','Facebook Ads':'📘','Goog
 const EST_LABEL = {nuevo:'Nuevo',contactado:'Contactado',seguimiento:'En seguimiento',cotizado:'Cotizado',cliente:'Cliente',inactivo:'Inactivo'};
 const EST_CLASS = {nuevo:'cs-nuevo',contactado:'cs-contactado',seguimiento:'cs-seguimiento',cotizado:'cs-cotizado',cliente:'cs-cliente',inactivo:'cs-inactivo'};
 
-function renderClientes() {
+async function renderClientes() {
   document.getElementById('moduleTitle').textContent = 'Clientes';
-  let clientes = getClientes();
-  const docs = getDocs();
+  let clientes = await getClientes();
+  const docs = await getDocs();
   const query = (document.getElementById('cliSearchInput')?.value||'').toLowerCase();
 
   if(cliFilterEstado !== 'todos') clientes = clientes.filter(c => c.estado === cliFilterEstado);
@@ -1612,14 +1608,14 @@ function renderClientes() {
         <div class="cli-name">${c.nombre||'Sin nombre'}</div>
         <div class="cli-empresa">${c.empresa||'—'}</div>
         <div class="cli-detail">
-          ${c.tel?`<span>📞 ${c.tel}</span>`:''}
+          ${c.celular?`<span>📞 ${c.celular}</span>`:''}
           ${c.email?`<span>✉ ${c.email}</span>`:''}
           ${c.pais||c.ciudad?`<span>📍 ${[c.pais,c.ciudad].filter(Boolean).join(', ')}</span>`:''}
           ${c.servicio?`<span>🎯 ${c.servicio}</span>`:''}
         </div>
         ${c.canal?`<span class="cli-canal">${CANAL_ICON[c.canal]||'📌'} ${c.canal}</span>`:''}
         <div class="cli-footer">
-          <span class="cli-fecha">${c.fecha||''} · ${cotCount(c.id)} cot.</span>
+          <span class="cli-fecha">${cotCount(c.id)} cot.</span>
           <button class="tbl-btn green" onclick="event.stopPropagation();crearCotDesdeCliente('${c.id}')" style="font-size:.65rem;padding:4px 10px;">+ Cotizar</button>
         </div>
       </div>`).join('')}</div>`;
@@ -1634,16 +1630,17 @@ function setCliFilter(estado) {
   renderClientes();
 }
 
-function abrirCliModal(id) {
+async function abrirCliModal(id) {
   cliEditId = id || null;
-  const clientes = getClientes();
+  const clientes = await getClientes();
   const c = id ? clientes.find(x=>x.id===id) : null;
-  const docs = getDocs();
+  const docs = await getDocs();
 
   document.getElementById('cliModalTitle').textContent = c ? 'Editar contacto' : 'Nuevo contacto';
-  ['Nombre','Empresa','Tel','Email','Pais','Ciudad','TipoId','Id','Canal','Estado','Servicio','Presupuesto','Notas'].forEach(f => {
-    const el = document.getElementById('cli'+f);
-    if(el) el.value = c ? (c[f.toLowerCase()]||c[f==='Id'?'id_num':f==='TipoId'?'tipoid':f.toLowerCase()]||'') : (f==='Estado'?'nuevo':'');
+  const fieldMap = {Nombre:'nombre',Empresa:'empresa',Tel:'celular',Email:'email',Pais:'pais',Ciudad:'ciudad',Canal:'canal',Estado:'estado',Servicio:'servicio',Notas:'notas'};
+  Object.entries(fieldMap).forEach(([formId, dbCol]) => {
+    const el = document.getElementById('cli'+formId);
+    if(el) el.value = c ? (c[dbCol]||'') : (formId==='Estado'?'nuevo':'');
   });
 
   // Show/hide delete button and historial
@@ -1684,39 +1681,526 @@ function closeCliModal(e) {
     document.getElementById('cliModalOverlay').classList.remove('open');
 }
 
-function guardarCliente() {
-  const clientes = getClientes();
+async function guardarCliente() {
   const data = {
-    id: cliEditId || 'cli-'+Date.now(),
     nombre: document.getElementById('cliNombre').value.trim(),
     empresa: document.getElementById('cliEmpresa').value.trim(),
-    tel: document.getElementById('cliTel').value.trim(),
+    celular: document.getElementById('cliTel').value.trim(),
     email: document.getElementById('cliEmail').value.trim(),
     pais: document.getElementById('cliPais').value,
     ciudad: document.getElementById('cliCiudad').value.trim(),
-    tipoid: document.getElementById('cliTipoId').value,
-    id_num: document.getElementById('cliId').value.trim(),
     canal: document.getElementById('cliCanal').value,
     estado: document.getElementById('cliEstado').value,
     servicio: document.getElementById('cliServicio').value,
-    presupuesto: document.getElementById('cliPresupuesto').value,
-    notas: document.getElementById('cliNotas').value.trim(),
-    fecha: cliEditId ? clientes.find(x=>x.id===cliEditId)?.fecha : new Date().toLocaleDateString('es-CO')
+    notas: document.getElementById('cliNotas').value.trim()
   };
   if(!data.nombre) { alert('El nombre es obligatorio.'); return; }
-
-  if(cliEditId) {
-    const idx = clientes.findIndex(x=>x.id===cliEditId);
-    if(idx>=0) clientes[idx]=data;
-  } else {
-    clientes.unshift(data);
-  }
-  saveClientes(clientes);
+  if(cliEditId) data.id = cliEditId;
+  await saveCliente(data);
   closeCliModal();
   renderClientes();
 }
 
-// ── DEMO DATA ────────────────────────────────────
+
+// ── MÓDULO OPERACIONES ───────────────────────────
+
+let proyEditId = null;
+let tareaEditProy = null;
+
+async function getProyectos() {
+  const { data, error } = await db.from('proyectos').select('*, clientes(nombre, empresa), Usuarios(nombre)').order('created_at', { ascending: false });
+  if(error || !data) return [];
+  return data;
+}
+
+async function getTareas(proyId) {
+  const { data, error } = await db.from('tareas').select('*, Usuarios(nombre)').eq('proyecto_id', proyId).order('created_at', { ascending: true });
+  if(error || !data) return [];
+  return data;
+}
+
+async function getUsuarios() {
+  const { data, error } = await db.from('Usuarios').select('*').order('nombre', { ascending: true });
+  if(error || !data) return [];
+  return data;
+}
+
+async function renderOperaciones() {
+  const proyectos = await getProyectos();
+  const clientes = await getClientes();
+  const usuarios = await getUsuarios();
+  const content = document.getElementById('mainContent');
+
+  const PROY_EST = {activo:'Activo',pausado:'Pausado',completado:'Completado'};
+  const PROY_CLS = {activo:'cs-cliente',pausado:'cs-seguimiento',completado:'cs-cotizado'};
+
+  const activos = proyectos.filter(p => p.estado === 'activo');
+  const pausados = proyectos.filter(p => p.estado === 'pausado');
+  const completados = proyectos.filter(p => p.estado === 'completado');
+
+  content.innerHTML = `
+    <div class="cli-toolbar">
+      <div style="font-size:.85rem;font-weight:600;color:var(--negro);">
+        <span style="margin-right:16px;">🟢 ${activos.length} activos</span>
+        <span style="margin-right:16px;">⏸ ${pausados.length} pausados</span>
+        <span>✅ ${completados.length} completados</span>
+      </div>
+      <button class="btn btn-primary" onclick="abrirProyModal()">+ Nuevo proyecto</button>
+    </div>
+    ${!proyectos.length ? `<div style="text-align:center;padding:60px;color:var(--gris-t)">
+      <div style="font-size:2.5rem;margin-bottom:12px">⚙️</div>
+      <p style="font-size:.85rem">No hay proyectos aún.<br>Crea tu primer proyecto con el botón <strong>+ Nuevo proyecto</strong>.</p>
+    </div>` : `
+    <div class="cli-grid">
+      ${proyectos.map(p => `
+        <div class="cli-card" onclick="verProyecto(${p.id})" style="cursor:pointer">
+          <div class="cli-card-top">
+            <div class="cli-avatar" style="background:${p.estado==='activo'?'var(--verde)':p.estado==='pausado'?'#fbbf24':'var(--gris-m)'};color:${p.estado==='activo'?'var(--negro)':'var(--negro)'}">
+              ${p.estado==='activo'?'▶':p.estado==='pausado'?'⏸':'✓'}
+            </div>
+            <span class="cli-status ${PROY_CLS[p.estado]||''}">${PROY_EST[p.estado]||p.estado}</span>
+          </div>
+          <div class="cli-name">${p.nombre}</div>
+          <div class="cli-empresa">${p.clientes?.nombre||'Sin cliente'} ${p.clientes?.empresa?'— '+p.clientes.empresa:''}</div>
+          <div class="cli-detail">
+            ${p.Usuarios?.nombre?`<span>👤 ${p.Usuarios.nombre}</span>`:''}
+            ${p.fecha_inicio?`<span>📅 ${new Date(p.fecha_inicio).toLocaleDateString('es-CO')}</span>`:''}
+            ${p.fecha_entrega?`<span>🏁 ${new Date(p.fecha_entrega).toLocaleDateString('es-CO')}</span>`:''}
+          </div>
+        </div>`).join('')}
+    </div>`}
+
+    <!-- Modal Proyecto -->
+    <div class="cli-modal-overlay" id="proyModalOverlay" onclick="closeProyModal(event)">
+      <div class="cli-modal" onclick="event.stopPropagation()">
+        <div class="cli-modal-header">
+          <span class="cli-modal-title" id="proyModalTitle">Nuevo proyecto</span>
+          <button class="cli-modal-close" onclick="closeProyModal()">&times;</button>
+        </div>
+        <div class="cli-modal-body">
+          <div class="cli-form-grid">
+            <div class="cli-field full"><label>Nombre del proyecto *</label><input id="proyNombre" class="cli-input"></div>
+            <div class="cli-field"><label>Cliente</label><select id="proyCliente" class="cli-input">
+              <option value="">— Sin cliente —</option>
+              ${clientes.map(c=>`<option value="${c.id}">${c.nombre}${c.empresa?' — '+c.empresa:''}</option>`).join('')}
+            </select></div>
+            <div class="cli-field"><label>Responsable</label><select id="proyResponsable" class="cli-input">
+              <option value="">— Sin asignar —</option>
+              ${usuarios.map(u=>`<option value="${u.id}">${u.nombre}</option>`).join('')}
+            </select></div>
+            <div class="cli-field"><label>Estado</label><select id="proyEstado" class="cli-input">
+              <option value="activo">Activo</option>
+              <option value="pausado">Pausado</option>
+              <option value="completado">Completado</option>
+            </select></div>
+            <div class="cli-field"><label>Fecha inicio</label><input id="proyFechaInicio" type="date" class="cli-input"></div>
+            <div class="cli-field"><label>Fecha entrega</label><input id="proyFechaEntrega" type="date" class="cli-input"></div>
+            <div class="cli-field full"><label>Notas</label><textarea id="proyNotas" class="cli-input" rows="3"></textarea></div>
+          </div>
+        </div>
+        <div class="cli-modal-footer">
+          <button class="btn" style="background:var(--gris);color:var(--negro)" id="btnEliminarProy" onclick="eliminarProyecto()" style="display:none">Eliminar</button>
+          <button class="btn btn-primary" onclick="guardarProyecto()">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Detalle Proyecto (Tareas) -->
+    <div class="cli-modal-overlay" id="tareasModalOverlay" onclick="closeTareasModal(event)">
+      <div class="cli-modal" style="max-width:640px" onclick="event.stopPropagation()">
+        <div class="cli-modal-header">
+          <span class="cli-modal-title" id="tareasModalTitle">Tareas</span>
+          <button class="cli-modal-close" onclick="closeTareasModal()">&times;</button>
+        </div>
+        <div class="cli-modal-body" id="tareasModalBody"></div>
+      </div>
+    </div>`;
+}
+
+function abrirProyModal(id) {
+  proyEditId = id || null;
+  document.getElementById('proyModalTitle').textContent = id ? 'Editar proyecto' : 'Nuevo proyecto';
+  if(id) {
+    getProyectos().then(ps => {
+      const p = ps.find(x => x.id === id);
+      if(p) {
+        document.getElementById('proyNombre').value = p.nombre || '';
+        document.getElementById('proyCliente').value = p.cliente_id || '';
+        document.getElementById('proyResponsable').value = p.responsable_id || '';
+        document.getElementById('proyEstado').value = p.estado || 'activo';
+        document.getElementById('proyFechaInicio').value = p.fecha_inicio || '';
+        document.getElementById('proyFechaEntrega').value = p.fecha_entrega || '';
+        document.getElementById('proyNotas').value = p.notas || '';
+      }
+    });
+  } else {
+    ['proyNombre','proyNotas'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('proyCliente').value = '';
+    document.getElementById('proyResponsable').value = '';
+    document.getElementById('proyEstado').value = 'activo';
+    document.getElementById('proyFechaInicio').value = new Date().toISOString().split('T')[0];
+    document.getElementById('proyFechaEntrega').value = '';
+  }
+  const delBtn = document.getElementById('btnEliminarProy');
+  if(delBtn) delBtn.style.display = id ? 'inline-flex' : 'none';
+  document.getElementById('proyModalOverlay').classList.add('open');
+}
+
+function closeProyModal(e) {
+  if(!e || e.target === document.getElementById('proyModalOverlay'))
+    document.getElementById('proyModalOverlay').classList.remove('open');
+}
+
+async function guardarProyecto() {
+  const data = {
+    nombre: document.getElementById('proyNombre').value.trim(),
+    cliente_id: document.getElementById('proyCliente').value || null,
+    responsable_id: document.getElementById('proyResponsable').value || null,
+    estado: document.getElementById('proyEstado').value,
+    fecha_inicio: document.getElementById('proyFechaInicio').value || null,
+    fecha_entrega: document.getElementById('proyFechaEntrega').value || null,
+    notas: document.getElementById('proyNotas').value.trim()
+  };
+  if(!data.nombre) { alert('El nombre es obligatorio.'); return; }
+  if(proyEditId) {
+    await db.from('proyectos').update(data).eq('id', proyEditId);
+  } else {
+    await db.from('proyectos').insert(data);
+  }
+  closeProyModal();
+  renderOperaciones();
+}
+
+async function eliminarProyecto() {
+  if(!proyEditId) return;
+  if(!confirm('¿Eliminar este proyecto y todas sus tareas?')) return;
+  await db.from('proyectos').delete().eq('id', proyEditId);
+  closeProyModal();
+  renderOperaciones();
+}
+
+async function verProyecto(id) {
+  tareaEditProy = id;
+  const proyectos = await getProyectos();
+  const p = proyectos.find(x => x.id === id);
+  if(!p) return;
+  const tareas = await getTareas(id);
+  const usuarios = await getUsuarios();
+
+  const TAREA_EST = {pendiente:'Pendiente',en_progreso:'En progreso',completado:'Completado'};
+  const TAREA_CLS = {pendiente:'cs-nuevo',en_progreso:'cs-seguimiento',completado:'cs-cliente'};
+
+  const pendientes = tareas.filter(t => t.estado === 'pendiente');
+  const enProgreso = tareas.filter(t => t.estado === 'en_progreso');
+  const completadas = tareas.filter(t => t.estado === 'completado');
+
+  document.getElementById('tareasModalTitle').textContent = p.nombre;
+  document.getElementById('tareasModalBody').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-size:.75rem;color:var(--gris-t)">
+        ${p.clientes?.nombre||''} · ${tareas.length} tareas
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" onclick="abrirProyModal(${id});closeTareasModal();" style="font-size:.7rem;padding:6px 12px;">✏ Editar proyecto</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:16px;">
+      <input id="nuevaTareaTitulo" class="cli-input" placeholder="Nueva tarea..." style="flex:1;font-size:.78rem;padding:8px 12px;">
+      <select id="nuevaTareaResp" class="cli-input" style="width:140px;font-size:.72rem;">
+        <option value="">Asignar a...</option>
+        ${usuarios.map(u=>`<option value="${u.id}">${u.nombre}</option>`).join('')}
+      </select>
+      <button class="btn btn-primary" onclick="agregarTarea(${id})" style="font-size:.72rem;padding:6px 14px;">+ Agregar</button>
+    </div>
+    ${[
+      {label:'📋 Pendientes',items:pendientes,cls:'pendiente'},
+      {label:'🔄 En progreso',items:enProgreso,cls:'en_progreso'},
+      {label:'✅ Completadas',items:completadas,cls:'completado'}
+    ].map(sec => `
+      <div style="margin-bottom:12px;">
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gris-t);margin-bottom:6px;">${sec.label} (${sec.items.length})</div>
+        ${sec.items.length ? sec.items.map(t => `
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--gris);border-radius:8px;margin-bottom:4px;">
+            <button onclick="cambiarEstTarea(${t.id},${id},'${sec.cls==='pendiente'?'en_progreso':sec.cls==='en_progreso'?'completado':'pendiente'}')" style="background:none;border:none;cursor:pointer;font-size:1rem;" title="Cambiar estado">
+              ${sec.cls==='completado'?'✅':sec.cls==='en_progreso'?'🔄':'⬜'}
+            </button>
+            <div style="flex:1;">
+              <div style="font-size:.78rem;font-weight:600;${sec.cls==='completado'?'text-decoration:line-through;opacity:.6;':''}">${t.titulo}</div>
+              ${t.Usuarios?.nombre?`<div style="font-size:.65rem;color:var(--gris-t)">👤 ${t.Usuarios.nombre}</div>`:''}
+            </div>
+            ${t.fecha_limite?`<span style="font-size:.62rem;color:var(--gris-t)">📅 ${new Date(t.fecha_limite).toLocaleDateString('es-CO')}</span>`:''}
+            <button onclick="eliminarTarea(${t.id},${id})" style="background:none;border:none;cursor:pointer;font-size:.8rem;color:#ef4444;" title="Eliminar">✕</button>
+          </div>`).join('') : `<div style="font-size:.72rem;color:var(--gris-t);padding:8px;text-align:center;">Sin tareas</div>`}
+      </div>`).join('')}`;
+  document.getElementById('tareasModalOverlay').classList.add('open');
+}
+
+function closeTareasModal(e) {
+  if(!e || e.target === document.getElementById('tareasModalOverlay'))
+    document.getElementById('tareasModalOverlay').classList.remove('open');
+}
+
+async function agregarTarea(proyId) {
+  const titulo = document.getElementById('nuevaTareaTitulo').value.trim();
+  if(!titulo) return;
+  const resp = document.getElementById('nuevaTareaResp').value || null;
+  await db.from('tareas').insert({ proyecto_id: proyId, titulo, responsable_id: resp });
+  verProyecto(proyId);
+}
+
+async function cambiarEstTarea(tareaId, proyId, nuevoEst) {
+  await db.from('tareas').update({ estado: nuevoEst }).eq('id', tareaId);
+  verProyecto(proyId);
+}
+
+async function eliminarTarea(tareaId, proyId) {
+  if(!confirm('¿Eliminar esta tarea?')) return;
+  await db.from('tareas').delete().eq('id', tareaId);
+  verProyecto(proyId);
+}
+
+
+// ── MÓDULO EQUIPO ────────────────────────────────
+
+async function renderEquipo() {
+  const usuarios = await getUsuarios();
+  const proyectos = await getProyectos();
+  const content = document.getElementById('mainContent');
+
+  const proyectosPorUsuario = (uid) => proyectos.filter(p => p.responsable_id === uid && p.estado === 'activo');
+
+  content.innerHTML = `
+    <div class="cli-toolbar">
+      <div style="font-size:.85rem;font-weight:600;color:var(--negro);">
+        👥 ${usuarios.length} miembros del equipo
+      </div>
+      <button class="btn btn-primary" onclick="abrirUsuarioModal()">+ Nuevo miembro</button>
+    </div>
+    ${!usuarios.length ? `<div style="text-align:center;padding:60px;color:var(--gris-t)">
+      <div style="font-size:2.5rem;margin-bottom:12px">👥</div>
+      <p style="font-size:.85rem">No hay miembros registrados.</p>
+    </div>` : `
+    <div class="cli-grid">
+      ${usuarios.map(u => {
+        const uProys = proyectosPorUsuario(u.id);
+        return `
+        <div class="cli-card" onclick="abrirUsuarioModal(${u.id})">
+          <div class="cli-card-top">
+            <div class="cli-avatar" style="background:var(--verde);color:var(--negro);font-size:.9rem;font-weight:800;">${initials(u.nombre)}</div>
+            <span class="cli-status ${u.rol==='admin'?'cs-cliente':'cs-contactado'}">${u.rol==='admin'?'Admin':'Colaborador'}</span>
+          </div>
+          <div class="cli-name">${u.nombre}</div>
+          <div class="cli-empresa">${u.cargo||'Sin cargo'}</div>
+          <div class="cli-detail">
+            ${u.email?`<span>✉ ${u.email}</span>`:''}
+            ${u.celular?`<span>📞 ${u.celular}</span>`:''}
+          </div>
+          <div class="cli-footer">
+            <span class="cli-fecha">${uProys.length} proyecto${uProys.length!==1?'s':''} activo${uProys.length!==1?'s':''}</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`}
+
+    <!-- Modal Usuario -->
+    <div class="cli-modal-overlay" id="userModalOverlay" onclick="closeUserModal(event)">
+      <div class="cli-modal" onclick="event.stopPropagation()">
+        <div class="cli-modal-header">
+          <span class="cli-modal-title" id="userModalTitle">Miembro</span>
+          <button class="cli-modal-close" onclick="closeUserModal()">&times;</button>
+        </div>
+        <div class="cli-modal-body">
+          <div class="cli-form-grid">
+            <div class="cli-field full"><label>Nombre *</label><input id="userNombre" class="cli-input"></div>
+            <div class="cli-field"><label>Cargo</label><input id="userCargo" class="cli-input"></div>
+            <div class="cli-field"><label>Rol</label><select id="userRol" class="cli-input">
+              <option value="colaborador">Colaborador</option>
+              <option value="admin">Admin</option>
+            </select></div>
+            <div class="cli-field"><label>Email</label><input id="userEmail" class="cli-input" type="email"></div>
+            <div class="cli-field"><label>Celular</label><input id="userCelular" class="cli-input"></div>
+          </div>
+        </div>
+        <div class="cli-modal-footer">
+          <button class="btn btn-primary" onclick="guardarUsuario()">Guardar</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+let userEditId = null;
+
+async function abrirUsuarioModal(id) {
+  userEditId = id || null;
+  document.getElementById('userModalTitle').textContent = id ? 'Editar miembro' : 'Nuevo miembro';
+  if(id) {
+    const usuarios = await getUsuarios();
+    const u = usuarios.find(x => x.id === id);
+    if(u) {
+      document.getElementById('userNombre').value = u.nombre || '';
+      document.getElementById('userCargo').value = u.cargo || '';
+      document.getElementById('userRol').value = u.rol || 'colaborador';
+      document.getElementById('userEmail').value = u.email || '';
+      document.getElementById('userCelular').value = u.celular || '';
+    }
+  } else {
+    ['userNombre','userCargo','userEmail','userCelular'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('userRol').value = 'colaborador';
+  }
+  document.getElementById('userModalOverlay').classList.add('open');
+}
+
+function closeUserModal(e) {
+  if(!e || e.target === document.getElementById('userModalOverlay'))
+    document.getElementById('userModalOverlay').classList.remove('open');
+}
+
+async function guardarUsuario() {
+  const data = {
+    nombre: document.getElementById('userNombre').value.trim(),
+    cargo: document.getElementById('userCargo').value.trim(),
+    rol: document.getElementById('userRol').value,
+    email: document.getElementById('userEmail').value.trim(),
+    celular: document.getElementById('userCelular').value.trim()
+  };
+  if(!data.nombre) { alert('El nombre es obligatorio.'); return; }
+  if(userEditId) {
+    await db.from('Usuarios').update(data).eq('id', userEditId);
+  } else {
+    await db.from('Usuarios').insert(data);
+  }
+  closeUserModal();
+  renderEquipo();
+}
+
+
+// ── MÓDULO REPORTES ──────────────────────────────
+
+async function renderReportes() {
+  const docs = await getDocs();
+  const clientes = await getClientes();
+  const proyectos = await getProyectos();
+  const content = document.getElementById('mainContent');
+
+  const cots = docs.filter(d => d.modo === 'cot');
+  const totalCots = cots.length;
+  const aprobadas = cots.filter(d => d.estado === 'aprobada');
+  const enviadas = cots.filter(d => d.estado === 'enviada');
+  const borradores = cots.filter(d => d.estado === 'borrador');
+  const canceladas = cots.filter(d => d.estado === 'cancelada');
+
+  const totalVentas = aprobadas.reduce((s,d) => s + (d.total||0), 0);
+  const totalCotizado = cots.reduce((s,d) => s + (d.total||0), 0);
+  const tasaConversion = totalCots ? Math.round((aprobadas.length / totalCots) * 100) : 0;
+
+  const proysActivos = proyectos.filter(p => p.estado === 'activo').length;
+  const proysCompletados = proyectos.filter(p => p.estado === 'completado').length;
+
+  const servicioCount = {};
+  cots.forEach(d => {
+    (d.items||[]).forEach(it => {
+      const name = it.desc || 'Otro';
+      servicioCount[name] = (servicioCount[name]||0) + 1;
+    });
+  });
+  const topServicios = Object.entries(servicioCount).sort((a,b) => b[1]-a[1]).slice(0,5);
+
+  const estadoClientes = {};
+  clientes.forEach(c => {
+    const est = c.estado || 'nuevo';
+    estadoClientes[est] = (estadoClientes[est]||0) + 1;
+  });
+
+  content.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;">
+      <div class="section-card" style="padding:20px;text-align:center;">
+        <div style="font-size:2rem;font-weight:800;color:var(--negro);">${fmtNum(totalVentas)}</div>
+        <div style="font-size:.7rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Ventas aprobadas</div>
+      </div>
+      <div class="section-card" style="padding:20px;text-align:center;">
+        <div style="font-size:2rem;font-weight:800;color:var(--negro);">${fmtNum(totalCotizado)}</div>
+        <div style="font-size:.7rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Total cotizado</div>
+      </div>
+      <div class="section-card" style="padding:20px;text-align:center;">
+        <div style="font-size:2rem;font-weight:800;color:var(--negro);">${tasaConversion}%</div>
+        <div style="font-size:.7rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Tasa de conversión</div>
+      </div>
+      <div class="section-card" style="padding:20px;text-align:center;">
+        <div style="font-size:2rem;font-weight:800;color:var(--negro);">${clientes.length}</div>
+        <div style="font-size:.7rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Contactos totales</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+      <div class="section-card" style="padding:20px;">
+        <div class="section-header"><span class="section-title">Cotizaciones por estado</span></div>
+        <div style="margin-top:12px;">
+          ${[
+            {label:'Aprobadas',count:aprobadas.length,color:'#22c55e',pct:totalCots?Math.round(aprobadas.length/totalCots*100):0},
+            {label:'Enviadas',count:enviadas.length,color:'#3b82f6',pct:totalCots?Math.round(enviadas.length/totalCots*100):0},
+            {label:'Borradores',count:borradores.length,color:'#9ca3af',pct:totalCots?Math.round(borradores.length/totalCots*100):0},
+            {label:'Canceladas',count:canceladas.length,color:'#ef4444',pct:totalCots?Math.round(canceladas.length/totalCots*100):0}
+          ].map(s => `
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+              <div style="width:10px;height:10px;border-radius:50%;background:${s.color};flex-shrink:0;"></div>
+              <div style="flex:1;font-size:.78rem;font-weight:600;">${s.label}</div>
+              <div style="font-size:.78rem;font-weight:700;">${s.count}</div>
+              <div style="width:80px;height:6px;background:var(--gris);border-radius:3px;overflow:hidden;">
+                <div style="height:100%;width:${s.pct}%;background:${s.color};border-radius:3px;"></div>
+              </div>
+              <div style="font-size:.65rem;color:var(--gris-t);width:30px;text-align:right;">${s.pct}%</div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="section-card" style="padding:20px;">
+        <div class="section-header"><span class="section-title">Contactos por estado</span></div>
+        <div style="margin-top:12px;">
+          ${Object.entries(estadoClientes).map(([est,count]) => `
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+              <div style="flex:1;font-size:.78rem;font-weight:600;">${EST_LABEL[est]||est}</div>
+              <div style="font-size:.78rem;font-weight:700;">${count}</div>
+              <div style="width:80px;height:6px;background:var(--gris);border-radius:3px;overflow:hidden;">
+                <div style="height:100%;width:${clientes.length?Math.round(count/clientes.length*100):0}%;background:var(--verde);border-radius:3px;"></div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="section-card" style="padding:20px;">
+        <div class="section-header"><span class="section-title">Servicios más cotizados</span></div>
+        <div style="margin-top:12px;">
+          ${topServicios.length ? topServicios.map(([name,count],i) => `
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+              <div style="width:20px;height:20px;border-radius:50%;background:var(--negro);color:var(--verde);font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${i+1}</div>
+              <div style="flex:1;font-size:.75rem;font-weight:600;">${name}</div>
+              <div style="font-size:.75rem;font-weight:700;">${count}x</div>
+            </div>`).join('') : '<div style="font-size:.75rem;color:var(--gris-t);text-align:center;padding:12px;">Sin datos aún</div>'}
+        </div>
+      </div>
+
+      <div class="section-card" style="padding:20px;">
+        <div class="section-header"><span class="section-title">Proyectos</span></div>
+        <div style="margin-top:12px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <div style="flex:1;font-size:.78rem;font-weight:600;">🟢 Activos</div>
+            <div style="font-size:1.2rem;font-weight:800;">${proysActivos}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <div style="flex:1;font-size:.78rem;font-weight:600;">✅ Completados</div>
+            <div style="font-size:1.2rem;font-weight:800;">${proysCompletados}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="flex:1;font-size:.78rem;font-weight:600;">📊 Total</div>
+            <div style="font-size:1.2rem;font-weight:800;">${proyectos.length}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
 
 // ── INIT ─────────────────────────────────────────
 // Session check and data loading handled by SPA initialization at bottom of file
@@ -1903,41 +2387,40 @@ function cargarPrecarga() {
 }
 
 function saveAM() {
-  localStorage.setItem('meev_am', JSON.stringify({
-    nombre: document.getElementById('fac_amNombre')?.value || '',
-    cargo:  document.getElementById('fac_amCargo')?.value  || '',
-    celular:document.getElementById('fac_amCelular')?.value|| '',
-    email:  document.getElementById('fac_amEmail')?.value  || ''
-  }));
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  if(sess.email) {
+    db.from('Usuarios').update({
+      nombre: document.getElementById('fac_amNombre')?.value || '',
+      cargo: document.getElementById('fac_amCargo')?.value || '',
+      celular: document.getElementById('fac_amCelular')?.value || '',
+      email: document.getElementById('fac_amEmail')?.value || ''
+    }).eq('email', sess.email);
+  }
 }
 
-function loadAM() {
-  try {
-    const am = JSON.parse(localStorage.getItem('meev_am') || '{}');
-    if(am.nombre) document.getElementById('fac_amNombre').value  = am.nombre;
-    if(am.cargo)  document.getElementById('fac_amCargo').value   = am.cargo;
-    if(am.celular)document.getElementById('fac_amCelular').value = am.celular;
-    if(am.email)  document.getElementById('fac_amEmail').value   = am.email;
-  } catch(e){}
+async function loadAM() {
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  if(sess.email) {
+    const { data: am } = await db.from('Usuarios').select('*').eq('email', sess.email).single();
+    if(am) {
+      const el = id => document.getElementById(id);
+      if(el('fac_amNombre')) el('fac_amNombre').value = am.nombre || '';
+      if(el('fac_amCargo')) el('fac_amCargo').value = am.cargo || '';
+      if(el('fac_amCelular')) el('fac_amCelular').value = am.celular || '';
+      if(el('fac_amEmail')) el('fac_amEmail').value = am.email || '';
+    }
+  }
 }
 
 // ── PANEL DE GESTIÓN ────────────────────────────
 let currentMode = 'cot';
 
-function getDocumentos() {
-  try { return JSON.parse(localStorage.getItem('meev_docs') || '[]'); } catch(e) { return []; }
-}
-function saveDocumentos(docs) {
-  localStorage.setItem('meev_docs', JSON.stringify(docs));
-}
-
-function guardarYVolver() {
-  guardarDocActual();
+async function guardarYVolver() {
+  await guardarDocActual();
   navigateTo('app');
 }
 
-function guardarDocActual() {
-  const docs = getDocumentos();
+async function guardarDocActual() {
   const numInput = document.getElementById('docNumInput');
   const clientEl = document.getElementById('clientName');
   const prefix = currentMode === 'fac' ? 'FAC-' : 'COT-';
@@ -1955,27 +2438,22 @@ function guardarDocActual() {
     items.push({desc, qty, price});
   });
 
-  const existing = docs.findIndex(d => d.num === num);
-  const prev = existing >= 0 ? docs[existing] : null;
+  const notasEl = document.querySelector('.notes-text');
+  const notas = notasEl?.value || '';
+
+  const { data: existing } = await db.from('cotizaciones').select('id').eq('numero', num).single();
+
   const doc = {
-    num, cliente, total, modo: currentMode, items,
-    fecha: new Date().toLocaleDateString('es-CO'),
-    estado: currentMode === 'cot' ? (prev?.estado || 'borrador') : 'emitida',
-    facturas: prev?.facturas || [],
-    clienteId: currentClienteId || prev?.clienteId || null
+    numero: num, cliente_nombre: cliente, total, tipo: currentMode === 'fac' ? 'factura' : 'cotizacion',
+    items, estado: currentMode === 'cot' ? 'borrador' : 'emitida', notas,
+    cliente_id: currentClienteId || null
   };
 
-  if(existing >= 0) docs[existing] = doc;
-  else docs.unshift(doc);
-  saveDocumentos(docs);
-}
-
-function togglePago(cotNum, tipo, e) {
-  e.stopPropagation();
-  const docs = getDocumentos();
-  const d = docs.find(x => x.num===cotNum);
-  const f = d?.facturas?.find(x => x.tipo===tipo);
-  if(f) { f.pagada=!f.pagada; saveDocumentos(docs); renderPanel(); }
+  if(existing) {
+    await db.from('cotizaciones').update(doc).eq('id', existing.id);
+  } else {
+    await db.from('cotizaciones').insert(doc);
+  }
 }
 
 // Override setMode to track currentMode
