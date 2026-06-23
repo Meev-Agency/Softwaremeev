@@ -595,6 +595,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -622,20 +623,9 @@ body.body-app::before,body.body-facturador::before{content:none}
     <button class="btn-login" onclick="doLogin()">Ingresar al sistema</button>
     <div class="login-error" id="loginError">Correo o contraseña incorrectos. Intenta de nuevo.</div>
 
-    <div class="login-demo">
-      <div class="login-demo-title">Acceso demo</div>
-      <div class="demo-user" onclick="fillDemo('jorge@meevagency.com','meev2024')">
-        <div><div class="demo-user-name">Jorge Ostau De Lafont</div><div class="demo-user-role">Director / Account Manager</div></div>
-        <div class="demo-user-hint">Clic para entrar →</div>
-      </div>
-      <div class="demo-user" onclick="fillDemo('equipo@meevagency.com','meev2024')">
-        <div><div class="demo-user-name">Equipo MEEV</div><div class="demo-user-role">Colaborador</div></div>
-        <div class="demo-user-hint">Clic para entrar →</div>
-      </div>
-    </div>
   </div>
 
-  <div class="login-footer">MEEV Agency · Software interno · Demo</div>
+  <div class="login-footer">MEEV Agency · Software interno</div>
 </div>
 
 </div>
@@ -668,7 +658,6 @@ body.body-app::before,body.body-facturador::before{content:none}
       <div id="sessionRole" style="font-size:.65rem;color:rgba(255,255,255,.35);margin-top:1px;"></div>
     </div>
     <button onclick="cerrarSesion()" style="display:block;width:100%;text-align:left;font-size:.72rem;color:rgba(255,255,255,.4);background:none;border:none;cursor:pointer;padding:4px 0;transition:color .2s;font-family:'Poppins',sans-serif;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='rgba(255,255,255,.4)'">→ Cerrar sesión</button>
-    <button class="btn-reset" onclick="resetSistema()">↺ Reiniciar demo</button>
   </div>
 </aside>
 
@@ -1011,6 +1000,11 @@ body.body-app::before,body.body-facturador::before{content:none}
 </div>
 
 <script>
+/* ═══════════ SUPABASE CONNECTION ═══════════ */
+const SUPABASE_URL = 'https://wwrczipwwrmptltlrams.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_jooX9Uk-Wq6xHPRsfwoAEg_1GlF9Afe';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 /* ═══════════ SPA NAVIGATION SYSTEM ═══════════ */
 function navigateTo(view) {
   // Hide all views
@@ -1035,47 +1029,44 @@ function navigateTo(view) {
         if(elRole) elRole.textContent = sess.cargo || sess.rol || '';
       }
     } catch(e){}
-    if(typeof loadDemoData === 'function') loadDemoData();
-    if(typeof loadDemoClients === 'function') loadDemoClients();
-    if(typeof loadAMProfile === 'function') loadAMProfile();
     if(typeof renderFinanzas === 'function') renderFinanzas();
   } else if(view === 'facturador') {
     if(typeof initFacturador === 'function') initFacturador();
   }
 }
 
-const USERS = [{"email": "jorge@meevagency.com", "password": "meev2024", "nombre": "Jorge Ostau De Lafont", "cargo": "Director / Account Manager", "rol": "admin"}, {"email": "equipo@meevagency.com", "password": "meev2024", "nombre": "Equipo MEEV", "cargo": "Colaborador", "rol": "colaborador"}];
-
-function doLogin() {
+async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const pass  = document.getElementById('loginPass').value;
-  const user  = USERS.find(u => u.email === email && u.password === pass);
   const errEl = document.getElementById('loginError');
+  const btn   = document.querySelector('.btn-login');
+  if(btn) { btn.disabled = true; btn.textContent = 'Ingresando...'; }
 
-  if(user) {
-    errEl.classList.remove('show');
-    localStorage.setItem('meev_session', JSON.stringify({
-      email: user.email,
-      nombre: user.nombre,
-      cargo: user.cargo,
-      rol: user.rol,
-      loginAt: new Date().toISOString()
-    }));
-    navigateTo('app');
-  } else {
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+
+  if(error) {
+    errEl.textContent = 'Correo o contraseña incorrectos';
     errEl.classList.add('show');
     document.getElementById('loginPass').value = '';
     document.getElementById('loginPass').focus();
+    if(btn) { btn.disabled = false; btn.textContent = 'Ingresar al sistema'; }
+    return;
   }
+
+  errEl.classList.remove('show');
+  const { data: perfil } = await db.from('Usuarios').select('*').eq('email', email).single();
+  if(perfil) {
+    localStorage.setItem('meev_session', JSON.stringify({
+      email: perfil.email,
+      nombre: perfil.nombre,
+      cargo: perfil.cargo,
+      rol: perfil.rol
+    }));
+  }
+  if(btn) { btn.disabled = false; btn.textContent = 'Ingresar al sistema'; }
+  navigateTo('app');
 }
 
-function fillDemo(email, pass) {
-  document.getElementById('loginEmail').value = email;
-  document.getElementById('loginPass').value = pass;
-  doLogin();
-}
-
-// Enter key
 document.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 
 // Already logged in? — Handled by SPA init at bottom
@@ -1519,8 +1510,9 @@ function eliminarCliente() {
   renderClientes();
 }
 
-function cerrarSesion() {
+async function cerrarSesion() {
   if(!confirm('¿Cerrar sesión?')) return;
+  await db.auth.signOut();
   localStorage.removeItem('meev_session');
   document.querySelectorAll('.cli-modal-overlay, .doc-modal-overlay').forEach(m => m.classList.remove('open'));
   const emailField = document.getElementById('loginEmail');
@@ -1528,15 +1520,6 @@ function cerrarSesion() {
   if(emailField) emailField.value = '';
   if(passField) passField.value = '';
   navigateTo('login');
-}
-
-function resetSistema() {
-  if(!confirm('¿Reiniciar el sistema? Esto eliminará todos los clientes y documentos que hayas creado. Los datos de demostración se restaurarán.')) return;
-  ['meev_docs','meev_clientes','meev_demo_loaded','meev_demo_clients','meev_precarga'].forEach(k => localStorage.removeItem(k));
-  loadDemoData();
-  loadDemoClients();
-  renderFinanzas();
-  alert('Sistema reiniciado. Datos de demo restaurados.');
 }
 
 let cliEditId = null;
@@ -1733,87 +1716,6 @@ function guardarCliente() {
 }
 
 // ── DEMO DATA ────────────────────────────────────
-
-function loadDemoClients() {
-  if(localStorage.getItem('meev_demo_clients')) return;
-  const clientes = [
-    {id:'cli-1',nombre:'Camila Torres',empresa:'Alpha Brands S.A.S',tel:'+57 310 111 0001',email:'camila@alphabrands.co',pais:'Colombia',ciudad:'Bogotá',tipoid:'NIT',id_num:'900.111.222-3',canal:'Instagram',estado:'cliente',servicio:'Diseño de Logotipo',presupuesto:'$1.000.000 – $2.000.000',notas:'Cliente frecuente, muy puntual con los pagos.',fecha:'02/06/2026'},
-    {id:'cli-2',nombre:'Andrés Muñoz',empresa:'Studio Beta Creativo',tel:'+57 320 222 0002',email:'andres@studiobeta.co',pais:'Colombia',ciudad:'Medellín',tipoid:'C.C.',id_num:'1.023.456.789',canal:'Referido',estado:'cotizado',servicio:'Brochure / Presentación',presupuesto:'$1.000.000 – $2.000.000',notas:'Lo refirió Camila Torres.',fecha:'05/06/2026'},
-    {id:'cli-3',nombre:'Valentina Ríos',empresa:'Gamma E-Commerce',tel:'+52 55 333 0003',email:'vrios@gamma.mx',pais:'México',ciudad:'Ciudad de México',tipoid:'RFC',id_num:'RIOV890101XX1',canal:'Google Ads',estado:'cliente',servicio:'Diseño de Tienda Shopify',presupuesto:'Más de $5.000.000',notas:'Proyecto grande, necesita seguimiento semanal.',fecha:'08/06/2026'},
-    {id:'cli-4',nombre:'Luis Herrera',empresa:'Delta Restaurantes',tel:'+57 301 444 0004',email:'luis@deltarest.com',pais:'Colombia',ciudad:'Cali',tipoid:'NIT',id_num:'800.555.666-1',canal:'Facebook Ads',estado:'seguimiento',servicio:'Diseño Editorial',presupuesto:'$1.000.000 – $2.000.000',notas:'Interesado pero dice que está evaluando otras opciones.',fecha:'10/06/2026'},
-    {id:'cli-5',nombre:'Sara Jiménez',empresa:'Epsilon Packaging Co.',tel:'+57 315 555 0005',email:'sara@epsilon.com.co',pais:'Colombia',ciudad:'Barranquilla',tipoid:'C.C.',id_num:'32.789.012',canal:'WhatsApp',estado:'inactivo',servicio:'Diseño de Empaque',presupuesto:'$1.000.000 – $2.000.000',notas:'No contestó después del primer contacto.',fecha:'11/06/2026'},
-    {id:'cli-6',nombre:'Mateo Vargas',empresa:'Zeta Corp Internacional',tel:'+1 305 666 0006',email:'mateo@zetacorp.com',pais:'Estados Unidos',ciudad:'Miami',tipoid:'EIN',id_num:'12-3456789',canal:'LinkedIn',estado:'cliente',servicio:'Diseño de Logotipo',presupuesto:'Más de $5.000.000',notas:'Cliente internacional, pagos en USD.',fecha:'13/06/2026'}
-  ];
-  localStorage.setItem('meev_clientes', JSON.stringify(clientes));
-  localStorage.setItem('meev_demo_clients','1');
-}
-
-function loadDemoData() {
-  if(localStorage.getItem('meev_demo_loaded')) return;
-  const demo = [
-    {
-      num:'COT-0001', cliente:'Alpha Brands S.A.S', total:2300000, modo:'cot',
-      fecha:'02/06/2026', estado:'aprobada',
-      factura:{num:'FAC-0001',total:2300000,emitida:'05/06/2026',
-        anticipo:{monto:1150000,pagado:true,fechaPago:'05/06/2026'},
-        saldo:{monto:1150000,pagado:false,fechaPago:null}},
-      items:[{desc:'Diseño de Logotipo',qty:1,price:1000000},{desc:'Manual de Identidad Visual',qty:1,price:1300000}]
-    },
-    {
-      num:'COT-0002', cliente:'Studio Beta Creativo', total:1900000, modo:'cot',
-      fecha:'05/06/2026', estado:'enviada', factura:null,
-      items:[{desc:'Brochure / Presentación de Negocios',qty:1,price:1000000},{desc:'Material Corporativo Impreso',qty:1,price:850000}]
-    },
-    {
-      num:'COT-0003', cliente:'Gamma E-Commerce', total:3000000, modo:'cot',
-      fecha:'08/06/2026', estado:'aprobada',
-      factura:{num:'FAC-0003',total:3000000,emitida:'10/06/2026',
-        anticipo:{monto:1500000,pagado:false,fechaPago:null},
-        saldo:{monto:1500000,pagado:false,fechaPago:null}},
-      items:[{desc:'Diseño de Tienda Shopify',qty:1,price:3000000}]
-    },
-    {
-      num:'COT-0004', cliente:'Delta Restaurantes', total:1100000, modo:'cot',
-      fecha:'10/06/2026', estado:'borrador', factura:null,
-      items:[{desc:'Diseño Editorial',qty:1,price:1100000}]
-    },
-    {
-      num:'COT-0005', cliente:'Epsilon Packaging Co.', total:1000000, modo:'cot',
-      fecha:'11/06/2026', estado:'cancelada', factura:null,
-      items:[{desc:'Diseño de Empaque',qty:1,price:1000000}]
-    },
-    {
-      num:'COT-0006', cliente:'Zeta Corp Internacional', total:2400000, modo:'cot',
-      fecha:'13/06/2026', estado:'aprobada',
-      factura:{num:'FAC-0006',total:2400000,emitida:'14/06/2026',
-        anticipo:{monto:1200000,pagado:true,fechaPago:'14/06/2026'},
-        saldo:{monto:1200000,pagado:true,fechaPago:'17/06/2026'}},
-      items:[{desc:'Diseño de Logotipo',qty:1,price:1000000},{desc:'Diseño de Tipografía',qty:1,price:1400000}]
-    }
-  ];
-  localStorage.setItem('meev_docs', JSON.stringify(demo));
-
-  // Demo AM data
-  localStorage.setItem('meev_am', JSON.stringify({
-    nombre:'Jorge Ostau De Lafont', cargo:'Director / Account Manager',
-    celular:'+57 300 000 0000', email:'jorge@meevagency.com'
-  }));
-
-  localStorage.setItem('meev_demo_loaded','1');
-}
-
-function loadAMProfile() {
-  try {
-    const am = JSON.parse(localStorage.getItem('meev_am')||'{}');
-    if(am.nombre) {
-      document.getElementById('amProfile').style.display = 'block';
-      document.getElementById('amName').textContent    = am.nombre;
-      document.getElementById('amCargo').textContent   = am.cargo||'';
-      document.getElementById('amCelular').textContent = am.celular||'';
-      document.getElementById('amEmail').textContent   = am.email||'';
-    }
-  } catch(e){}
-}
 
 // ── INIT ─────────────────────────────────────────
 // Session check and data loading handled by SPA initialization at bottom of file
@@ -2080,18 +1982,22 @@ const _origSetMode = setMode;
 
 
 /* ═══════════ SPA INITIALIZATION ═══════════ */
-// Override the session check from app module - use SPA navigation
-(function initSPA() {
-  const s = localStorage.getItem('meev_session');
-  if(s) {
-    try {
-      JSON.parse(s);
-      navigateTo('app');
-    } catch(e) {
-      localStorage.removeItem('meev_session');
-      navigateTo('login');
+(async function initSPA() {
+  const { data: { session } } = await db.auth.getSession();
+  if(session) {
+    const email = session.user.email;
+    const { data: perfil } = await db.from('Usuarios').select('*').eq('email', email).single();
+    if(perfil) {
+      localStorage.setItem('meev_session', JSON.stringify({
+        email: perfil.email,
+        nombre: perfil.nombre,
+        cargo: perfil.cargo,
+        rol: perfil.rol
+      }));
     }
+    navigateTo('app');
   } else {
+    localStorage.removeItem('meev_session');
     navigateTo('login');
   }
 })();
