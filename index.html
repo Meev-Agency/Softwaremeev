@@ -645,17 +645,17 @@ body.body-app::before,body.body-facturador::before{content:none}
     <div class="tagline">Marketing enfocado en ventas</div>
   </div>
   <nav class="nav">
-    <div class="nav-section">Flujo de trabajo</div>
-    <a class="nav-item" onclick="showModule('clientes')">
+    <div class="nav-section" data-section="flujo">Flujo de trabajo</div>
+    <a class="nav-item" data-modulo="clientes" onclick="showModule('clientes')">
       <span class="icon">🤝</span> Clientes
     </a>
-    <a class="nav-item" onclick="showModule('finanzas')">
+    <a class="nav-item" data-modulo="finanzas" onclick="showModule('finanzas')">
       <span class="icon">💰</span> Finanzas & Ventas
     </a>
-    <a class="nav-item" onclick="showModule('operaciones')"><span class="icon">⚙️</span> Operaciones</a>
-    <a class="nav-item" onclick="showModule('equipo')"><span class="icon">👥</span> Equipo</a>
-    <div class="nav-section">Análisis</div>
-    <a class="nav-item" onclick="showModule('reportes')"><span class="icon">📊</span> Reportes</a>
+    <a class="nav-item" data-modulo="operaciones" onclick="showModule('operaciones')"><span class="icon">⚙️</span> Operaciones</a>
+    <a class="nav-item" data-modulo="equipo" onclick="showModule('equipo')"><span class="icon">👥</span> Equipo</a>
+    <div class="nav-section" data-section="analisis">Análisis</div>
+    <a class="nav-item" data-modulo="reportes" onclick="showModule('reportes')"><span class="icon">📊</span> Reportes</a>
   </nav>
   <div class="sidebar-bottom">
     <div style="margin-bottom:10px;">
@@ -1059,7 +1059,9 @@ function navigateTo(view) {
         if(elRole) elRole.textContent = sess.cargo || sess.rol || '';
       }
     } catch(e){}
-    if(typeof renderFinanzas === 'function') renderFinanzas();
+    aplicarPermisos();
+    const modInicial = getModuloInicial();
+    showModule(modInicial);
   } else if(view === 'facturador') {
     if(typeof initFacturador === 'function') initFacturador();
   }
@@ -1136,6 +1138,40 @@ async function saveCliente(c) {
 async function deleteCliente(id) {
   const { error } = await db.from('clientes').delete().eq('id', id);
   return !error;
+}
+
+function aplicarPermisos() {
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  const rol = sess.rol || 'diseñador';
+  document.querySelectorAll('.nav-item[data-modulo]').forEach(el => {
+    const mod = el.getAttribute('data-modulo');
+    if(rol === 'admin') {
+      el.style.display = '';
+    } else if(rol === 'account_manager') {
+      el.style.display = ['clientes','finanzas','operaciones'].includes(mod) ? '' : 'none';
+    } else {
+      el.style.display = mod === 'operaciones' ? '' : 'none';
+    }
+  });
+  document.querySelectorAll('.nav-section[data-section]').forEach(el => {
+    const sec = el.getAttribute('data-section');
+    if(rol === 'admin') {
+      el.style.display = '';
+    } else if(rol === 'account_manager') {
+      el.style.display = sec === 'analisis' ? 'none' : '';
+    } else {
+      el.style.display = sec === 'analisis' ? 'none' : '';
+    }
+  });
+  const btnCot = document.getElementById('btnNuevaCot');
+  if(btnCot) btnCot.style.display = rol === 'diseñador' ? 'none' : '';
+}
+
+function getModuloInicial() {
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  const rol = sess.rol || 'diseñador';
+  if(rol === 'admin' || rol === 'account_manager') return 'clientes';
+  return 'operaciones';
 }
 
 function toggleSidebar() {
