@@ -73,6 +73,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 /* ═══════════ APP VIEW STYLES ═══════════ */
 /* SIDEBAR */
 .sidebar{width:var(--sidebar-w);background:var(--negro);min-height:100vh;display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.view-container:not(.active) .sidebar{display:none}
 .sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
 .sidebar-logo img{height:36px}
 .sidebar-logo .tagline{font-size:.58rem;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;margin-top:6px}
