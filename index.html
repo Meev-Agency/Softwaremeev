@@ -718,12 +718,12 @@ body.body-app::before,body.body-facturador::before{content:none}
     <div class="cli-modal-body">
       <div class="form-section">Datos personales</div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Nombre completo *</label><input class="form-input" id="cliNombre" autocomplete="off" placeholder="Juan García"></div>
-        <div class="form-group"><label class="form-label">Empresa / Marca</label><input class="form-input" id="cliEmpresa" autocomplete="off" placeholder="Alpha Brands"></div>
+        <div class="form-group"><label class="form-label">Nombre completo *</label><input class="form-input" id="cliNombre" placeholder="Juan García"></div>
+        <div class="form-group"><label class="form-label">Empresa / Marca</label><input class="form-input" id="cliEmpresa" placeholder="Alpha Brands"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">WhatsApp / Teléfono</label><input class="form-input" id="cliTel" autocomplete="off" placeholder="+57 300 000 0000"></div>
-        <div class="form-group"><label class="form-label">Correo electrónico</label><input class="form-input" id="cliEmail" autocomplete="off" placeholder="juan@empresa.com"></div>
+        <div class="form-group"><label class="form-label">WhatsApp / Teléfono</label><input class="form-input" id="cliTel" placeholder="+57 300 000 0000"></div>
+        <div class="form-group"><label class="form-label">Correo electrónico</label><input class="form-input" id="cliEmail" placeholder="juan@empresa.com"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">País</label>
@@ -734,7 +734,7 @@ body.body-app::before,body.body-facturador::before{content:none}
             <optgroup label="Europa"><option>España</option><option>Francia</option><option>Alemania</option><option>Portugal</option></optgroup>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Ciudad</label><input class="form-input" id="cliCiudad" autocomplete="off" placeholder="Bogotá"></div>
+        <div class="form-group"><label class="form-label">Ciudad</label><input class="form-input" id="cliCiudad" placeholder="Bogotá"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Tipo ID</label>
@@ -743,7 +743,7 @@ body.body-app::before,body.body-facturador::before{content:none}
             <option>C.C.</option><option>NIT</option><option>C.E.</option><option>RFC</option><option>Pasaporte</option><option>VAT</option><option>EIN</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Número de ID</label><input class="form-input" id="cliId" autocomplete="off" placeholder="123456789"></div>
+        <div class="form-group"><label class="form-label">Número de ID</label><input class="form-input" id="cliId" placeholder="123456789"></div>
       </div>
 
       <div class="form-section">Origen y clasificación</div>
@@ -800,7 +800,7 @@ body.body-app::before,body.body-facturador::before{content:none}
       </div>
       <div class="form-row full">
         <div class="form-group"><label class="form-label">Notas</label>
-          <input class="form-input" id="cliNotas" autocomplete="off" placeholder="Comentarios, necesidades específicas...">
+          <input class="form-input" id="cliNotas" placeholder="Comentarios, necesidades específicas...">
         </div>
       </div>
       <div id="cliHistorial" style="display:none"></div>
@@ -1907,39 +1907,16 @@ async function abrirCliModal(id) {
 
   document.getElementById('cliModalTitle').textContent = c ? 'Editar contacto' : 'Nuevo contacto';
 
+  const fieldMap = {Nombre:'nombre',Empresa:'empresa',Tel:'celular',Email:'email',Pais:'pais',Ciudad:'ciudad',TipoId:'tipo_id',Id:'numero_id',Canal:'canal',Estado:'estado',Servicio:'servicio',Presupuesto:'presupuesto',Preferencia:'preferencia_contacto',Notas:'notas'};
+  Object.entries(fieldMap).forEach(([formId, dbCol]) => {
+    const el = document.getElementById('cli'+formId);
+    if(el) el.value = c ? (c[dbCol]||'') : (formId==='Estado'?'nuevo':'');
+  });
+
   const delBtn = document.getElementById('btnEliminarCliente');
   if(delBtn) delBtn.style.display = c ? 'inline-flex' : 'none';
 
   document.getElementById('cliModalOverlay').classList.add('open');
-
-  // Set values AFTER the modal is visible. For text inputs we also set the
-  // value attribute via setAttribute because Safari sometimes fails to paint
-  // a value assigned only via the .value property on a freshly shown input.
-  const v = (field) => c ? (c[field]||'') : '';
-  const setInput = (elId, val) => {
-    const el = document.getElementById(elId);
-    if(!el) return;
-    el.value = val;
-    el.setAttribute('value', val);
-  };
-  const setSelect = (elId, val) => {
-    const el = document.getElementById(elId);
-    if(el) el.value = val;
-  };
-  setInput('cliNombre', v('nombre'));
-  setInput('cliEmpresa', v('empresa'));
-  setInput('cliTel', v('celular'));
-  setInput('cliEmail', v('email'));
-  setInput('cliCiudad', v('ciudad'));
-  setInput('cliId', v('numero_id'));
-  setInput('cliNotas', v('notas'));
-  setSelect('cliPais', v('pais'));
-  setSelect('cliTipoId', v('tipo_id'));
-  setSelect('cliCanal', v('canal'));
-  setSelect('cliEstado', c ? (c.estado||'nuevo') : 'nuevo');
-  setSelect('cliServicio', v('servicio'));
-  setSelect('cliPresupuesto', v('presupuesto'));
-  setSelect('cliPreferencia', v('preferencia_contacto'));
 }
 
 function closeCliModal(e) {
