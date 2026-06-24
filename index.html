@@ -760,7 +760,6 @@ body.body-app::before,body.body-facturador::before{content:none}
           <select class="form-select" id="cliEstado">
             <option value="nuevo">Nuevo</option>
             <option value="seguimiento">En seguimiento</option>
-            <option value="cotizado">Cotizado</option>
             <option value="cliente">Cliente</option>
             <option value="inactivo">Inactivo</option>
           </select>
@@ -1712,8 +1711,8 @@ function initials(n) {
 }
 
 const CANAL_ICON = {Instagram:'📸',Facebook:'📘','Facebook Ads':'📘','Google Ads':'🔍','Sitio web':'🌐',WhatsApp:'💬',Referido:'🤝',LinkedIn:'💼',TikTok:'🎵',Evento:'📅',Otro:'📌'};
-const EST_LABEL = {nuevo:'Nuevo',seguimiento:'En seguimiento',cotizado:'Cotizado',cliente:'Cliente',inactivo:'Inactivo'};
-const EST_CLASS = {nuevo:'cs-nuevo',seguimiento:'cs-seguimiento',cotizado:'cs-cotizado',cliente:'cs-cliente',inactivo:'cs-inactivo'};
+const EST_LABEL = {nuevo:'Nuevo',seguimiento:'En seguimiento',cliente:'Cliente',inactivo:'Inactivo'};
+const EST_CLASS = {nuevo:'cs-nuevo',seguimiento:'cs-seguimiento',cliente:'cs-cliente',inactivo:'cs-inactivo'};
 
 async function renderClientes() {
   document.getElementById('moduleTitle').textContent = 'Clientes';
@@ -1734,7 +1733,7 @@ async function renderClientes() {
     <div class="cli-toolbar">
       <input class="cli-search" id="cliSearchInput" placeholder="Buscar por nombre, empresa o email..." oninput="renderClientes()" value="${(document.getElementById('cliSearchInput')?.value||'')}">
       <div class="cli-filter">
-        ${['todos','nuevo','seguimiento','cotizado','cliente','inactivo'].map(e => `
+        ${['todos','nuevo','seguimiento','cliente','inactivo'].map(e => `
           <button class="cli-filter-btn ${e!=='todos'?'f-'+e:''} ${cliFilterEstado===e?'active':''}" onclick="setCliFilter('${e}')">
             ${e==='todos'?'Todos':EST_LABEL[e]}
           </button>`).join('')}
