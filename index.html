@@ -1912,23 +1912,34 @@ async function abrirCliModal(id) {
 
   document.getElementById('cliModalOverlay').classList.add('open');
 
-  // Set values AFTER the modal is visible (Safari does not retain values
-  // set on inputs inside a display:none container reliably).
+  // Set values AFTER the modal is visible. For text inputs we also set the
+  // value attribute via setAttribute because Safari sometimes fails to paint
+  // a value assigned only via the .value property on a freshly shown input.
   const v = (field) => c ? (c[field]||'') : '';
-  document.getElementById('cliNombre').value = v('nombre');
-  document.getElementById('cliEmpresa').value = v('empresa');
-  document.getElementById('cliTel').value = v('celular');
-  document.getElementById('cliEmail').value = v('email');
-  document.getElementById('cliCiudad').value = v('ciudad');
-  document.getElementById('cliId').value = v('numero_id');
-  document.getElementById('cliNotas').value = v('notas');
-  document.getElementById('cliPais').value = v('pais');
-  document.getElementById('cliTipoId').value = v('tipo_id');
-  document.getElementById('cliCanal').value = v('canal');
-  document.getElementById('cliEstado').value = c ? (c.estado||'nuevo') : 'nuevo';
-  document.getElementById('cliServicio').value = v('servicio');
-  document.getElementById('cliPresupuesto').value = v('presupuesto');
-  document.getElementById('cliPreferencia').value = v('preferencia_contacto');
+  const setInput = (elId, val) => {
+    const el = document.getElementById(elId);
+    if(!el) return;
+    el.value = val;
+    el.setAttribute('value', val);
+  };
+  const setSelect = (elId, val) => {
+    const el = document.getElementById(elId);
+    if(el) el.value = val;
+  };
+  setInput('cliNombre', v('nombre'));
+  setInput('cliEmpresa', v('empresa'));
+  setInput('cliTel', v('celular'));
+  setInput('cliEmail', v('email'));
+  setInput('cliCiudad', v('ciudad'));
+  setInput('cliId', v('numero_id'));
+  setInput('cliNotas', v('notas'));
+  setSelect('cliPais', v('pais'));
+  setSelect('cliTipoId', v('tipo_id'));
+  setSelect('cliCanal', v('canal'));
+  setSelect('cliEstado', c ? (c.estado||'nuevo') : 'nuevo');
+  setSelect('cliServicio', v('servicio'));
+  setSelect('cliPresupuesto', v('presupuesto'));
+  setSelect('cliPreferencia', v('preferencia_contacto'));
 }
 
 function closeCliModal(e) {
