@@ -24,6 +24,7 @@
 .view-container{display:none}
 .view-container.active{display:block}
 #view-login.active{display:flex;align-items:center;justify-content:center;min-height:100vh;width:100%}
+#view-app.active{display:block;width:100%;min-height:100vh}
 
 /* ═══════════ BODY BASE ═══════════ */
 body{font-family:'Poppins',sans-serif;min-height:100vh;margin:0}
@@ -80,7 +81,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 .nav{flex:1;padding:16px 0}
 .nav-section{padding:8px 20px 4px;font-size:.58rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;transition:all .2s;border-left:3px solid transparent;text-decoration:none}
-.nav-item:hover{background:rgba(255,255,255,.05);color:var(--blanco)}
+.nav-item:hover{background:rgba(255,255,255,.05);color:var(--blanco);transition:all .15s ease}
 .nav-item.active{background:rgba(204,251,85,.08);color:var(--verde);border-left-color:var(--verde)}
 .nav-item .icon{font-size:1rem;width:20px;text-align:center}
 .nav-item .badge{margin-left:auto;background:var(--verde);color:var(--negro);font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:10px}
@@ -91,7 +92,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 .sidebar-bottom a:hover{color:var(--verde)}
 
 /* MAIN */
-.main{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w));min-height:100vh;display:flex;flex-direction:column}
+.main{margin-left:var(--sidebar-w);width:calc(100vw - var(--sidebar-w));min-height:100vh;display:flex;flex-direction:column}
 .topbar{background:var(--blanco);border-bottom:1px solid var(--gris-m);padding:0 16px;height:60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .topbar-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.1rem}
 .topbar-actions{display:flex;gap:10px;align-items:center}
@@ -245,8 +246,8 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cli-filter-btn{font-size:.68rem;font-weight:600;padding:7px 13px;border-radius:20px;border:1.5px solid var(--gris-m);background:#fff;cursor:pointer;transition:all .2s;white-space:nowrap}
 .cli-filter-btn:hover,.cli-filter-btn.active{background:var(--negro);color:#fff;border-color:var(--negro)}
 .cli-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-.cli-card{background:#fff;border:1.5px solid var(--gris-m);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s}
-.cli-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);transform:translateY(-1px)}
+.cli-card{background:#fff;border:1.5px solid var(--gris-m);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s ease}
+.cli-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.1);transform:translateY(-2px);border-color:rgba(204,251,85,.4)}
 .cli-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
 .cli-avatar{width:38px;height:38px;border-radius:50%;background:var(--negro);color:var(--verde);font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .cli-status{font-size:.6rem;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
@@ -264,9 +265,16 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cli-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--gris-m)}
 .cli-fecha{font-size:.62rem;color:var(--gris-t)}
 .cli-cots{font-size:.65rem;font-weight:600;color:var(--gris-t)}
-.cli-modal-overlay{display:none;position:fixed;inset:0;background:rgba(22,20,20,.6);z-index:300;backdrop-filter:blur(3px)}
-.cli-modal-overlay.open{display:flex;align-items:center;justify-content:center}
-.cli-modal{background:#fff;width:520px;max-width:95vw;max-height:90vh;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.cli-modal-overlay{display:none;position:fixed;inset:0;background:rgba(22,20,20,.6);z-index:300;backdrop-filter:blur(3px);opacity:0;transition:opacity .2s ease}
+.cli-modal-overlay.open{display:flex;align-items:center;justify-content:center;opacity:1}
+.cli-modal{background:#fff;width:520px;max-width:95vw;max-height:90vh;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.3);transform:translateY(10px);transition:transform .2s ease}
+.cli-modal-overlay.open .cli-modal{transform:translateY(0)}
+.cli-list-table tr{transition:background .15s ease}
+.cli-list-table tr:hover{background:rgba(204,251,85,.06);cursor:pointer}
+.section-card{transition:box-shadow .2s ease}
+.btn{transition:all .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
 .cli-modal-header{background:var(--negro);padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
 .cli-modal-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:#fff}
 .cli-modal-close{background:none;border:none;color:rgba(255,255,255,.5);font-size:1.1rem;cursor:pointer;padding:4px 8px;border-radius:6px}
@@ -556,8 +564,6 @@ body.body-app::before,body.body-facturador::before{content:none}
 
 /* ═══════════ RESPONSIVE ═══════════ */
 /* Ensure app fills viewport */
-#view-app{display:flex;min-height:100vh}
-#view-app .main{min-height:100vh}
 #view-app .content{min-height:calc(100vh - 60px)}
 
 /* Tablet */
@@ -686,6 +692,21 @@ body.body-app::before,body.body-facturador::before{content:none}
 </div>
 
 
+
+<!-- MODAL DETALLE CLIENTE -->
+<div class="cli-modal-overlay" id="cliDetailOverlay" onclick="closeCliDetail(event)">
+  <div class="cli-modal" style="max-width:640px" onclick="event.stopPropagation()">
+    <div class="cli-modal-header">
+      <span class="cli-modal-title" id="cliDetailTitle">Cliente</span>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn" style="background:rgba(255,255,255,.1);color:var(--verde);font-size:.7rem;padding:6px 14px;" onclick="closeCliDetail();abrirCliModal(cliDetailId)">✏ Editar</button>
+        <button class="btn" style="background:rgba(255,255,255,.1);color:var(--verde);font-size:.7rem;padding:6px 14px;" onclick="closeCliDetail();crearCotDesdeCliente(cliDetailId)">+ Cotizar</button>
+        <button class="cli-modal-close" onclick="closeCliDetail()">✕</button>
+      </div>
+    </div>
+    <div class="cli-modal-body" id="cliDetailBody"></div>
+  </div>
+</div>
 
 <!-- MODAL NUEVO/EDITAR CLIENTE -->
 <div class="cli-modal-overlay" id="cliModalOverlay" onclick="closeCliModal(event)">
@@ -1654,6 +1675,7 @@ async function cerrarSesion() {
 }
 
 let cliEditId = null;
+let cliDetailId = null;
 let cliFilterEstado = 'todos';
 
 
@@ -1678,7 +1700,7 @@ async function renderClientes() {
     (c.email||'').toLowerCase().includes(query)
   );
 
-  const cotCount = (id) => docs.filter(d => d.clienteId === id).length;
+  const cotCount = (id) => docs.filter(d => d.cliente_id == id).length;
 
   const toolbar = `
     <div class="cli-toolbar">
@@ -1711,7 +1733,7 @@ async function renderClientes() {
           <th>Contacto</th><th>Canal</th><th>Estado</th><th>Servicio</th><th>Cotizaciones</th><th>Acciones</th>
         </tr></thead>
         <tbody>${clientes.map(c => `
-          <tr onclick="abrirCliModal('${c.id}')">
+          <tr onclick="verCliente(${c.id})">
             <td>
               <div class="cli-list-name">${c.nombre||'Sin nombre'}</div>
               <div class="cli-list-empresa">${c.empresa||'—'}</div>
@@ -1730,7 +1752,7 @@ async function renderClientes() {
     </div>`;
   } else {
     bodyContent = `<div class="cli-grid">${clientes.map(c => `
-      <div class="cli-card" onclick="abrirCliModal('${c.id}')">
+      <div class="cli-card" onclick="verCliente(${c.id})">
         <div class="cli-card-top">
           <div class="cli-avatar">${initials(c.nombre)}</div>
           <span class="cli-status ${EST_CLASS[c.estado]||'cs-nuevo'}">${EST_LABEL[c.estado]||'Nuevo'}</span>
@@ -1760,11 +1782,96 @@ function setCliFilter(estado) {
   renderClientes();
 }
 
+async function verCliente(id) {
+  cliDetailId = id;
+  const clientes = await getClientes();
+  const c = clientes.find(x => x.id === id);
+  if(!c) return;
+  const docs = await getDocs();
+  const proyectos = await getProyectos();
+
+  const cDocs = docs.filter(d => d.cliente_id == c.id || d.clienteId == c.id);
+  const cProys = proyectos.filter(p => p.cliente_id == c.id);
+  const spClass = {borrador:'cs-nuevo',enviada:'cs-seguimiento',aprobada:'cs-cliente',cancelada:'cs-inactivo'};
+  const spLabel = {borrador:'Borrador',enviada:'Enviada',aprobada:'Aprobada',cancelada:'Cancelada'};
+  const PROY_EST = {activo:'Activo',pausado:'Pausado',completado:'Completado'};
+
+  const totalCotizado = cDocs.reduce((s,d) => s + (d.total||0), 0);
+  const totalAprobado = cDocs.filter(d => d.estado === 'aprobada').reduce((s,d) => s + (d.total||0), 0);
+
+  document.getElementById('cliDetailTitle').textContent = c.nombre || 'Sin nombre';
+  document.getElementById('cliDetailBody').innerHTML = `
+    <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
+      <div style="flex:1;min-width:280px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <div class="cli-avatar" style="width:56px;height:56px;font-size:1.3rem;">${initials(c.nombre)}</div>
+          <div>
+            <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1.2rem;">${c.nombre||'Sin nombre'}</div>
+            <div style="font-size:.8rem;color:var(--gris-t);">${c.empresa||''}</div>
+            <span class="cli-status ${EST_CLASS[c.estado]||'cs-nuevo'}" style="margin-top:4px;display:inline-block;">${EST_LABEL[c.estado]||'Nuevo'}</span>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+          ${c.email?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Email</span>${c.email}</div>`:''}
+          ${c.celular?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Teléfono</span>${c.celular}</div>`:''}
+          ${c.pais||c.ciudad?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Ubicación</span>${[c.ciudad,c.pais].filter(Boolean).join(', ')}</div>`:''}
+          ${c.canal?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Canal</span>${CANAL_ICON[c.canal]||'📌'} ${c.canal}</div>`:''}
+          ${c.servicio?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Servicio</span>${c.servicio}</div>`:''}
+        </div>
+        ${c.notas?`<div style="background:var(--gris);border-radius:8px;padding:12px;font-size:.75rem;color:#555;margin-bottom:16px;"><span style="font-weight:700;display:block;margin-bottom:4px;font-size:.65rem;text-transform:uppercase;color:var(--gris-t);">Notas</span>${c.notas}</div>`:''}
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;min-width:200px;">
+        <div style="background:var(--gris);border-radius:10px;padding:14px 18px;text-align:center;flex:1;">
+          <div style="font-size:1.3rem;font-weight:800;">${cDocs.length}</div>
+          <div style="font-size:.62rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;">Cotizaciones</div>
+        </div>
+        <div style="background:var(--gris);border-radius:10px;padding:14px 18px;text-align:center;flex:1;">
+          <div style="font-size:1.3rem;font-weight:800;">${cProys.length}</div>
+          <div style="font-size:.62rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;">Proyectos</div>
+        </div>
+        <div style="background:var(--gris);border-radius:10px;padding:14px 18px;text-align:center;flex:1 0 100%;">
+          <div style="font-size:1.1rem;font-weight:800;">${fmtNum(totalCotizado)}</div>
+          <div style="font-size:.62rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;">Total cotizado</div>
+        </div>
+      </div>
+    </div>
+
+    ${cDocs.length ? `
+    <div style="margin-top:20px;border-top:1px solid var(--gris-m);padding-top:16px;">
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;margin-bottom:10px;">Cotizaciones</div>
+      ${cDocs.map(d => `
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--gris);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#e8e8e4'" onmouseout="this.style.background='var(--gris)'" onclick="closeCliDetail();verDocumento('${d.num}')">
+          <div style="font-size:.75rem;font-weight:700;color:var(--negro);min-width:70px;">${d.num}</div>
+          <div style="flex:1;font-size:.75rem;color:#555;">${d.items?.map(i=>i.desc).join(', ')||'—'}</div>
+          <span class="cli-status ${spClass[d.estado]||'cs-nuevo'}">${spLabel[d.estado]||d.estado}</span>
+          <div style="font-size:.8rem;font-weight:700;min-width:100px;text-align:right;">${fmtNum(d.total||0)}</div>
+        </div>`).join('')}
+    </div>` : ''}
+
+    ${cProys.length ? `
+    <div style="margin-top:16px;border-top:1px solid var(--gris-m);padding-top:16px;">
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;margin-bottom:10px;">Proyectos</div>
+      ${cProys.map(p => `
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--gris);border-radius:8px;margin-bottom:6px;">
+          <div style="font-size:.75rem;font-weight:700;color:var(--negro);flex:1;">${p.nombre}</div>
+          <span class="cli-status ${p.estado==='activo'?'cs-cliente':p.estado==='pausado'?'cs-contactado':'cs-cotizado'}">${PROY_EST[p.estado]||p.estado}</span>
+          ${p.fecha_entrega?`<div style="font-size:.65rem;color:var(--gris-t);">🏁 ${new Date(p.fecha_entrega).toLocaleDateString('es-CO')}</div>`:''}
+        </div>`).join('')}
+    </div>` : ''}`;
+
+  document.getElementById('cliDetailOverlay').classList.add('open');
+}
+
+function closeCliDetail(e) {
+  if(!e || e.target === document.getElementById('cliDetailOverlay'))
+    document.getElementById('cliDetailOverlay').classList.remove('open');
+}
+
 async function abrirCliModal(id) {
+  closeCliDetail();
   cliEditId = id || null;
   const clientes = await getClientes();
   const c = id ? clientes.find(x=>x.id===id) : null;
-  const docs = await getDocs();
 
   document.getElementById('cliModalTitle').textContent = c ? 'Editar contacto' : 'Nuevo contacto';
   const fieldMap = {Nombre:'nombre',Empresa:'empresa',Tel:'celular',Email:'email',Pais:'pais',Ciudad:'ciudad',Canal:'canal',Estado:'estado',Servicio:'servicio',Notas:'notas'};
@@ -1773,35 +1880,8 @@ async function abrirCliModal(id) {
     if(el) el.value = c ? (c[dbCol]||'') : (formId==='Estado'?'nuevo':'');
   });
 
-  // Show/hide delete button and historial
   const delBtn = document.getElementById('btnEliminarCliente');
   if(delBtn) delBtn.style.display = c ? 'inline-flex' : 'none';
-
-  // Historial section
-  const histEl = document.getElementById('cliHistorial');
-  if(histEl) {
-    if(c) {
-      const cDocs = docs.filter(d => d.clienteId === c.id || d.cliente === c.nombre || d.cliente === c.nombre + (c.empresa?' — '+c.empresa:''));
-      const spClass = {borrador:'sp-borrador',enviada:'sp-enviada',aprobada:'sp-aprobada',cancelada:'sp-cancelada'};
-      const spLabel = {borrador:'Borrador',enviada:'Enviada',aprobada:'Aprobada',cancelada:'Cancelada'};
-      histEl.innerHTML = `<div class="hist-section">
-        <div class="hist-title">Historial (${cDocs.length} ${cDocs.length===1?'cotización':'cotizaciones'})</div>
-        ${!cDocs.length ? '<div class="hist-empty">Sin cotizaciones todavía.</div>' :
-          cDocs.map(d => `<div class="hist-row">
-            <span class="hist-num">${d.num}</span>
-            <div class="hist-info">
-              <div style="font-weight:600">${fmtNum(d.total||0)}</div>
-              <div class="hist-fecha">${d.fecha||''}</div>
-            </div>
-            <span class="hist-est ${spClass[d.estado]||'sp-borrador'}" style="padding:2px 8px;border-radius:10px;font-size:.62rem;font-weight:700;">${spLabel[d.estado]||d.estado}</span>
-            <button class="tbl-btn" onclick="closeCliModal();verDocumento('${d.num}')">Ver</button>
-          </div>`).join('')}
-      </div>`;
-      histEl.style.display = 'block';
-    } else {
-      histEl.style.display = 'none';
-    }
-  }
 
   document.getElementById('cliModalOverlay').classList.add('open');
 }
