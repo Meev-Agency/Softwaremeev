@@ -1130,35 +1130,50 @@ function fmtNum(n) {
   return '$' + Number(n||0).toLocaleString('es-CO', {minimumFractionDigits:0, maximumFractionDigits:0});
 }
 
+let _cache = { docs: null, clientes: null, proyectos: null, usuarios: null };
+
+function invalidateCache(key) {
+  if(key) _cache[key] = null;
+  else _cache = { docs: null, clientes: null, proyectos: null, usuarios: null };
+}
+
 async function getDocs() {
+  if(_cache.docs) return _cache.docs;
   const { data, error } = await db.from('cotizaciones').select('*').order('created_at', { ascending: false });
   if(error || !data) return [];
-  return data.map(d => ({
+  _cache.docs = data.map(d => ({
     num: d.numero, cliente: d.cliente_nombre || d.empresa, total: Number(d.total) || 0,
     modo: d.tipo === 'factura' ? 'fac' : 'cot', fecha: d.created_at ? new Date(d.created_at).toLocaleDateString('es-CO') : '',
     estado: d.estado, items: d.items || [], notas: d.notas, id: d.id, cliente_id: d.cliente_id,
     factura: d.items?.factura || null, empresa: d.empresa
   }));
+  return _cache.docs;
 }
 
 async function getClientes() {
+  if(_cache.clientes) return _cache.clientes;
   const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false });
   if(error || !data) return [];
-  return data;
+  _cache.clientes = data;
+  return _cache.clientes;
 }
 
 async function saveCliente(c) {
+  let ok;
   if(c.id) {
     const { error } = await db.from('clientes').update(c).eq('id', c.id);
-    return !error;
+    ok = !error;
   } else {
     const { error } = await db.from('clientes').insert(c);
-    return !error;
+    ok = !error;
   }
+  if(ok) invalidateCache('clientes');
+  return ok;
 }
 
 async function deleteCliente(id) {
   const { error } = await db.from('clientes').delete().eq('id', id);
+  if(!error) invalidateCache('clientes');
   return !error;
 }
 
@@ -1461,11 +1476,13 @@ async function generarFactura(cotNum) {
     cliente_nombre: cot.cliente_nombre, empresa: cot.empresa,
     items: cot.items, total: cot.total, estado: 'emitida', notas: cot.notas
   });
+  invalidateCache('docs');
   renderFinanzas();
 }
 
 async function cambiarEstCot(num, estado) {
   await db.from('cotizaciones').update({ estado }).eq('numero', num);
+  invalidateCache('docs');
   renderFinanzas();
 }
 
@@ -1596,6 +1613,7 @@ async function marcarHito(cotNum, hito) {
 
 async function moverEstado(cotNum, nuevoEst) {
   await db.from('cotizaciones').update({ estado: nuevoEst }).eq('numero', cotNum);
+  invalidateCache('docs');
   renderFinanzas();
 }
 
@@ -1918,9 +1936,11 @@ let proyEditId = null;
 let tareaEditProy = null;
 
 async function getProyectos() {
+  if(_cache.proyectos) return _cache.proyectos;
   const { data, error } = await db.from('proyectos').select('*, clientes(nombre, empresa), Usuarios(nombre)').order('created_at', { ascending: false });
   if(error || !data) return [];
-  return data;
+  _cache.proyectos = data;
+  return _cache.proyectos;
 }
 
 async function getTareas(proyId) {
@@ -1930,9 +1950,11 @@ async function getTareas(proyId) {
 }
 
 async function getUsuarios() {
+  if(_cache.usuarios) return _cache.usuarios;
   const { data, error } = await db.from('Usuarios').select('*').order('nombre', { ascending: true });
   if(error || !data) return [];
-  return data;
+  _cache.usuarios = data;
+  return _cache.usuarios;
 }
 
 async function renderOperaciones() {
@@ -2077,6 +2099,7 @@ async function guardarProyecto() {
   } else {
     await db.from('proyectos').insert(data);
   }
+  invalidateCache('proyectos');
   closeProyModal();
   renderOperaciones();
 }
@@ -2085,6 +2108,7 @@ async function eliminarProyecto() {
   if(!proyEditId) return;
   if(!confirm('¿Eliminar este proyecto y todas sus tareas?')) return;
   await db.from('proyectos').delete().eq('id', proyEditId);
+  invalidateCache('proyectos');
   closeProyModal();
   renderOperaciones();
 }
@@ -2279,6 +2303,7 @@ async function guardarUsuario() {
   } else {
     await db.from('Usuarios').insert(data);
   }
+  invalidateCache('usuarios');
   closeUserModal();
   renderEquipo();
 }
@@ -2664,6 +2689,7 @@ async function guardarDocActual() {
   } else {
     await db.from('cotizaciones').insert(doc);
   }
+  invalidateCache('docs');
 }
 
 // Override setMode to track currentMode
