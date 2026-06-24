@@ -1906,16 +1906,29 @@ async function abrirCliModal(id) {
   const c = id ? clientes.find(x=>x.id==id) : null;
 
   document.getElementById('cliModalTitle').textContent = c ? 'Editar contacto' : 'Nuevo contacto';
-  const fieldMap = {Nombre:'nombre',Empresa:'empresa',Tel:'celular',Email:'email',Pais:'pais',Ciudad:'ciudad',TipoId:'tipo_id',Id:'numero_id',Canal:'canal',Estado:'estado',Servicio:'servicio',Presupuesto:'presupuesto',Preferencia:'preferencia_contacto',Notas:'notas'};
-  Object.entries(fieldMap).forEach(([formId, dbCol]) => {
-    const el = document.getElementById('cli'+formId);
-    if(el) el.value = c ? (c[dbCol]||'') : (formId==='Estado'?'nuevo':'');
-  });
 
   const delBtn = document.getElementById('btnEliminarCliente');
   if(delBtn) delBtn.style.display = c ? 'inline-flex' : 'none';
 
   document.getElementById('cliModalOverlay').classList.add('open');
+
+  requestAnimationFrame(() => {
+    const v = (field) => c ? (c[field]||'') : '';
+    document.getElementById('cliNombre').value = v('nombre');
+    document.getElementById('cliEmpresa').value = v('empresa');
+    document.getElementById('cliTel').value = v('celular');
+    document.getElementById('cliEmail').value = v('email');
+    document.getElementById('cliCiudad').value = v('ciudad');
+    document.getElementById('cliId').value = v('numero_id');
+    document.getElementById('cliNotas').value = v('notas');
+    document.getElementById('cliPais').value = v('pais');
+    document.getElementById('cliTipoId').value = v('tipo_id');
+    document.getElementById('cliCanal').value = v('canal');
+    document.getElementById('cliEstado').value = c ? (c.estado||'nuevo') : 'nuevo';
+    document.getElementById('cliServicio').value = v('servicio');
+    document.getElementById('cliPresupuesto').value = v('presupuesto');
+    document.getElementById('cliPreferencia').value = v('preferencia_contacto');
+  });
 }
 
 function closeCliModal(e) {
