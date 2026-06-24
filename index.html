@@ -91,8 +91,8 @@ body.body-app::before,body.body-facturador::before{content:none}
 .sidebar-bottom a:hover{color:var(--verde)}
 
 /* MAIN */
-.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
-.topbar{background:var(--blanco);border-bottom:1px solid var(--gris-m);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.main{margin-left:var(--sidebar-w);width:calc(100% - var(--sidebar-w));min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:var(--blanco);border-bottom:1px solid var(--gris-m);padding:0 16px;height:60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .topbar-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.1rem}
 .topbar-actions{display:flex;gap:10px;align-items:center}
 .btn{font-family:'Poppins',sans-serif;font-size:.75rem;font-weight:600;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;transition:all .2s;text-decoration:none}
@@ -101,7 +101,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 .btn-hamburger{display:none}
 .btn-outline{background:transparent;border:1.5px solid var(--gris-m);color:var(--negro)}
 .btn-outline:hover{border-color:var(--negro)}
-.content{flex:1;padding:28px 32px}
+.content{flex:1;padding:28px 16px}
 
 /* KPI CARDS */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
@@ -115,7 +115,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 .kpi-card.highlight .kpi-sub{color:rgba(255,255,255,.35)}
 
 /* GRID DE CONTENIDO */
-.content-grid{display:grid;grid-template-columns:1fr 340px;gap:20px}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 
 /* PIPELINE */
 .section-card{background:var(--blanco);border-radius:12px;border:1.5px solid var(--gris-m);overflow:hidden}
