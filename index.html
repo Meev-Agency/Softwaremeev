@@ -1826,6 +1826,7 @@ async function verCliente(id) {
   const PROY_EST = {activo:'Activo',pausado:'Pausado',completado:'Completado'};
 
   const totalPagado = cDocs.filter(d => d.estado === 'aprobada').reduce((s,d) => s + (d.total||0), 0);
+  const hasActivity = cDocs.length || cProys.length;
 
   document.getElementById('cliDetailTitle').textContent = c.nombre || 'Sin nombre';
   document.getElementById('cliDetailBody').innerHTML = `
@@ -1850,6 +1851,7 @@ async function verCliente(id) {
         </div>
         ${c.notas?`<div style="background:var(--gris);border-radius:8px;padding:12px;font-size:.75rem;color:#555;margin-bottom:16px;"><span style="font-weight:700;display:block;margin-bottom:4px;font-size:.65rem;text-transform:uppercase;color:var(--gris-t);">Notas</span>${c.notas}</div>`:''}
       </div>
+      ${hasActivity ? `
       <div style="display:flex;gap:12px;flex-wrap:wrap;min-width:200px;">
         <div style="background:var(--gris);border-radius:10px;padding:14px 18px;text-align:center;flex:1;">
           <div style="font-size:1.3rem;font-weight:800;">${cDocs.length}</div>
@@ -1863,7 +1865,7 @@ async function verCliente(id) {
           <div style="font-size:1.1rem;font-weight:800;">${fmtNum(totalPagado)}</div>
           <div style="font-size:.62rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;">Total pagado</div>
         </div>
-      </div>
+      </div>` : ''}
     </div>
 
     ${cDocs.length ? `
