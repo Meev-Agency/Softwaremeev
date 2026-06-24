@@ -783,7 +783,18 @@ body.body-app::before,body.body-facturador::before{content:none}
           <select class="form-select" id="cliPresupuesto">
             <option value="">No definido</option>
             <option>Menos de $1.000.000</option><option>$1.000.000 – $2.000.000</option>
-            <option>$2.000.000 – $5.000.000</option><option>Más de $5.000.000</option>
+            <option>$2.000.000 – $5.000.000</option><option>$5.000.000 – $10.000.000</option>
+            <option>$10.000.000 – $20.000.000</option><option>Más de $20.000.000</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Preferencia de contacto</label>
+          <select class="form-select" id="cliPreferencia">
+            <option value="">Sin preferencia</option>
+            <option>WhatsApp</option><option>Email</option>
+            <option>Llamada</option><option>Instagram DM</option>
+            <option>Facebook Messenger</option>
           </select>
         </div>
       </div>
@@ -1782,6 +1793,8 @@ async function renderClientes() {
           ${c.email?`<span>✉ ${c.email}</span>`:''}
           ${c.pais||c.ciudad?`<span>📍 ${[c.pais,c.ciudad].filter(Boolean).join(', ')}</span>`:''}
           ${c.servicio?`<span>🎯 ${c.servicio}</span>`:''}
+          ${c.preferencia_contacto?`<span>💬 ${c.preferencia_contacto}</span>`:''}
+          ${c.presupuesto?`<span>💰 ${c.presupuesto}</span>`:''}
         </div>
         ${c.canal?`<span class="cli-canal">${CANAL_ICON[c.canal]||'📌'} ${c.canal}</span>`:''}
         <div class="cli-footer">
@@ -1814,8 +1827,7 @@ async function verCliente(id) {
   const spLabel = {borrador:'Borrador',enviada:'Enviada',aprobada:'Aprobada',cancelada:'Cancelada'};
   const PROY_EST = {activo:'Activo',pausado:'Pausado',completado:'Completado'};
 
-  const totalCotizado = cDocs.reduce((s,d) => s + (d.total||0), 0);
-  const totalAprobado = cDocs.filter(d => d.estado === 'aprobada').reduce((s,d) => s + (d.total||0), 0);
+  const totalPagado = cDocs.filter(d => d.estado === 'aprobada').reduce((s,d) => s + (d.total||0), 0);
 
   document.getElementById('cliDetailTitle').textContent = c.nombre || 'Sin nombre';
   document.getElementById('cliDetailBody').innerHTML = `
@@ -1835,6 +1847,8 @@ async function verCliente(id) {
           ${c.pais||c.ciudad?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Ubicación</span>${[c.ciudad,c.pais].filter(Boolean).join(', ')}</div>`:''}
           ${c.canal?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Canal</span>${CANAL_ICON[c.canal]||'📌'} ${c.canal}</div>`:''}
           ${c.servicio?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Servicio</span>${c.servicio}</div>`:''}
+          ${c.preferencia_contacto?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Prefiere contacto por</span>💬 ${c.preferencia_contacto}</div>`:''}
+          ${c.presupuesto?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Presupuesto</span>💰 ${c.presupuesto}</div>`:''}
         </div>
         ${c.notas?`<div style="background:var(--gris);border-radius:8px;padding:12px;font-size:.75rem;color:#555;margin-bottom:16px;"><span style="font-weight:700;display:block;margin-bottom:4px;font-size:.65rem;text-transform:uppercase;color:var(--gris-t);">Notas</span>${c.notas}</div>`:''}
       </div>
@@ -1848,8 +1862,8 @@ async function verCliente(id) {
           <div style="font-size:.62rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;">Proyectos</div>
         </div>
         <div style="background:var(--gris);border-radius:10px;padding:14px 18px;text-align:center;flex:1 0 100%;">
-          <div style="font-size:1.1rem;font-weight:800;">${fmtNum(totalCotizado)}</div>
-          <div style="font-size:.62rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;">Total cotizado</div>
+          <div style="font-size:1.1rem;font-weight:800;">${fmtNum(totalPagado)}</div>
+          <div style="font-size:.62rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;">Total pagado</div>
         </div>
       </div>
     </div>
@@ -1889,10 +1903,10 @@ async function abrirCliModal(id) {
   closeCliDetail();
   cliEditId = id || null;
   const clientes = await getClientes();
-  const c = id ? clientes.find(x=>x.id===id) : null;
+  const c = id ? clientes.find(x=>x.id==id) : null;
 
   document.getElementById('cliModalTitle').textContent = c ? 'Editar contacto' : 'Nuevo contacto';
-  const fieldMap = {Nombre:'nombre',Empresa:'empresa',Tel:'celular',Email:'email',Pais:'pais',Ciudad:'ciudad',Canal:'canal',Estado:'estado',Servicio:'servicio',Notas:'notas'};
+  const fieldMap = {Nombre:'nombre',Empresa:'empresa',Tel:'celular',Email:'email',Pais:'pais',Ciudad:'ciudad',TipoId:'tipo_id',Id:'numero_id',Canal:'canal',Estado:'estado',Servicio:'servicio',Presupuesto:'presupuesto',Preferencia:'preferencia_contacto',Notas:'notas'};
   Object.entries(fieldMap).forEach(([formId, dbCol]) => {
     const el = document.getElementById('cli'+formId);
     if(el) el.value = c ? (c[dbCol]||'') : (formId==='Estado'?'nuevo':'');
@@ -1920,7 +1934,11 @@ async function guardarCliente() {
     canal: document.getElementById('cliCanal').value,
     estado: document.getElementById('cliEstado').value,
     servicio: document.getElementById('cliServicio').value,
-    notas: document.getElementById('cliNotas').value.trim()
+    notas: document.getElementById('cliNotas').value.trim(),
+    presupuesto: document.getElementById('cliPresupuesto').value,
+    preferencia_contacto: document.getElementById('cliPreferencia').value,
+    tipo_id: document.getElementById('cliTipoId').value,
+    numero_id: document.getElementById('cliId').value.trim()
   };
   if(!data.nombre) { alert('El nombre es obligatorio.'); return; }
   if(cliEditId) data.id = cliEditId;
