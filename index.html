@@ -262,6 +262,10 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cli-detail{font-size:.71rem;color:#555;line-height:1.7}
 .cli-detail span{display:block}
 .cli-canal{display:inline-flex;align-items:center;gap:4px;font-size:.63rem;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--gris);color:var(--gris-t);margin-top:8px}
+.cli-am{display:inline-flex;align-items:center;gap:4px;font-size:.62rem;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.cli-am.asignado{background:#e0f2fe;color:#075985}
+.cli-am.sin{background:#fff7ed;color:#c2410c}
+.cli-filter-cartera{padding-left:6px;border-left:1px solid var(--gris-m)}
 .cli-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--gris-m)}
 .cli-fecha{font-size:.62rem;color:var(--gris-t)}
 .cli-cots{font-size:.65rem;font-weight:600;color:var(--gris-t)}
@@ -1120,6 +1124,7 @@ async function doLogin() {
   const { data: perfil } = await db.from('Usuarios').select('*').eq('email', email).single();
   if(perfil) {
     localStorage.setItem('meev_session', JSON.stringify({
+      id: perfil.id,
       email: perfil.email,
       nombre: perfil.nombre,
       cargo: perfil.cargo,
@@ -1704,6 +1709,20 @@ async function cerrarSesion() {
 let cliEditId = null;
 let cliDetailId = null;
 let cliFilterEstado = 'todos';
+let cliFilterCartera = 'todos';
+
+// Returns the current logged-in user's Usuarios.id (falls back to email lookup
+// for sessions created before the id was stored).
+async function currentUserId() {
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  if(sess.id) return sess.id;
+  if(sess.email) {
+    const usuarios = await getUsuarios();
+    const u = usuarios.find(x => (x.email||'').toLowerCase() === sess.email.toLowerCase());
+    return u ? u.id : null;
+  }
+  return null;
+}
 
 
 function initials(n) {
@@ -1718,9 +1737,16 @@ async function renderClientes() {
   document.getElementById('moduleTitle').textContent = 'Clientes';
   let clientes = await getClientes();
   const docs = await getDocs();
+  const usuarios = await getUsuarios();
+  const miId = await currentUserId();
   const query = (document.getElementById('cliSearchInput')?.value||'').toLowerCase();
 
+  const amNombre = (uid) => { const u = usuarios.find(x => x.id == uid); return u ? u.nombre : null; };
+  const amCorto = (uid) => { const n = amNombre(uid); return n ? n.split(' ')[0] : null; };
+
   if(cliFilterEstado !== 'todos') clientes = clientes.filter(c => c.estado === cliFilterEstado);
+  if(cliFilterCartera === 'mia') clientes = clientes.filter(c => c.asignado_a == miId);
+  else if(cliFilterCartera === 'sin') clientes = clientes.filter(c => !c.asignado_a);
   if(query) clientes = clientes.filter(c =>
     (c.nombre||'').toLowerCase().includes(query) ||
     (c.empresa||'').toLowerCase().includes(query) ||
@@ -1728,6 +1754,9 @@ async function renderClientes() {
   );
 
   const cotCount = (id) => docs.filter(d => d.cliente_id == id).length;
+  const amBadge = (c) => c.asignado_a
+    ? `<span class="cli-am asignado">👤 ${amCorto(c.asignado_a)}</span>`
+    : `<span class="cli-am sin">● Sin asignar</span>`;
 
   const toolbar = `
     <div class="cli-toolbar">
@@ -1737,6 +1766,10 @@ async function renderClientes() {
           <button class="cli-filter-btn ${e!=='todos'?'f-'+e:''} ${cliFilterEstado===e?'active':''}" onclick="setCliFilter('${e}')">
             ${e==='todos'?'Todos':EST_LABEL[e]}
           </button>`).join('')}
+      </div>
+      <div class="cli-filter cli-filter-cartera">
+        ${[['todos','Todos'],['mia','Mi cartera'],['sin','Sin asignar']].map(([k,lbl]) => `
+          <button class="cli-filter-btn ${cliFilterCartera===k?'active':''}" onclick="setCliCartera('${k}')">${lbl}</button>`).join('')}
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <div class="view-toggle">
@@ -1757,7 +1790,7 @@ async function renderClientes() {
     bodyContent = `<div class="section-card" style="overflow:hidden">
       <table class="cli-list-table">
         <thead><tr>
-          <th>Contacto</th><th>Canal</th><th>Estado</th><th>Servicio</th><th>Cotizaciones</th><th>Acciones</th>
+          <th>Contacto</th><th>Canal</th><th>Estado</th><th>Responsable</th><th>Servicio</th><th>Cotizaciones</th><th>Acciones</th>
         </tr></thead>
         <tbody>${clientes.map(c => `
           <tr onclick="verCliente(${c.id})">
@@ -1768,10 +1801,11 @@ async function renderClientes() {
             </td>
             <td>${c.canal ? (CANAL_ICON[c.canal]||'📌')+' '+c.canal : '—'}</td>
             <td><span class="cli-status ${EST_CLASS[c.estado]||'cs-nuevo'}">${EST_LABEL[c.estado]||'Nuevo'}</span></td>
+            <td>${amBadge(c)}</td>
             <td style="color:var(--gris-t)">${c.servicio||'—'}</td>
             <td style="text-align:center;font-weight:700">${cotCount(c.id)||'—'}</td>
             <td onclick="event.stopPropagation()">
-              <button class="tbl-btn green" onclick="crearCotDesdeCliente('${c.id}')">+ Cotizar</button>
+              ${!c.asignado_a?`<button class="tbl-btn green" onclick="asignarme('${c.id}')">+ Asignarme</button>`:`<button class="tbl-btn green" onclick="crearCotDesdeCliente('${c.id}')">+ Cotizar</button>`}
             </td>
           </tr>`).join('')}
         </tbody>
@@ -1794,10 +1828,13 @@ async function renderClientes() {
           ${c.preferencia_contacto?`<span>💬 ${c.preferencia_contacto}</span>`:''}
           ${c.presupuesto?`<span>💰 ${c.presupuesto}</span>`:''}
         </div>
-        ${c.canal?`<span class="cli-canal">${CANAL_ICON[c.canal]||'📌'} ${c.canal}</span>`:''}
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+          ${c.canal?`<span class="cli-canal">${CANAL_ICON[c.canal]||'📌'} ${c.canal}</span>`:''}
+          ${amBadge(c)}
+        </div>
         <div class="cli-footer">
           <span class="cli-fecha">${cotCount(c.id)} cot.</span>
-          <button class="tbl-btn green" onclick="event.stopPropagation();crearCotDesdeCliente('${c.id}')" style="font-size:.65rem;padding:4px 10px;">+ Cotizar</button>
+          ${!c.asignado_a?`<button class="tbl-btn green" onclick="event.stopPropagation();asignarme('${c.id}')" style="font-size:.65rem;padding:4px 10px;">+ Asignarme</button>`:`<button class="tbl-btn green" onclick="event.stopPropagation();crearCotDesdeCliente('${c.id}')" style="font-size:.65rem;padding:4px 10px;">+ Cotizar</button>`}
         </div>
       </div>`).join('')}</div>`;
   }
@@ -1811,11 +1848,26 @@ function setCliFilter(estado) {
   renderClientes();
 }
 
+function setCliCartera(k) {
+  cliFilterCartera = k;
+  renderClientes();
+}
+
+async function asignarme(id) {
+  const miId = await currentUserId();
+  if(!miId) { alert('No se pudo identificar tu usuario. Vuelve a iniciar sesión.'); return; }
+  await db.from('clientes').update({ asignado_a: miId }).eq('id', id);
+  invalidateCache('clientes');
+  renderClientes();
+}
+
 async function verCliente(id) {
   cliDetailId = id;
   const clientes = await getClientes();
   const c = clientes.find(x => x.id === id);
   if(!c) return;
+  const usuarios = await getUsuarios();
+  const amDetalle = c.asignado_a ? (usuarios.find(u => u.id == c.asignado_a)?.nombre || 'Asignado') : null;
   const docs = await getDocs();
   const proyectos = await getProyectos();
 
@@ -1837,7 +1889,12 @@ async function verCliente(id) {
           <div>
             <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1.2rem;">${c.nombre||'Sin nombre'}</div>
             <div style="font-size:.8rem;color:var(--gris-t);">${c.empresa||''}</div>
-            <span class="cli-status ${EST_CLASS[c.estado]||'cs-nuevo'}" style="margin-top:4px;display:inline-block;">${EST_LABEL[c.estado]||'Nuevo'}</span>
+            <div style="display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap;">
+              <span class="cli-status ${EST_CLASS[c.estado]||'cs-nuevo'}" style="display:inline-block;">${EST_LABEL[c.estado]||'Nuevo'}</span>
+              ${amDetalle
+                ? `<span class="cli-am asignado">👤 Atendido por ${amDetalle}</span>`
+                : `<span class="cli-am sin">● Sin asignar</span><button class="tbl-btn green" style="font-size:.62rem;padding:3px 9px;" onclick="closeCliDetail();asignarme('${c.id}')">+ Asignarme</button>`}
+            </div>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
