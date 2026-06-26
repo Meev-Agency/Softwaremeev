@@ -83,7 +83,10 @@ body.body-app::before,body.body-facturador::before{content:none}
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;transition:all .2s;border-left:3px solid transparent;text-decoration:none}
 .nav-item:hover{background:rgba(255,255,255,.05);color:var(--blanco);transition:all .15s ease}
 .nav-item.active{background:rgba(204,251,85,.08);color:var(--verde);border-left-color:var(--verde)}
-.nav-item .icon{font-size:1rem;width:20px;text-align:center}
+.nav-item .icon{font-size:1rem;width:20px;text-align:center;display:flex;align-items:center;justify-content:center}
+.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;flex-shrink:0}
+.nav-item .icon .ic{width:18px;height:18px}
+.ic-brand{width:1.05em;height:1.05em}
 .nav-item .badge{margin-left:auto;background:var(--verde);color:var(--negro);font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:10px}
 .nav-item.soon{opacity:.4;cursor:default;pointer-events:none}
 .nav-item.soon::after{content:'Próximo';margin-left:auto;font-size:.58rem;color:rgba(255,255,255,.3);font-weight:400}
@@ -266,6 +269,26 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cli-am.asignado{background:#e0f2fe;color:#075985}
 .cli-am.sin{background:#fff7ed;color:#c2410c}
 .cli-filter-cartera{padding-left:6px;border-left:1px solid var(--gris-m)}
+.cfg-wrap{max-width:760px}
+.cfg-intro{font-size:.8rem;color:var(--gris-t);margin-bottom:20px;line-height:1.5}
+.cfg-card{margin-bottom:18px}
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;padding:18px}
+.cfg-field{display:flex;flex-direction:column;gap:5px}
+.cfg-label{font-size:.68rem;font-weight:700;color:var(--negro)}
+.cfg-input-wrap{position:relative;display:flex;align-items:center}
+.cfg-input{font-family:'Poppins',sans-serif;font-size:.9rem;font-weight:600;padding:9px 30px 9px 12px;border:1.5px solid var(--gris-m);border-radius:8px;outline:none;width:100%;color:var(--negro);background:#fff;transition:border-color .2s}
+.cfg-input:focus{border-color:var(--negro)}
+.cfg-suffix{position:absolute;right:12px;font-size:.8rem;color:var(--gris-t);font-weight:600;pointer-events:none}
+.cfg-prefix{position:absolute;left:12px;font-size:.85rem;color:var(--gris-t);font-weight:600;pointer-events:none}
+.cfg-input-money{padding:9px 12px 9px 26px}
+.cfg-com-wrap{display:flex;flex-direction:column;gap:18px;padding:18px}
+.cfg-com-group{display:flex;flex-direction:column;gap:8px}
+.cfg-com-title{font-size:.75rem;font-weight:800;color:var(--negro);font-family:'Nunito',sans-serif}
+.cfg-com-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:380px}
+.cfg-help{font-size:.6rem;color:var(--gris-t);line-height:1.3}
+.cfg-actions{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:8px}
+.cfg-msg{font-size:.78rem;font-weight:600}
+@media(max-width:768px){.cfg-grid{grid-template-columns:1fr}}
 .cli-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--gris-m)}
 .cli-fecha{font-size:.62rem;color:var(--gris-t)}
 .cli-cots{font-size:.65rem;font-weight:600;color:var(--gris-t)}
@@ -658,15 +681,17 @@ body.body-app::before,body.body-facturador::before{content:none}
   <nav class="nav">
     <div class="nav-section" data-section="flujo">Flujo de trabajo</div>
     <a class="nav-item" data-modulo="clientes" onclick="showModule('clientes')">
-      <span class="icon">🤝</span> Clientes
+      <span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18a4 4 0 0 0-8 0"/><circle cx="12" cy="9" r="3"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg></span> Clientes
     </a>
     <a class="nav-item" data-modulo="finanzas" onclick="showModule('finanzas')">
-      <span class="icon">💰</span> Finanzas & Ventas
+      <span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg></span> Finanzas & Ventas
     </a>
-    <a class="nav-item" data-modulo="operaciones" onclick="showModule('operaciones')"><span class="icon">⚙️</span> Operaciones</a>
-    <a class="nav-item" data-modulo="equipo" onclick="showModule('equipo')"><span class="icon">👥</span> Equipo</a>
+    <a class="nav-item" data-modulo="operaciones" onclick="showModule('operaciones')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/></svg></span> Operaciones</a>
+    <a class="nav-item" data-modulo="equipo" onclick="showModule('equipo')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Equipo</a>
     <div class="nav-section" data-section="analisis">Análisis</div>
-    <a class="nav-item" data-modulo="reportes" onclick="showModule('reportes')"><span class="icon">📊</span> Reportes</a>
+    <a class="nav-item" data-modulo="reportes" onclick="showModule('reportes')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><rect x="6" y="11" width="3" height="7"/><rect x="11" y="6" width="3" height="12"/><rect x="16" y="14" width="3" height="4"/></svg></span> Reportes</a>
+    <div class="nav-section" data-section="admin">Administración</div>
+    <a class="nav-item" data-modulo="configuracion" onclick="showModule('configuracion')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Configuración</a>
   </nav>
   <div class="sidebar-bottom">
     <div style="margin-bottom:10px;">
@@ -674,7 +699,7 @@ body.body-app::before,body.body-facturador::before{content:none}
       <div id="sessionUser" style="font-size:.75rem;font-weight:700;color:var(--blanco);"></div>
       <div id="sessionRole" style="font-size:.65rem;color:rgba(255,255,255,.35);margin-top:1px;"></div>
     </div>
-    <button onclick="abrirCambiarPass()" style="display:block;width:100%;text-align:left;font-size:.72rem;color:rgba(255,255,255,.4);background:none;border:none;cursor:pointer;padding:4px 0;transition:color .2s;font-family:'Poppins',sans-serif;" onmouseover="this.style.color='var(--verde)'" onmouseout="this.style.color='rgba(255,255,255,.4)'">🔑 Cambiar contraseña</button>
+    <button onclick="abrirCambiarPass()" style="display:block;width:100%;text-align:left;font-size:.72rem;color:rgba(255,255,255,.4);background:none;border:none;cursor:pointer;padding:4px 0;transition:color .2s;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:7px;" onmouseover="this.style.color='var(--verde)'" onmouseout="this.style.color='rgba(255,255,255,.4)'"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg> Cambiar contraseña</button>
     <button onclick="cerrarSesion()" style="display:block;width:100%;text-align:left;font-size:.72rem;color:rgba(255,255,255,.4);background:none;border:none;cursor:pointer;padding:4px 0;transition:color .2s;font-family:'Poppins',sans-serif;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='rgba(255,255,255,.4)'">→ Cerrar sesión</button>
   </div>
 </aside>
@@ -703,7 +728,7 @@ body.body-app::before,body.body-facturador::before{content:none}
     <div class="cli-modal-header">
       <span class="cli-modal-title" id="cliDetailTitle">Cliente</span>
       <div style="display:flex;gap:8px;align-items:center;">
-        <button class="btn" style="background:rgba(255,255,255,.1);color:var(--verde);font-size:.7rem;padding:6px 14px;" onclick="closeCliDetail();abrirCliModal(cliDetailId)">✏ Editar</button>
+        <button class="btn" style="background:rgba(255,255,255,.1);color:var(--verde);font-size:.7rem;padding:6px 14px;" onclick="closeCliDetail();abrirCliModal(cliDetailId)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.14em;margin-right:4px;"><path d="M17 3a2.83 2.83 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>Editar</button>
         <button class="btn" style="background:rgba(255,255,255,.1);color:var(--verde);font-size:.7rem;padding:6px 14px;" onclick="closeCliDetail();crearCotDesdeCliente(cliDetailId)">+ Cotizar</button>
         <button class="cli-modal-close" onclick="closeCliDetail()">✕</button>
       </div>
@@ -808,7 +833,7 @@ body.body-app::before,body.body-facturador::before{content:none}
       <div id="cliHistorial" style="display:none"></div>
     </div>
     <div class="cli-modal-footer" style="justify-content:space-between">
-      <button id="btnEliminarCliente" class="btn" style="display:none;background:#fff0f0;color:#dc2626;border:1.5px solid #fca5a5" onclick="eliminarCliente()">🗑 Eliminar</button>
+      <button id="btnEliminarCliente" class="btn" style="display:none;background:#fff0f0;color:#dc2626;border:1.5px solid #fca5a5" onclick="eliminarCliente()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.14em;margin-right:4px;"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Eliminar</button>
       <div style="display:flex;gap:8px">
         <button class="btn btn-outline" onclick="closeCliModal()">Cancelar</button>
         <button class="btn btn-primary" onclick="guardarCliente()">Guardar contacto</button>
@@ -860,7 +885,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 <button class="btn btn-outline" onclick="nuevoDoc()">+ Nuevo</button>
     <button class="btn btn-outline" onclick="guardarDocActual()">Guardar borrador</button>
     <button class="btn btn-primary" onclick="guardarYVolver()" style="background:var(--verde);color:var(--negro);">✓ Guardar y enviar a Finanzas</button>
-    <button class="btn btn-outline" onclick="window.print()">🖨 PDF</button>
+    <button class="btn btn-outline" onclick="window.print()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.14em;margin-right:5px;"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>PDF</button>
   </div>
 </div>
 
@@ -872,7 +897,7 @@ body.body-app::before,body.body-facturador::before{content:none}
       <div class="catalog-sub">Clic en + para agregar · Ver entregables con ▾</div>
     </div>
     <div class="catalog-search">
-      <input type="text" id="catalogSearch" placeholder="🔍 Buscar servicio..." oninput="filterCatalog(this.value)">
+      <input type="text" id="catalogSearch" placeholder="Buscar servicio..." oninput="filterCatalog(this.value)">
     </div>
     <div class="catalog-list" id="catalogList"></div>
   </div>
@@ -1144,11 +1169,61 @@ function fmtNum(n) {
   return '$' + Number(n||0).toLocaleString('es-CO', {minimumFractionDigits:0, maximumFractionDigits:0});
 }
 
-let _cache = { docs: null, clientes: null, proyectos: null, usuarios: null };
+/* ═══════════ ICONOS SVG (estilo trazo, color heredado) ═══════════ */
+function _ico(inner, fill) {
+  return `<svg class="ic" viewBox="0 0 24 24" fill="${fill?'currentColor':'none'}" stroke="${fill?'none':'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+}
+const ICON = {
+  clientes:   _ico('<path d="M16 18a4 4 0 0 0-8 0"/><circle cx="12" cy="9" r="3"/><rect x="3" y="3" width="18" height="18" rx="3"/>'),
+  finanzas:   _ico('<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/>'),
+  operaciones:_ico('<rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/>'),
+  equipo:     _ico('<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'),
+  reportes:   _ico('<line x1="3" y1="21" x2="21" y2="21"/><rect x="6" y="11" width="3" height="7"/><rect x="11" y="6" width="3" height="12"/><rect x="16" y="14" width="3" height="4"/>'),
+  configuracion:_ico('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>'),
+  pencil:     _ico('<path d="M17 3a2.83 2.83 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>'),
+  trash:      _ico('<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'),
+  printer:    _ico('<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>'),
+  key:        _ico('<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>'),
+  phone:      _ico('<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>'),
+  mail:       _ico('<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/>'),
+  pin:        _ico('<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>'),
+  target:     _ico('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>'),
+  flag:       _ico('<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>'),
+  calendar:   _ico('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'),
+  user:       _ico('<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'),
+  message:    _ico('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'),
+  money:      _ico('<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'),
+  lock:       _ico('<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'),
+  check:      _ico('<polyline points="20 6 9 17 4 12"/>'),
+  chart:      _ico('<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>'),
+  play:       _ico('<polygon points="6 3 20 12 6 21 6 3"/>', true),
+  pause:      _ico('<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>', true),
+  clipboard:  _ico('<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>'),
+  refresh:    _ico('<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>'),
+  square:     _ico('<rect x="4" y="4" width="16" height="16" rx="2"/>'),
+  globe:      _ico('<circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/>'),
+  instagram:  _ico('<rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>'),
+  facebook:   _ico('<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>', true),
+  linkedin:   _ico('<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V9h4v1.4A6 6 0 0 1 16 8z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>'),
+  tiktok:     _ico('<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>'),
+  whatsapp:   _ico('<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/>'),
+  search:     _ico('<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>'),
+  share:      _ico('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/>'),
+  tag:        _ico('<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><line x1="7" y1="7" x2="7.01" y2="7"/>')
+};
+const CANAL_SVG = {
+  Instagram: ICON.instagram, Facebook: ICON.facebook, 'Facebook Ads': ICON.facebook,
+  'Google Ads': ICON.search, 'Sitio web': ICON.globe, WhatsApp: ICON.whatsapp,
+  Referido: ICON.share, LinkedIn: ICON.linkedin, TikTok: ICON.tiktok,
+  Evento: ICON.calendar, Otro: ICON.tag
+};
+function canalIcon(name) { return CANAL_SVG[name] || ICON.tag; }
+
+let _cache = { docs: null, clientes: null, proyectos: null, usuarios: null, config: null };
 
 function invalidateCache(key) {
   if(key) _cache[key] = null;
-  else _cache = { docs: null, clientes: null, proyectos: null, usuarios: null };
+  else _cache = { docs: null, clientes: null, proyectos: null, usuarios: null, config: null };
 }
 
 async function getDocs() {
@@ -1208,10 +1283,8 @@ function aplicarPermisos() {
     const sec = el.getAttribute('data-section');
     if(rol === 'admin') {
       el.style.display = '';
-    } else if(rol === 'account_manager') {
-      el.style.display = sec === 'analisis' ? 'none' : '';
     } else {
-      el.style.display = sec === 'analisis' ? 'none' : '';
+      el.style.display = (sec === 'analisis' || sec === 'admin') ? 'none' : '';
     }
   });
   const btnCot = document.getElementById('btnNuevaCot');
@@ -1241,13 +1314,14 @@ function showModule(mod) {
   if(btn) btn.style.display = (mod === 'clientes' || mod === 'operaciones' || mod === 'equipo' || mod === 'reportes') ? 'none' : '';
   document.getElementById('moduleTitle').textContent = {
     finanzas: 'Finanzas & Ventas', clientes: 'Clientes', operaciones: 'Operaciones',
-    equipo: 'Equipo', reportes: 'Reportes'
+    equipo: 'Equipo', reportes: 'Reportes', configuracion: 'Configuración'
   }[mod] || mod;
   if(mod === 'finanzas') renderFinanzas();
   else if(mod === 'clientes') renderClientes();
   else if(mod === 'operaciones') renderOperaciones();
   else if(mod === 'equipo') renderEquipo();
   else if(mod === 'reportes') renderReportes();
+  else if(mod === 'configuracion') renderConfiguracion();
 }
 
 async function renderFinanzas() {
@@ -1461,7 +1535,7 @@ async function renderFinanzas() {
               <button class="btn-pagar" onclick="marcarHito('${p.cotNum}','${p.hito}')">✓ Simular pago</button>
             </div>
           </div>`).join('')
-          : '<div class="empty-state"><div class="e-icon">✅</div><p>Sin cobros pendientes</p></div>'
+          : '<div class="empty-state"><div class="e-icon"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><p>Sin cobros pendientes</p></div>'
         }
       </div>
     </div>`;
@@ -1544,9 +1618,9 @@ async function verDocumento(num) {
         </div>
       </div>
       <div class="dp-company">
-        <span>📍 Colombia</span>
-        <span>✉ hola@meevagency.com</span>
-        <span>🌐 www.meevagency.com</span>
+        <span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.14em;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Colombia</span>
+        <span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.14em;margin-right:3px;"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>hola@meevagency.com</span>
+        <span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.14em;margin-right:3px;"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg>www.meevagency.com</span>
       </div>
       <div class="dp-body">
         <div class="dp-parties">
@@ -1729,7 +1803,6 @@ function initials(n) {
   return (n||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
 }
 
-const CANAL_ICON = {Instagram:'📸',Facebook:'📘','Facebook Ads':'📘','Google Ads':'🔍','Sitio web':'🌐',WhatsApp:'💬',Referido:'🤝',LinkedIn:'💼',TikTok:'🎵',Evento:'📅',Otro:'📌'};
 const EST_LABEL = {nuevo:'Nuevo',seguimiento:'En seguimiento',cliente:'Cliente',inactivo:'Inactivo'};
 const EST_CLASS = {nuevo:'cs-nuevo',seguimiento:'cs-seguimiento',cliente:'cs-cliente',inactivo:'cs-inactivo'};
 
@@ -1755,7 +1828,7 @@ async function renderClientes() {
 
   const cotCount = (id) => docs.filter(d => d.cliente_id == id).length;
   const amBadge = (c) => c.asignado_a
-    ? `<span class="cli-am asignado">👤 ${amCorto(c.asignado_a)}</span>`
+    ? `<span class="cli-am asignado">${ICON.user} ${amCorto(c.asignado_a)}</span>`
     : `<span class="cli-am sin">● Sin asignar</span>`;
 
   const toolbar = `
@@ -1783,7 +1856,7 @@ async function renderClientes() {
   let bodyContent = '';
   if(!clientes.length) {
     bodyContent = `<div style="text-align:center;padding:60px;color:var(--gris-t)">
-      <div style="font-size:2.5rem;margin-bottom:12px">🤝</div>
+      <div style="margin-bottom:12px;display:flex;justify-content:center;"><svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18a4 4 0 0 0-8 0"/><circle cx="12" cy="9" r="3"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg></div>
       <p style="font-size:.85rem">No hay contactos aún.<br>Agrega tu primer lead con el botón <strong>+ Nuevo contacto</strong>.</p>
     </div>`;
   } else if(cliViewMode === 'lista') {
@@ -1799,7 +1872,7 @@ async function renderClientes() {
               <div class="cli-list-empresa">${c.empresa||'—'}</div>
               <div class="cli-list-empresa">${c.email||''}</div>
             </td>
-            <td>${c.canal ? (CANAL_ICON[c.canal]||'📌')+' '+c.canal : '—'}</td>
+            <td>${c.canal ? canalIcon(c.canal)+' '+c.canal : '—'}</td>
             <td><span class="cli-status ${EST_CLASS[c.estado]||'cs-nuevo'}">${EST_LABEL[c.estado]||'Nuevo'}</span></td>
             <td>${amBadge(c)}</td>
             <td style="color:var(--gris-t)">${c.servicio||'—'}</td>
@@ -1821,19 +1894,16 @@ async function renderClientes() {
         <div class="cli-name">${c.nombre||'Sin nombre'}</div>
         <div class="cli-empresa">${c.empresa||'—'}</div>
         <div class="cli-detail">
-          ${c.celular?`<span>📞 ${c.celular}</span>`:''}
-          ${c.email?`<span>✉ ${c.email}</span>`:''}
-          ${c.pais||c.ciudad?`<span>📍 ${[c.pais,c.ciudad].filter(Boolean).join(', ')}</span>`:''}
-          ${c.servicio?`<span>🎯 ${c.servicio}</span>`:''}
-          ${c.preferencia_contacto?`<span>💬 ${c.preferencia_contacto}</span>`:''}
-          ${c.presupuesto?`<span>💰 ${c.presupuesto}</span>`:''}
+          ${c.celular?`<span>${ICON.phone} ${c.celular}</span>`:''}
+          ${c.email?`<span>${ICON.mail} ${c.email}</span>`:''}
+          ${c.pais||c.ciudad?`<span>${ICON.pin} ${[c.pais,c.ciudad].filter(Boolean).join(', ')}</span>`:''}
+          ${c.servicio?`<span>${ICON.target} ${c.servicio}</span>`:''}
+          ${c.preferencia_contacto?`<span>${ICON.message} ${c.preferencia_contacto}</span>`:''}
+          ${c.presupuesto?`<span>${ICON.money} ${c.presupuesto}</span>`:''}
         </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-          ${c.canal?`<span class="cli-canal">${CANAL_ICON[c.canal]||'📌'} ${c.canal}</span>`:''}
-          ${amBadge(c)}
-        </div>
+        ${c.canal?`<span class="cli-canal">${canalIcon(c.canal)} ${c.canal}</span>`:''}
         <div class="cli-footer">
-          <span class="cli-fecha">${cotCount(c.id)} cot.</span>
+          ${amBadge(c)}
           ${!c.asignado_a?`<button class="tbl-btn green" onclick="event.stopPropagation();asignarme('${c.id}')" style="font-size:.65rem;padding:4px 10px;">+ Asignarme</button>`:`<button class="tbl-btn green" onclick="event.stopPropagation();crearCotDesdeCliente('${c.id}')" style="font-size:.65rem;padding:4px 10px;">+ Cotizar</button>`}
         </div>
       </div>`).join('')}</div>`;
@@ -1856,7 +1926,12 @@ function setCliCartera(k) {
 async function asignarme(id) {
   const miId = await currentUserId();
   if(!miId) { alert('No se pudo identificar tu usuario. Vuelve a iniciar sesión.'); return; }
-  await db.from('clientes').update({ asignado_a: miId }).eq('id', id);
+  const clientes = await getClientes();
+  const c = clientes.find(x => x.id == id);
+  const cambios = { asignado_a: miId };
+  // Taking a brand-new lead is the first step of follow-up, so move it forward.
+  if(c && c.estado === 'nuevo') cambios.estado = 'seguimiento';
+  await db.from('clientes').update(cambios).eq('id', id);
   invalidateCache('clientes');
   renderClientes();
 }
@@ -1878,7 +1953,6 @@ async function verCliente(id) {
   const PROY_EST = {activo:'Activo',pausado:'Pausado',completado:'Completado'};
 
   const totalPagado = cDocs.filter(d => d.estado === 'aprobada').reduce((s,d) => s + (d.total||0), 0);
-  const hasActivity = cDocs.length || cProys.length;
 
   document.getElementById('cliDetailTitle').textContent = c.nombre || 'Sin nombre';
   document.getElementById('cliDetailBody').innerHTML = `
@@ -1892,7 +1966,7 @@ async function verCliente(id) {
             <div style="display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap;">
               <span class="cli-status ${EST_CLASS[c.estado]||'cs-nuevo'}" style="display:inline-block;">${EST_LABEL[c.estado]||'Nuevo'}</span>
               ${amDetalle
-                ? `<span class="cli-am asignado">👤 Atendido por ${amDetalle}</span>`
+                ? `<span class="cli-am asignado">${ICON.user} Atendido por ${amDetalle}</span>`
                 : `<span class="cli-am sin">● Sin asignar</span><button class="tbl-btn green" style="font-size:.62rem;padding:3px 9px;" onclick="closeCliDetail();asignarme('${c.id}')">+ Asignarme</button>`}
             </div>
           </div>
@@ -1901,33 +1975,21 @@ async function verCliente(id) {
           ${c.email?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Email</span>${c.email}</div>`:''}
           ${c.celular?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Teléfono</span>${c.celular}</div>`:''}
           ${c.pais||c.ciudad?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Ubicación</span>${[c.ciudad,c.pais].filter(Boolean).join(', ')}</div>`:''}
-          ${c.canal?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Canal</span>${CANAL_ICON[c.canal]||'📌'} ${c.canal}</div>`:''}
+          ${c.canal?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Canal</span>${canalIcon(c.canal)} ${c.canal}</div>`:''}
           ${c.servicio?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Servicio</span>${c.servicio}</div>`:''}
-          ${c.preferencia_contacto?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Prefiere contacto por</span>💬 ${c.preferencia_contacto}</div>`:''}
-          ${c.presupuesto?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Presupuesto</span>💰 ${c.presupuesto}</div>`:''}
+          ${c.preferencia_contacto?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Prefiere contacto por</span>${ICON.message} ${c.preferencia_contacto}</div>`:''}
+          ${c.presupuesto?`<div style="font-size:.78rem;"><span style="color:var(--gris-t);font-weight:600;display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Presupuesto</span>${ICON.money} ${c.presupuesto}</div>`:''}
         </div>
         ${c.notas?`<div style="background:var(--gris);border-radius:8px;padding:12px;font-size:.75rem;color:#555;margin-bottom:16px;"><span style="font-weight:700;display:block;margin-bottom:4px;font-size:.65rem;text-transform:uppercase;color:var(--gris-t);">Notas</span>${c.notas}</div>`:''}
       </div>
-      ${hasActivity ? `
-      <div style="display:flex;gap:12px;flex-wrap:wrap;min-width:200px;">
-        <div style="background:var(--gris);border-radius:10px;padding:14px 18px;text-align:center;flex:1;">
-          <div style="font-size:1.3rem;font-weight:800;">${cDocs.length}</div>
-          <div style="font-size:.62rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;">Cotizaciones</div>
-        </div>
-        <div style="background:var(--gris);border-radius:10px;padding:14px 18px;text-align:center;flex:1;">
-          <div style="font-size:1.3rem;font-weight:800;">${cProys.length}</div>
-          <div style="font-size:.62rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;">Proyectos</div>
-        </div>
-        <div style="background:var(--gris);border-radius:10px;padding:14px 18px;text-align:center;flex:1 0 100%;">
-          <div style="font-size:1.1rem;font-weight:800;">${fmtNum(totalPagado)}</div>
-          <div style="font-size:.62rem;color:var(--gris-t);font-weight:600;text-transform:uppercase;">Total pagado</div>
-        </div>
-      </div>` : ''}
     </div>
 
     ${cDocs.length ? `
     <div style="margin-top:20px;border-top:1px solid var(--gris-m);padding-top:16px;">
-      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;margin-bottom:10px;">Cotizaciones</div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;">Cotizaciones <span style="color:var(--gris-t);font-weight:600;">(${cDocs.length})</span></span>
+        <span style="font-size:.72rem;color:var(--gris-t);font-weight:600;">Pagado: <strong style="color:var(--negro);">${fmtNum(totalPagado)}</strong></span>
+      </div>
       ${cDocs.map(d => `
         <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--gris);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#e8e8e4'" onmouseout="this.style.background='var(--gris)'" onclick="closeCliDetail();verDocumento('${d.num}')">
           <div style="font-size:.75rem;font-weight:700;color:var(--negro);min-width:70px;">${d.num}</div>
@@ -1939,12 +2001,12 @@ async function verCliente(id) {
 
     ${cProys.length ? `
     <div style="margin-top:16px;border-top:1px solid var(--gris-m);padding-top:16px;">
-      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;margin-bottom:10px;">Proyectos</div>
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;margin-bottom:10px;">Proyectos <span style="color:var(--gris-t);font-weight:600;">(${cProys.length})</span></div>
       ${cProys.map(p => `
         <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--gris);border-radius:8px;margin-bottom:6px;">
           <div style="font-size:.75rem;font-weight:700;color:var(--negro);flex:1;">${p.nombre}</div>
           <span class="cli-status ${p.estado==='activo'?'cs-cliente':p.estado==='pausado'?'cs-contactado':'cs-cotizado'}">${PROY_EST[p.estado]||p.estado}</span>
-          ${p.fecha_entrega?`<div style="font-size:.65rem;color:var(--gris-t);">🏁 ${new Date(p.fecha_entrega).toLocaleDateString('es-CO')}</div>`:''}
+          ${p.fecha_entrega?`<div style="font-size:.65rem;color:var(--gris-t);">${ICON.flag} ${new Date(p.fecha_entrega).toLocaleDateString('es-CO')}</div>`:''}
         </div>`).join('')}
     </div>` : ''}`;
 
@@ -2033,6 +2095,99 @@ async function getUsuarios() {
   return _cache.usuarios;
 }
 
+const CONFIG_DEFAULT = { iva:19, retefuente:1.5, reteiva:15, com_nacional:2.65, com_nacional_fijo:0, com_internacional:1.0, com_internacional_fijo:0 };
+
+async function getConfig() {
+  if(_cache.config) return _cache.config;
+  const { data, error } = await db.from('configuracion').select('*').eq('id', 1).single();
+  _cache.config = (error || !data) ? { ...CONFIG_DEFAULT } : data;
+  return _cache.config;
+}
+
+async function renderConfiguracion() {
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  const content = document.getElementById('mainContent');
+  if(sess.rol !== 'admin') {
+    content.innerHTML = `<div style="text-align:center;padding:60px;color:var(--gris-t)">
+      <div style="margin-bottom:12px;display:flex;justify-content:center;"><svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <p style="font-size:.85rem">No tienes acceso a esta sección.</p></div>`;
+    return;
+  }
+  const cfg = await getConfig();
+  const fld = (id,label,val,help) => `
+    <div class="cfg-field">
+      <label class="cfg-label">${label}</label>
+      <div class="cfg-input-wrap">
+        <input type="number" step="0.01" min="0" id="cfg_${id}" value="${val}" class="cfg-input">
+        <span class="cfg-suffix">%</span>
+      </div>
+      ${help?`<span class="cfg-help">${help}</span>`:''}
+    </div>`;
+  const fldMoney = (id,label,val) => `
+    <div class="cfg-field">
+      <label class="cfg-label">${label}</label>
+      <div class="cfg-input-wrap">
+        <span class="cfg-prefix">$</span>
+        <input type="number" step="1" min="0" id="cfg_${id}" value="${val}" class="cfg-input cfg-input-money">
+      </div>
+    </div>`;
+  const comGroup = (titulo, pctId, pctVal, fijoId, fijoVal, help) => `
+    <div class="cfg-com-group">
+      <div class="cfg-com-title">${titulo}</div>
+      <div class="cfg-com-row">
+        ${fld(pctId,'Porcentaje', pctVal)}
+        ${fldMoney(fijoId,'Valor fijo', fijoVal)}
+      </div>
+      ${help?`<span class="cfg-help">${help}</span>`:''}
+    </div>`;
+
+  content.innerHTML = `
+    <div class="cfg-wrap">
+      <p class="cfg-intro">Estas tasas se usan para calcular automáticamente el desglose contable de cada cotización según el país del cliente. Solo tú (admin) puedes modificarlas.</p>
+
+      <div class="section-card cfg-card">
+        <div class="section-header"><span class="section-title">Impuestos y retenciones</span></div>
+        <div class="cfg-grid">
+          ${fld('iva','IVA', cfg.iva, 'Solo aplica a clientes nacionales. Internacionales = exento.')}
+          ${fld('retefuente','Retención en la fuente', cfg.retefuente, 'Sobre la base, en ventas con tarjeta.')}
+          ${fld('reteiva','ReteIVA', cfg.reteiva, 'Sobre el valor del IVA.')}
+        </div>
+      </div>
+
+      <div class="section-card cfg-card">
+        <div class="section-header"><span class="section-title">Comisiones por procesador</span></div>
+        <div class="cfg-com-wrap">
+          ${comGroup('Procesador nacional', 'com_nacional', cfg.com_nacional, 'com_nacional_fijo', cfg.com_nacional_fijo, 'Para clientes en Colombia. Ej: 2,65% + $900 por transacción.')}
+          ${comGroup('Procesador internacional', 'com_internacional', cfg.com_internacional, 'com_internacional_fijo', cfg.com_internacional_fijo, 'Para clientes del exterior.')}
+        </div>
+      </div>
+
+      <div class="cfg-actions">
+        <span id="cfgMsg" class="cfg-msg"></span>
+        <button class="btn btn-primary" onclick="guardarConfig()">Guardar cambios</button>
+      </div>
+    </div>`;
+}
+
+async function guardarConfig() {
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  if(sess.rol !== 'admin') return;
+  const num = (id) => parseFloat(document.getElementById('cfg_'+id).value) || 0;
+  const data = {
+    iva: num('iva'), retefuente: num('retefuente'), reteiva: num('reteiva'),
+    com_nacional: num('com_nacional'), com_nacional_fijo: num('com_nacional_fijo'),
+    com_internacional: num('com_internacional'), com_internacional_fijo: num('com_internacional_fijo'),
+    updated_at: new Date().toISOString()
+  };
+  const { error } = await db.from('configuracion').update(data).eq('id', 1);
+  const msg = document.getElementById('cfgMsg');
+  if(error) { msg.textContent = '✕ Error al guardar'; msg.style.color = '#dc2626'; return; }
+  invalidateCache('config');
+  msg.textContent = '✓ Cambios guardados';
+  msg.style.color = '#16a34a';
+  setTimeout(() => { if(msg) msg.textContent = ''; }, 2500);
+}
+
 async function renderOperaciones() {
   const proyectos = await getProyectos();
   const clientes = await getClientes();
@@ -2049,14 +2204,14 @@ async function renderOperaciones() {
   content.innerHTML = `
     <div class="cli-toolbar">
       <div style="font-size:.85rem;font-weight:600;color:var(--negro);">
-        <span style="margin-right:16px;">🟢 ${activos.length} activos</span>
-        <span style="margin-right:16px;">⏸ ${pausados.length} pausados</span>
-        <span>✅ ${completados.length} completados</span>
+        <span style="margin-right:16px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#16a34a;margin-right:6px;vertical-align:middle;"></span>${activos.length} activos</span>
+        <span style="margin-right:16px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#d97706;margin-right:6px;vertical-align:middle;"></span>${pausados.length} pausados</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#6b7280;margin-right:6px;vertical-align:middle;"></span>${completados.length} completados</span>
       </div>
       <button class="btn btn-primary" onclick="abrirProyModal()">+ Nuevo proyecto</button>
     </div>
     ${!proyectos.length ? `<div style="text-align:center;padding:60px;color:var(--gris-t)">
-      <div style="font-size:2.5rem;margin-bottom:12px">⚙️</div>
+      <div style="margin-bottom:12px;display:flex;justify-content:center;"><svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/></svg></div>
       <p style="font-size:.85rem">No hay proyectos aún.<br>Crea tu primer proyecto con el botón <strong>+ Nuevo proyecto</strong>.</p>
     </div>` : `
     <div class="cli-grid">
@@ -2064,16 +2219,16 @@ async function renderOperaciones() {
         <div class="cli-card" onclick="verProyecto(${p.id})" style="cursor:pointer">
           <div class="cli-card-top">
             <div class="cli-avatar" style="background:${p.estado==='activo'?'var(--verde)':p.estado==='pausado'?'#fbbf24':'var(--gris-m)'};color:${p.estado==='activo'?'var(--negro)':'var(--negro)'}">
-              ${p.estado==='activo'?'▶':p.estado==='pausado'?'⏸':'✓'}
+              ${p.estado==='activo'?ICON.play:p.estado==='pausado'?ICON.pause:ICON.check}
             </div>
             <span class="cli-status ${PROY_CLS[p.estado]||''}">${PROY_EST[p.estado]||p.estado}</span>
           </div>
           <div class="cli-name">${p.nombre}</div>
           <div class="cli-empresa">${p.clientes?.nombre||'Sin cliente'} ${p.clientes?.empresa?'— '+p.clientes.empresa:''}</div>
           <div class="cli-detail">
-            ${p.Usuarios?.nombre?`<span>👤 ${p.Usuarios.nombre}</span>`:''}
-            ${p.fecha_inicio?`<span>📅 ${new Date(p.fecha_inicio).toLocaleDateString('es-CO')}</span>`:''}
-            ${p.fecha_entrega?`<span>🏁 ${new Date(p.fecha_entrega).toLocaleDateString('es-CO')}</span>`:''}
+            ${p.Usuarios?.nombre?`<span>${ICON.user} ${p.Usuarios.nombre}</span>`:''}
+            ${p.fecha_inicio?`<span>${ICON.calendar} ${new Date(p.fecha_inicio).toLocaleDateString('es-CO')}</span>`:''}
+            ${p.fecha_entrega?`<span>${ICON.flag} ${new Date(p.fecha_entrega).toLocaleDateString('es-CO')}</span>`:''}
           </div>
         </div>`).join('')}
     </div>`}
@@ -2211,7 +2366,7 @@ async function verProyecto(id) {
         ${p.clientes?.nombre||''} · ${tareas.length} tareas
       </div>
       <div style="display:flex;gap:8px;">
-        <button class="btn btn-primary" onclick="abrirProyModal(${id});closeTareasModal();" style="font-size:.7rem;padding:6px 12px;">✏ Editar proyecto</button>
+        <button class="btn btn-primary" onclick="abrirProyModal(${id});closeTareasModal();" style="font-size:.7rem;padding:6px 12px;">${ICON.pencil} Editar proyecto</button>
       </div>
     </div>
     <div style="display:flex;gap:6px;margin-bottom:16px;">
@@ -2223,22 +2378,22 @@ async function verProyecto(id) {
       <button class="btn btn-primary" onclick="agregarTarea(${id})" style="font-size:.72rem;padding:6px 14px;">+ Agregar</button>
     </div>
     ${[
-      {label:'📋 Pendientes',items:pendientes,cls:'pendiente'},
-      {label:'🔄 En progreso',items:enProgreso,cls:'en_progreso'},
-      {label:'✅ Completadas',items:completadas,cls:'completado'}
+      {label:'Pendientes',items:pendientes,cls:'pendiente'},
+      {label:'En progreso',items:enProgreso,cls:'en_progreso'},
+      {label:'Completadas',items:completadas,cls:'completado'}
     ].map(sec => `
       <div style="margin-bottom:12px;">
         <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gris-t);margin-bottom:6px;">${sec.label} (${sec.items.length})</div>
         ${sec.items.length ? sec.items.map(t => `
           <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--gris);border-radius:8px;margin-bottom:4px;">
-            <button onclick="cambiarEstTarea(${t.id},${id},'${sec.cls==='pendiente'?'en_progreso':sec.cls==='en_progreso'?'completado':'pendiente'}')" style="background:none;border:none;cursor:pointer;font-size:1rem;" title="Cambiar estado">
-              ${sec.cls==='completado'?'✅':sec.cls==='en_progreso'?'🔄':'⬜'}
+            <button onclick="cambiarEstTarea(${t.id},${id},'${sec.cls==='pendiente'?'en_progreso':sec.cls==='en_progreso'?'completado':'pendiente'}')" style="background:none;border:none;cursor:pointer;color:${sec.cls==='completado'?'#16a34a':sec.cls==='en_progreso'?'#2563eb':'var(--gris-t)'};display:flex;align-items:center;" title="Cambiar estado">
+              ${sec.cls==='completado'?ICON.check:sec.cls==='en_progreso'?ICON.refresh:ICON.square}
             </button>
             <div style="flex:1;">
               <div style="font-size:.78rem;font-weight:600;${sec.cls==='completado'?'text-decoration:line-through;opacity:.6;':''}">${t.titulo}</div>
-              ${t.Usuarios?.nombre?`<div style="font-size:.65rem;color:var(--gris-t)">👤 ${t.Usuarios.nombre}</div>`:''}
+              ${t.Usuarios?.nombre?`<div style="font-size:.65rem;color:var(--gris-t)">${ICON.user} ${t.Usuarios.nombre}</div>`:''}
             </div>
-            ${t.fecha_limite?`<span style="font-size:.62rem;color:var(--gris-t)">📅 ${new Date(t.fecha_limite).toLocaleDateString('es-CO')}</span>`:''}
+            ${t.fecha_limite?`<span style="font-size:.62rem;color:var(--gris-t)">${ICON.calendar} ${new Date(t.fecha_limite).toLocaleDateString('es-CO')}</span>`:''}
             <button onclick="eliminarTarea(${t.id},${id})" style="background:none;border:none;cursor:pointer;font-size:.8rem;color:#ef4444;" title="Eliminar">✕</button>
           </div>`).join('') : `<div style="font-size:.72rem;color:var(--gris-t);padding:8px;text-align:center;">Sin tareas</div>`}
       </div>`).join('')}`;
@@ -2282,12 +2437,12 @@ async function renderEquipo() {
   content.innerHTML = `
     <div class="cli-toolbar">
       <div style="font-size:.85rem;font-weight:600;color:var(--negro);">
-        👥 ${usuarios.length} miembros del equipo
+        ${ICON.equipo} ${usuarios.length} miembros del equipo
       </div>
       <button class="btn btn-primary" onclick="abrirUsuarioModal()">+ Nuevo miembro</button>
     </div>
     ${!usuarios.length ? `<div style="text-align:center;padding:60px;color:var(--gris-t)">
-      <div style="font-size:2.5rem;margin-bottom:12px">👥</div>
+      <div style="margin-bottom:12px;display:flex;justify-content:center;"><svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       <p style="font-size:.85rem">No hay miembros registrados.</p>
     </div>` : `
     <div class="cli-grid">
@@ -2302,8 +2457,8 @@ async function renderEquipo() {
           <div class="cli-name">${u.nombre}</div>
           <div class="cli-empresa">${u.cargo||'Sin cargo'}</div>
           <div class="cli-detail">
-            ${u.email?`<span>✉ ${u.email}</span>`:''}
-            ${u.celular?`<span>📞 ${u.celular}</span>`:''}
+            ${u.email?`<span>${ICON.mail} ${u.email}</span>`:''}
+            ${u.celular?`<span>${ICON.phone} ${u.celular}</span>`:''}
           </div>
           <div class="cli-footer">
             <span class="cli-fecha">${uProys.length} proyecto${uProys.length!==1?'s':''} activo${uProys.length!==1?'s':''}</span>
@@ -2496,15 +2651,15 @@ async function renderReportes() {
         <div class="section-header"><span class="section-title">Proyectos</span></div>
         <div style="margin-top:12px;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-            <div style="flex:1;font-size:.78rem;font-weight:600;">🟢 Activos</div>
+            <div style="flex:1;font-size:.78rem;font-weight:600;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#16a34a;margin-right:7px;vertical-align:middle;"></span>Activos</div>
             <div style="font-size:1.2rem;font-weight:800;">${proysActivos}</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-            <div style="flex:1;font-size:.78rem;font-weight:600;">✅ Completados</div>
+            <div style="flex:1;font-size:.78rem;font-weight:600;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#6b7280;margin-right:7px;vertical-align:middle;"></span>Completados</div>
             <div style="font-size:1.2rem;font-weight:800;">${proysCompletados}</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
-            <div style="flex:1;font-size:.78rem;font-weight:600;">📊 Total</div>
+            <div style="flex:1;font-size:.78rem;font-weight:600;">Total</div>
             <div style="font-size:1.2rem;font-weight:800;">${proyectos.length}</div>
           </div>
         </div>
