@@ -22,7 +22,9 @@
 
 /* ═══════════ VIEW SYSTEM ═══════════ */
 .view-container{display:none}
-.view-container.active{display:block}
+.view-container.active{display:block;animation:viewIn .28s cubic-bezier(.2,.7,.3,1)}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view-container.active{animation:none}}
 #view-login.active{display:flex;align-items:center;justify-content:center;min-height:100vh;width:100%}
 #view-app.active{display:block;width:100%;min-height:100vh}
 
@@ -268,6 +270,17 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cli-name{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;margin-bottom:2px}
 .cli-empresa{font-size:.72rem;color:var(--gris-t);margin-bottom:8px}
 .cli-detail{font-size:.71rem;color:#555;line-height:1.7}
+.cli-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.cli-grid.equipo-grid{grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.cli-card.equipo-card{padding:22px}
+.equipo-card .cli-avatar{width:60px;height:60px;font-size:1.25rem;margin-bottom:4px}
+.equipo-card .cli-card-top{align-items:center}
+.equipo-card .cli-name{font-size:1.05rem}
+.equipo-card .cli-empresa{font-size:.78rem}
+.equipo-card .cli-detail{font-size:.76rem}
+.avatar-upload{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.avatar-upload-circle{width:76px;height:76px;border-radius:50%;background:var(--negro);color:var(--verde);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative}
+.avatar-upload-circle img{width:100%;height:100%;object-fit:cover}
 .cli-detail span{display:block}
 .cli-canal{display:inline-flex;align-items:center;gap:4px;font-size:.63rem;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--gris);color:var(--gris-t);margin-top:8px}
 .cli-am{display:inline-flex;align-items:center;gap:4px;font-size:.62rem;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
@@ -327,6 +340,14 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cli-modal .form-input,.cli-modal .form-select{font-family:'Poppins',sans-serif;font-size:.8rem;padding:9px 12px;border:1.5px solid var(--gris-m);border-radius:8px;outline:none;transition:border-color .2s;background:#fff;color:var(--negro)}
 .cli-modal .form-input:focus,.cli-modal .form-select:focus{border-color:var(--negro)}
 .form-section{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gris-t);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--gris-m)}
+.cli-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:4px}
+.cli-field{display:flex;flex-direction:column;gap:5px}
+.cli-field.full{grid-column:1/-1}
+.cli-field label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gris-t)}
+.cli-input{width:100%;box-sizing:border-box;font-family:'Poppins',sans-serif;font-size:.8rem;padding:9px 12px;border:1.5px solid var(--gris-m);border-radius:8px;outline:none;transition:border-color .2s;background:#fff;color:var(--negro)}
+.cli-input:focus{border-color:var(--negro)}
+.cli-checkbox-row{display:flex;align-items:center;gap:9px;font-size:.78rem;font-weight:500;color:var(--negro);cursor:pointer}
+.cli-checkbox-row input[type="checkbox"]{width:17px;height:17px;accent-color:var(--negro);cursor:pointer}
 .cli-modal-footer{padding:16px 24px;border-top:1px solid var(--gris-m);display:flex;gap:10px;justify-content:flex-end}
 .estado-select{font-family:'Poppins',sans-serif;font-size:.68rem;font-weight:600;border:1.5px solid var(--gris-m);border-radius:7px;padding:5px 24px 5px 8px;background:#fff;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;transition:border-color .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center}
 .estado-select:hover,.estado-select:focus{border-color:var(--negro)}
@@ -340,6 +361,20 @@ body.body-app::before,body.body-facturador::before{content:none}
 .view-toggle{display:flex;border:1.5px solid var(--gris-m);border-radius:8px;overflow:hidden}
 .view-toggle button{background:none;border:none;padding:6px 12px;cursor:pointer;font-size:.78rem;color:var(--gris-t);transition:all .2s}
 .view-toggle button.active{background:var(--negro);color:var(--verde)}
+.rh-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.rh-tab{background:#fff;border:1.5px solid var(--gris-m);border-radius:20px;padding:7px 16px;cursor:pointer;font-size:.76rem;font-weight:600;color:var(--gris-t);transition:all .2s}
+.rh-tab:hover{border-color:var(--negro);color:var(--negro)}
+.rh-tab.active{background:var(--negro);color:var(--verde);border-color:var(--negro)}
+.rh-table{width:100%;border-collapse:collapse}
+.rh-table th{text-align:left;font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;color:var(--gris-t);font-weight:700;padding:8px 12px;border-bottom:1.5px solid var(--gris-m)}
+.rh-table td{padding:11px 12px;font-size:.78rem;border-bottom:1px solid var(--gris-m);vertical-align:middle}
+.rh-empty{text-align:center;padding:50px;color:var(--gris-t);font-size:.85rem}
+.rh-chip{display:inline-flex;align-items:center;gap:6px;background:var(--gris);border-radius:20px;padding:5px 12px;font-size:.72rem;font-weight:600;color:var(--negro);margin:0 8px 8px 0}
+.org-tree{display:flex;flex-direction:column;align-items:center;gap:0}
+.org-level{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;position:relative;padding-top:28px}
+.org-level:first-child{padding-top:0}
+.org-node{background:#fff;border:1.5px solid var(--gris-m);border-radius:12px;padding:14px 18px;text-align:center;min-width:150px}
+.org-node .cli-avatar{margin:0 auto 8px}
 
 /* LIST VIEW */
 .cli-list-table{width:100%;border-collapse:collapse;font-size:.78rem}
@@ -675,6 +710,10 @@ body.body-app::before,body.body-facturador::before{content:none}
     </div>
     <button class="btn-login" onclick="doLogin()">Ingresar al sistema</button>
     <div class="login-error" id="loginError">Correo o contraseña incorrectos. Intenta de nuevo.</div>
+    <div style="text-align:center;margin-top:14px;">
+      <a href="javascript:void(0)" onclick="recuperarPassword()" style="font-size:.72rem;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#ccfb55'" onmouseout="this.style.color='rgba(255,255,255,.45)'">¿Olvidaste tu contraseña?</a>
+    </div>
+    <div id="loginInfo" style="display:none;margin-top:12px;background:rgba(204,251,85,.12);border:1px solid rgba(204,251,85,.3);border-radius:8px;padding:10px 14px;font-size:.75rem;color:#ccfb55;"></div>
 
   </div>
 
@@ -700,7 +739,7 @@ body.body-app::before,body.body-facturador::before{content:none}
       <span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg></span> Finanzas & Ventas
     </a>
     <a class="nav-item" data-modulo="operaciones" onclick="showModule('operaciones')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/></svg></span> Operaciones</a>
-    <a class="nav-item" data-modulo="equipo" onclick="showModule('equipo')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Equipo</a>
+    <a class="nav-item" data-modulo="equipo" onclick="showModule('equipo')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> RH</a>
     <div class="nav-section" data-section="analisis">Análisis</div>
     <a class="nav-item" data-modulo="reportes" onclick="showModule('reportes')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><rect x="6" y="11" width="3" height="7"/><rect x="11" y="6" width="3" height="12"/><rect x="16" y="14" width="3" height="4"/></svg></span> Reportes</a>
     <div class="nav-section" data-section="admin">Administración</div>
@@ -856,6 +895,26 @@ body.body-app::before,body.body-facturador::before{content:none}
 </div>
 
 <!-- PASSWORD CHANGE MODAL -->
+<!-- MODAL RESTABLECER CONTRASEÑA (desde enlace de correo) -->
+<div class="cli-modal-overlay" id="recoveryOverlay">
+  <div class="cli-modal" style="max-width:400px" onclick="event.stopPropagation()">
+    <div class="cli-modal-header">
+      <span class="cli-modal-title">Nueva contraseña</span>
+    </div>
+    <div class="cli-modal-body">
+      <p style="font-size:.78rem;color:var(--gris-t);margin-bottom:16px;">Escribe tu nueva contraseña para tu cuenta MEEV.</p>
+      <div class="cli-form-grid">
+        <div class="cli-field full"><label>Nueva contraseña</label><input id="recNueva" type="password" class="cli-input"></div>
+        <div class="cli-field full"><label>Confirmar nueva contraseña</label><input id="recConfirm" type="password" class="cli-input"></div>
+      </div>
+      <div id="recError" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:10px 14px;font-size:.75rem;color:#ef4444;margin-top:12px;display:none"></div>
+    </div>
+    <div class="cli-modal-footer">
+      <button class="btn btn-primary" onclick="guardarNuevaPassword()">Guardar contraseña</button>
+    </div>
+  </div>
+</div>
+
 <div class="cli-modal-overlay" id="passModalOverlay" onclick="closePassModal(event)">
   <div class="cli-modal" style="max-width:400px" onclick="event.stopPropagation()">
     <div class="cli-modal-header">
@@ -943,7 +1002,7 @@ body.body-app::before,body.body-facturador::before{content:none}
   </div>
 
   <div class="invoice-wrap">
-  <div class="doc-type-tabs no-print">
+  <div class="doc-type-tabs no-print" style="display:none;">
   <button class="doc-type-tab active" id="btnCot" onclick="setMode('cot')">Cotización</button>
   <button class="doc-type-tab" id="btnFac" onclick="setMode('fac')">Factura</button>
 </div>
@@ -1193,14 +1252,58 @@ async function doLogin() {
       email: perfil.email,
       nombre: perfil.nombre,
       cargo: perfil.cargo,
-      rol: perfil.rol
+      rol: perfil.rol,
+      permisos: permisosEfectivos(perfil)
     }));
   }
   if(btn) { btn.disabled = false; btn.textContent = 'Ingresar al sistema'; }
+  iniciarRealtime();
   navigateTo('app');
 }
 
 document.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+// ── Recuperar contraseña ──
+async function recuperarPassword() {
+  const email = (document.getElementById('loginEmail').value||'').trim().toLowerCase();
+  const err = document.getElementById('loginError');
+  const info = document.getElementById('loginInfo');
+  err.classList.remove('show');
+  info.style.display = 'none';
+  if(!email) {
+    err.textContent = 'Escribe tu correo arriba y vuelve a dar clic en "¿Olvidaste tu contraseña?".';
+    err.classList.add('show');
+    return;
+  }
+  const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin });
+  if(error) {
+    err.textContent = 'No se pudo enviar el correo. Verifica que esté bien escrito e intenta de nuevo.';
+    err.classList.add('show');
+    return;
+  }
+  info.textContent = '✓ Te enviamos un enlace para restablecer tu contraseña. Revisa tu correo (y la carpeta de spam).';
+  info.style.display = 'block';
+}
+
+// Cuando el usuario vuelve desde el enlace del correo, Supabase dispara este evento
+db.auth.onAuthStateChange((event) => {
+  if(event === 'PASSWORD_RECOVERY') {
+    document.getElementById('recoveryOverlay').classList.add('open');
+  }
+});
+
+async function guardarNuevaPassword() {
+  const p1 = document.getElementById('recNueva').value;
+  const p2 = document.getElementById('recConfirm').value;
+  const err = document.getElementById('recError');
+  err.style.display = 'none';
+  if(p1.length < 6) { err.textContent = 'La contraseña debe tener al menos 6 caracteres.'; err.style.display='block'; return; }
+  if(p1 !== p2)     { err.textContent = 'Las contraseñas no coinciden.'; err.style.display='block'; return; }
+  const { error } = await db.auth.updateUser({ password: p1 });
+  if(error) { err.textContent = 'No se pudo actualizar. Intenta de nuevo.'; err.style.display='block'; return; }
+  document.getElementById('recoveryOverlay').classList.remove('open');
+  alert('Contraseña actualizada. Ya puedes iniciar sesión con la nueva.');
+}
 
 // Already logged in? — Handled by SPA init at bottom
 
@@ -1310,36 +1413,59 @@ async function deleteCliente(id) {
   return !error;
 }
 
+// Módulos que se pueden restringir por usuario (Configuración queda fuera: siempre admin-only)
+const MODULOS = [
+  {key:'clientes', label:'Clientes'},
+  {key:'finanzas', label:'Finanzas & Ventas'},
+  {key:'operaciones', label:'Operaciones'},
+  {key:'equipo', label:'RH'},
+  {key:'reportes', label:'Reportes'}
+];
+
+// Permisos por defecto según el rol, usados cuando el usuario no tiene overrides propios
+function permisosDefaultRol(rol) {
+  if(rol === 'admin') return {clientes:true, finanzas:true, operaciones:true, equipo:true, reportes:true};
+  if(rol === 'account_manager') return {clientes:true, finanzas:true, operaciones:true, equipo:false, reportes:false};
+  return {clientes:false, finanzas:false, operaciones:true, equipo:false, reportes:false};
+}
+
+// Permisos efectivos de un usuario: sus overrides guardados, o el default de su rol
+function permisosEfectivos(u) {
+  return (u && u.permisos) ? u.permisos : permisosDefaultRol(u ? u.rol : null);
+}
+
 function aplicarPermisos() {
   const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
   const rol = sess.rol || 'diseñador';
+  const permisos = sess.permisos || permisosDefaultRol(rol);
   document.querySelectorAll('.nav-item[data-modulo]').forEach(el => {
     const mod = el.getAttribute('data-modulo');
-    if(rol === 'admin') {
-      el.style.display = '';
-    } else if(rol === 'account_manager') {
-      el.style.display = ['clientes','finanzas','operaciones'].includes(mod) ? '' : 'none';
-    } else {
-      el.style.display = mod === 'operaciones' ? '' : 'none';
-    }
+    if(mod === 'configuracion') { el.style.display = rol === 'admin' ? '' : 'none'; return; }
+    el.style.display = permisos[mod] ? '' : 'none';
   });
   document.querySelectorAll('.nav-section[data-section]').forEach(el => {
     const sec = el.getAttribute('data-section');
-    if(rol === 'admin') {
-      el.style.display = '';
-    } else {
-      el.style.display = (sec === 'analisis' || sec === 'admin') ? 'none' : '';
-    }
+    if(rol === 'admin') { el.style.display = ''; return; }
+    if(sec === 'admin') { el.style.display = 'none'; return; }
+    if(sec === 'analisis') { el.style.display = permisos.reportes ? '' : 'none'; return; }
+    el.style.display = '';
   });
   const btnCot = document.getElementById('btnNuevaCot');
-  if(btnCot) btnCot.style.display = rol === 'diseñador' ? 'none' : '';
+  if(btnCot) btnCot.style.display = permisos.finanzas ? '' : 'none';
 }
 
 function getModuloInicial() {
   const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
   const rol = sess.rol || 'diseñador';
-  if(rol === 'admin' || rol === 'account_manager') return 'clientes';
-  return 'operaciones';
+  const permisos = sess.permisos || permisosDefaultRol(rol);
+  const tieneAcceso = (mod) => mod === 'configuracion' ? rol === 'admin' : !!permisos[mod];
+
+  // Si veníamos de un módulo (recarga de página) y aún tenemos acceso, volvemos ahí
+  const ultimo = localStorage.getItem('meev_lastModulo');
+  if(ultimo && tieneAcceso(ultimo)) return ultimo;
+
+  const primero = MODULOS.find(m => permisos[m.key]);
+  return primero ? primero.key : 'operaciones';
 }
 
 function toggleSidebar() {
@@ -1347,18 +1473,22 @@ function toggleSidebar() {
   document.getElementById('sidebarOverlay').classList.toggle('open');
 }
 
+let currentModule = 'clientes';
 function showModule(mod) {
+  currentModule = mod;
+  localStorage.setItem('meev_lastModulo', mod);
   if(window.innerWidth <= 768) {
     document.querySelector('.sidebar').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('open');
   }
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
-  event?.currentTarget?.classList.add('active');
+  const navEl = event?.currentTarget || document.querySelector(`.nav-item[data-modulo="${mod}"]`);
+  navEl?.classList.add('active');
   const btn = document.getElementById('btnNuevaCot');
   if(btn) btn.style.display = (mod === 'clientes' || mod === 'operaciones' || mod === 'equipo' || mod === 'reportes') ? 'none' : '';
   document.getElementById('moduleTitle').textContent = {
     finanzas: 'Finanzas & Ventas', clientes: 'Clientes', operaciones: 'Operaciones',
-    equipo: 'Equipo', reportes: 'Reportes', configuracion: 'Configuración'
+    equipo: 'RH', reportes: 'Reportes', configuracion: 'Configuración'
   }[mod] || mod;
   if(mod === 'finanzas') renderFinanzas();
   else if(mod === 'clientes') renderClientes();
@@ -1366,6 +1496,47 @@ function showModule(mod) {
   else if(mod === 'equipo') renderEquipo();
   else if(mod === 'reportes') renderReportes();
   else if(mod === 'configuracion') renderConfiguracion();
+}
+
+/* ═══════════ SINCRONIZACIÓN EN VIVO (Supabase Realtime) ═══════════ */
+let _realtimeChan = null;
+let _refrescoTimer = null;
+
+function iniciarRealtime() {
+  if(_realtimeChan) return;
+  const onCambio = (tabla) => {
+    if(tabla === 'clientes') invalidateCache('clientes');
+    else if(tabla === 'cotizaciones') invalidateCache('docs');
+    else if(tabla === 'proyectos') invalidateCache('proyectos');
+    programarRefresco();
+  };
+  _realtimeChan = db.channel('meev-cambios')
+    .on('postgres_changes', { event:'*', schema:'public', table:'clientes' },     () => onCambio('clientes'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'cotizaciones' }, () => onCambio('cotizaciones'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'proyectos' },    () => onCambio('proyectos'))
+    .subscribe();
+}
+
+function detenerRealtime() {
+  if(_realtimeChan) { db.removeChannel(_realtimeChan); _realtimeChan = null; }
+}
+
+function hayModalAbierto() {
+  return !!document.querySelector('.cli-modal-overlay.open, .doc-modal-overlay.open');
+}
+
+function programarRefresco() {
+  clearTimeout(_refrescoTimer);
+  _refrescoTimer = setTimeout(refrescarModuloActual, 400);
+}
+
+function refrescarModuloActual() {
+  const app = document.getElementById('view-app');
+  if(!app || !app.classList.contains('active')) return; // no refrescar fuera de la app (ej. facturador)
+  if(hayModalAbierto()) { programarRefresco(); return; }  // no interrumpir si hay un formulario abierto
+  const fn = { finanzas:renderFinanzas, clientes:renderClientes, operaciones:renderOperaciones,
+               equipo:renderEquipo, reportes:renderReportes, configuracion:renderConfiguracion }[currentModule];
+  if(fn) fn();
 }
 
 async function renderFinanzas() {
@@ -1602,9 +1773,12 @@ async function editarCotizacion(num) {
     alert('Esta cotización ya recibió pago y no se puede editar.');
     return;
   }
+  const clientes = await getClientes();
+  const c = clientes.find(x => x.id == d.cliente_id) || {};
   localStorage.setItem('meev_editcot', JSON.stringify({
     numero: d.num, cliente: d.cliente, cliente_id: d.cliente_id,
-    items: d.items || [], notas: d.notas || ''
+    items: d.items || [], notas: d.notas || '', vigencia: d.vigencia || null,
+    pais: c.pais || '', ciudad: c.ciudad || '', celular: c.celular || '', email: c.email || ''
   }));
   closeCliDetail();
   navigateTo('facturador');
@@ -1794,6 +1968,7 @@ async function cambiarPassword() {
 
 async function cerrarSesion() {
   if(!confirm('¿Cerrar sesión?')) return;
+  detenerRealtime();
   await db.auth.signOut();
   localStorage.removeItem('meev_session');
   document.querySelectorAll('.cli-modal-overlay, .doc-modal-overlay').forEach(m => m.classList.remove('open'));
@@ -2317,13 +2492,155 @@ async function getUsuarios() {
   return _cache.usuarios;
 }
 
-const CONFIG_DEFAULT = { iva:19, retefuente:1.5, reteiva:15, com_nacional:2.65, com_nacional_fijo:0, com_internacional:1.0, com_internacional_fijo:0, vigencia_dias:30 };
+const CONFIG_DEFAULT = { iva:19, retefuente:1.5, reteiva:15, com_nacional:2.65, com_nacional_fijo:0, com_internacional:1.0, com_internacional_fijo:0, vigencia_dias:30,
+  email_asunto:'Tu cotización {numero} de MEEV',
+  email_mensaje:'Gracias por confiar en MEEV. Preparamos esta propuesta a la medida de {empresa}. A continuación encontrarás el detalle de los servicios y la inversión.',
+  email_cta:'Ver cotización completa' };
 
 async function getConfig() {
   if(_cache.config) return _cache.config;
   const { data, error } = await db.from('configuracion').select('*').eq('id', 1).single();
   _cache.config = (error || !data) ? { ...CONFIG_DEFAULT } : data;
   return _cache.config;
+}
+
+// Reemplaza comodines {cliente}, {numero}, etc. por datos reales
+function aplicarComodines(txt, d) {
+  return (txt||'').replace(/\{(\w+)\}/g, (m, k) => (d[k] != null ? d[k] : m));
+}
+
+// Arma el HTML del correo de cotización (misma fuente para vista previa y envío real)
+function construirCorreoCotizacion(d, cfg, logoUrl) {
+  const primerNombre = (d.cliente||'').trim().split(' ')[0] || '';
+  const itemsHTML = (d.items||[]).map(it => `
+    <div style="padding:14px 20px;border-bottom:1px solid #f2f2ef;">
+      <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
+        <td style="font-size:13.5px;color:#1a1a1a;font-weight:600;padding:0;">${it.desc||'Servicio'}${it.detalle?`<div style="font-size:12px;color:#999;font-weight:400;margin-top:3px;">${it.detalle}</div>`:''}</td>
+        <td style="font-size:13.5px;color:#1a1a1a;font-weight:700;text-align:right;white-space:nowrap;padding:0;">${fmtNum(it.price||0)}</td>
+      </tr></table>
+    </div>`).join('');
+  const mensaje = aplicarComodines(cfg.email_mensaje || CONFIG_DEFAULT.email_mensaje, d);
+  const cta = cfg.email_cta || CONFIG_DEFAULT.email_cta;
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;background:#dedcd4;font-family:'Poppins',Helvetica,Arial,sans-serif;padding:32px 12px;-webkit-font-smoothing:antialiased;">
+  <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;">
+    <div style="display:none;max-height:0;overflow:hidden;">Tu cotización ${d.numero||''} está lista — ${fmtNum(d.total||0)} · válida hasta el ${d.vigencia||''}</div>
+
+    <div style="background:#1a1a1a;padding:32px 38px 36px;text-align:left;">
+      <table role="presentation" width="100%" style="border-collapse:collapse;margin-bottom:34px;"><tr>
+        <td style="vertical-align:middle;">
+          <img src="${logoUrl}" alt="MEEV" style="height:22px;width:auto;display:block;">
+        </td>
+        <td style="text-align:right;vertical-align:middle;">
+          <span style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;">${d.fecha||''}</span>
+        </td>
+      </tr></table>
+      <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
+        <td style="vertical-align:middle;width:62%;">
+          <p style="font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:30px;font-weight:900;color:#fff;margin:0 0 14px;line-height:1.2;">Gracias por confiar en nosotros, ${primerNombre}</p>
+          <p style="font-size:14px;color:rgba(255,255,255,.65);margin:0;line-height:1.6;">Preparamos una propuesta pensada para ${d.empresa||d.cliente||''}.</p>
+        </td>
+        <td style="vertical-align:middle;width:38%;text-align:right;">
+          ${d.imagenUrl ? `<img src="${d.imagenUrl}" alt="" style="max-width:150px;width:100%;height:auto;display:inline-block;">` : ''}
+        </td>
+      </tr></table>
+    </div>
+    <div style="height:3px;background:#ccfb55;"></div>
+
+    <div style="background:#f7f7f2;padding:15px 38px;border-bottom:1px solid #ececec;">
+      <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
+        <td style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#8a8a80;font-weight:700;">Cotización ${d.numero||''}</td>
+        <td style="font-size:12px;color:#555;font-weight:500;text-align:right;">${d.fecha||''}</td>
+      </tr></table>
+    </div>
+
+    <div style="padding:34px 38px 6px;">
+      <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#6f8f22;font-weight:700;margin:0 0 10px;">Para ${d.empresa||d.cliente||''}</p>
+      <p style="font-size:15px;color:#0d0d0d;line-height:1.6;margin:0 0 26px;">Hola ${primerNombre}, ${mensaje}</p>
+
+      <table role="presentation" width="100%" style="border-collapse:separate;border-spacing:8px 0;margin:0 -8px 26px;"><tr>
+        <td style="width:33.3%;background:#f7f7f2;border-radius:10px;padding:16px 14px;text-align:center;">
+          <div style="width:30px;height:30px;border-radius:50%;background:#e8f2d1;margin:0 auto 8px;line-height:30px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f7d1e" stroke-width="2" style="vertical-align:middle;"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></div>
+          <p style="font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:17px;font-weight:900;color:#0d0d0d;margin:0 0 2px;">${(d.items||[]).length}</p>
+          <p style="font-size:10.5px;color:#8a8a80;font-weight:600;margin:0;">Servicios</p>
+        </td>
+        <td style="width:33.3%;background:#f7f7f2;border-radius:10px;padding:16px 14px;text-align:center;">
+          <div style="width:30px;height:30px;border-radius:50%;background:#e8f2d1;margin:0 auto 8px;line-height:30px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f7d1e" stroke-width="2" style="vertical-align:middle;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <p style="font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:17px;font-weight:900;color:#0d0d0d;margin:0 0 2px;">${fmtNum(d.total||0)}</p>
+          <p style="font-size:10.5px;color:#8a8a80;font-weight:600;margin:0;">Inversión</p>
+        </td>
+        <td style="width:33.3%;background:#f7f7f2;border-radius:10px;padding:16px 14px;text-align:center;">
+          <div style="width:30px;height:30px;border-radius:50%;background:#e8f2d1;margin:0 auto 8px;line-height:30px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f7d1e" stroke-width="2" style="vertical-align:middle;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <p style="font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:13.5px;font-weight:900;color:#0d0d0d;margin:0 0 2px;">${d.vigencia||''}</p>
+          <p style="font-size:10.5px;color:#8a8a80;font-weight:600;margin:0;">Vigencia</p>
+        </td>
+      </tr></table>
+
+      <div style="border:1px solid #e9e9e5;border-radius:12px;overflow:hidden;margin-bottom:26px;">
+        <div style="background:#f7f7f2;padding:14px 20px;border-bottom:1px solid #ececec;">
+          <span style="font-size:13.5px;font-weight:800;color:#0d0d0d;">Detalle de la propuesta</span>
+        </div>
+        ${itemsHTML}
+        <div style="background:#0d0d0d;padding:18px 20px;">
+          <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
+            <td style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:600;">Total a invertir</td>
+            <td style="font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:23px;font-weight:900;color:#ccfb55;text-align:right;">${fmtNum(d.total||0)}</td>
+          </tr></table>
+        </div>
+      </div>
+
+      <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#b0b0b0;font-weight:700;margin:0 0 16px;">Qué sigue</p>
+      <table role="presentation" width="100%" style="border-collapse:collapse;margin-bottom:28px;"><tr>
+        <td style="width:33.3%;text-align:center;vertical-align:top;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:#ccfb55;font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:12px;font-weight:900;line-height:26px;margin:0 auto 8px;">1</div>
+          <p style="font-size:11.5px;color:#666;line-height:1.5;margin:0;padding:0 6px;">Revisas la<br>propuesta</p>
+        </td>
+        <td style="width:33.3%;text-align:center;vertical-align:top;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:#ccfb55;font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:12px;font-weight:900;line-height:26px;margin:0 auto 8px;">2</div>
+          <p style="font-size:11.5px;color:#666;line-height:1.5;margin:0;padding:0 6px;">Confirmas y<br>pagas el anticipo</p>
+        </td>
+        <td style="width:33.3%;text-align:center;vertical-align:top;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:#ccfb55;font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:12px;font-weight:900;line-height:26px;margin:0 auto 8px;">3</div>
+          <p style="font-size:11.5px;color:#666;line-height:1.5;margin:0;padding:0 6px;">Iniciamos tu<br>proyecto</p>
+        </td>
+      </tr></table>
+
+      <div style="text-align:center;margin:0 0 8px;">
+        <a href="${d.link||'#'}" style="display:inline-block;background:#ccfb55;color:#0d0d0d;font-family:'Nunito',Helvetica,Arial,sans-serif;font-weight:800;font-size:14.5px;padding:15px 40px;border-radius:9px;text-decoration:none;">${cta}</a>
+      </div>
+      <p style="font-size:11.5px;color:#a3a39a;text-align:center;margin:12px 0 30px;">También puedes responder este correo con tus comentarios</p>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #ececec;margin:0 38px;">
+
+    <div style="padding:26px 38px;">
+      <p style="font-size:14px;color:#0d0d0d;font-weight:700;margin:0 0 2px;">${d.am||'Equipo MEEV'}</p>
+      <p style="font-size:12px;color:#999;margin:0 0 12px;">Account Manager · Meev Agency</p>
+      <p style="font-size:12px;color:#666;margin:0;">hola@meevagency.com&nbsp;&nbsp;·&nbsp;&nbsp;www.meevagency.com</p>
+    </div>
+
+    <div style="background:#0d0d0d;padding:34px 38px;">
+      <table role="presentation" width="100%" style="border-collapse:collapse;margin-bottom:30px;"><tr>
+        <td style="vertical-align:top;">
+          <p style="font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.7;margin:0;">Meev Agency<br>Bogotá, Colombia</p>
+        </td>
+        <td style="vertical-align:top;text-align:right;">
+          <p style="margin:0 0 10px;"><a href="#" style="font-size:12.5px;color:rgba(255,255,255,.75);text-decoration:none;">Nuestros servicios</a></p>
+          <p style="margin:0;"><a href="#" style="font-size:12.5px;color:rgba(255,255,255,.75);text-decoration:none;">Política de privacidad</a></p>
+        </td>
+      </tr></table>
+      <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
+        <td style="vertical-align:middle;">
+          <img src="${logoUrl}" alt="MEEV" style="height:22px;width:auto;display:block;">
+        </td>
+        <td style="vertical-align:middle;text-align:right;">
+          <a href="#" style="display:inline-block;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);text-align:center;line-height:30px;margin-left:8px;text-decoration:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" style="vertical-align:middle;"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a><a href="#" style="display:inline-block;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);text-align:center;line-height:30px;margin-left:8px;text-decoration:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff" style="vertical-align:middle;"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a href="#" style="display:inline-block;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);text-align:center;line-height:30px;margin-left:8px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="#ffffff" style="vertical-align:middle;"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.43 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a><a href="#" style="display:inline-block;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);text-align:center;line-height:30px;margin-left:8px;text-decoration:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff" style="vertical-align:middle;"><path d="M22 8.5s-.2-1.6-.9-2.3c-.8-.9-1.8-.9-2.2-1C16 5 12 5 12 5h0s-4 0-6.9.2c-.4 0-1.4.1-2.2 1C2.2 6.9 2 8.5 2 8.5S1.8 10.3 1.8 12.2v1.7C1.8 15.7 2 17.5 2 17.5s.2 1.6.9 2.3c.8.9 1.9.9 2.4 1 1.7.2 7.2.2 7.2.2s4 0 6.9-.2c.4 0 1.4-.1 2.2-1 .7-.7.9-2.3.9-2.3s.2-1.8.2-3.6v-1.7C22.2 10.3 22 8.5 22 8.5zM9.9 15.4V9l5.8 3.2-5.8 3.2z"/></svg></a>
+        </td>
+      </tr></table>
+      <p style="font-size:10.5px;color:rgba(255,255,255,.32);margin:24px 0 0;text-align:center;">© ${new Date().getFullYear()} Meev Agency</p>
+    </div>
+  </div>
+</body></html>`;
 }
 
 async function renderConfiguracion() {
@@ -2398,22 +2715,69 @@ async function renderConfiguracion() {
         </div>
       </div>
 
+      <div class="section-card cfg-card">
+        <div class="section-header"><span class="section-title">Correo de cotización</span></div>
+        <div style="padding:18px;">
+          <p style="font-size:.78rem;color:var(--gris-t);margin:0 0 16px;line-height:1.5;">Edita el texto del correo que se le envía al cliente con la cotización. Usa comodines entre llaves y se reemplazan solos con los datos reales: <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{cliente}</code> <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{empresa}</code> <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{numero}</code> <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{total}</code> <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{vigencia}</code> <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{am}</code></p>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
+            <div class="cfg-field">
+              <label class="cfg-label">Asunto del correo</label>
+              <input type="text" id="cfg_email_asunto" value="${(cfg.email_asunto||'').replace(/"/g,'&quot;')}" class="cfg-input cfg-input-money" style="padding-left:12px;" oninput="actualizarPreviewCorreo()">
+            </div>
+            <div class="cfg-field">
+              <label class="cfg-label">Mensaje</label>
+              <textarea id="cfg_email_mensaje" rows="1" class="cfg-input cfg-input-money" style="padding:9px 12px;resize:vertical;line-height:1.5;" oninput="actualizarPreviewCorreo()">${cfg.email_mensaje||''}</textarea>
+            </div>
+            <div class="cfg-field">
+              <label class="cfg-label">Texto del botón</label>
+              <input type="text" id="cfg_email_cta" value="${(cfg.email_cta||'').replace(/"/g,'&quot;')}" class="cfg-input cfg-input-money" style="padding-left:12px;" oninput="actualizarPreviewCorreo()">
+            </div>
+          </div>
+          <div class="cfg-label" style="margin-bottom:8px;">Vista previa</div>
+          <iframe id="emailPreview" style="width:100%;height:1400px;border:1px solid var(--gris-m);border-radius:10px;background:#dedcd4;"></iframe>
+        </div>
+      </div>
+
       <div class="cfg-actions">
         <span id="cfgMsg" class="cfg-msg"></span>
         <button class="btn btn-primary" onclick="guardarConfig()">Guardar cambios</button>
       </div>
     </div>`;
+  actualizarPreviewCorreo();
+}
+
+// Actualiza la vista previa del correo en vivo mientras se editan los textos
+function actualizarPreviewCorreo() {
+  const iframe = document.getElementById('emailPreview');
+  if(!iframe) return;
+  const cfg = {
+    email_asunto: document.getElementById('cfg_email_asunto')?.value || '',
+    email_mensaje: document.getElementById('cfg_email_mensaje')?.value || '',
+    email_cta: document.getElementById('cfg_email_cta')?.value || ''
+  };
+  const ejemplo = {
+    cliente: 'María López', empresa: 'Café Orgánico SAS', numero: 'COT-006',
+    fecha: '1 de julio, 2026', total: 8000000, vigencia: '15 de julio de 2026',
+    am: 'Daniela Sinning', link: '#',
+    items: [
+      {desc:'Manual de Identidad Visual', price:5000000, detalle:'Logotipo, paleta de color, tipografía y lineamientos de marca'},
+      {desc:'Diseño de Logotipo', price:3000000, detalle:'3 propuestas iniciales, 2 rondas de ajustes y archivos finales'}
+    ]
+  };
+  iframe.srcdoc = construirCorreoCotizacion(ejemplo, cfg, LOGO_BLANCO);
 }
 
 async function guardarConfig() {
   const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
   if(sess.rol !== 'admin') return;
   const num = (id) => parseFloat(document.getElementById('cfg_'+id).value) || 0;
+  const val = (id) => (document.getElementById('cfg_'+id)?.value || '').trim();
   const data = {
     iva: num('iva'), retefuente: num('retefuente'), reteiva: num('reteiva'),
     com_nacional: num('com_nacional'), com_nacional_fijo: num('com_nacional_fijo'),
     com_internacional: num('com_internacional'), com_internacional_fijo: num('com_internacional_fijo'),
     vigencia_dias: Math.max(1, Math.round(num('vigencia_dias')) || 30),
+    email_asunto: val('email_asunto'), email_mensaje: val('email_mensaje'), email_cta: val('email_cta'),
     updated_at: new Date().toISOString()
   };
   const { error } = await db.from('configuracion').update(data).eq('id', 1);
@@ -2662,12 +3026,35 @@ async function eliminarTarea(tareaId, proyId) {
 }
 
 
-// ── MÓDULO EQUIPO ────────────────────────────────
+// ── MÓDULO RH ────────────────────────────────
+
+const RH_TABS = [
+  {key:'directorio', label:'Directorio'},
+  {key:'documentos', label:'Documentos'},
+  {key:'historial', label:'Historial'},
+  {key:'organigrama', label:'Organigrama'}
+];
+let rhTab = 'directorio';
+function setRhTab(t) { rhTab = t; renderEquipo(); }
 
 async function renderEquipo() {
+  const content = document.getElementById('mainContent');
+  content.innerHTML = `
+    <div class="rh-tabs">
+      ${RH_TABS.map(t => `<button class="rh-tab ${rhTab===t.key?'active':''}" onclick="setRhTab('${t.key}')">${t.label}</button>`).join('')}
+    </div>
+    <div id="rhBody"></div>`;
+  if(rhTab === 'directorio') await renderRhDirectorio();
+  else if(rhTab === 'documentos') await renderRhDocumentos();
+  else if(rhTab === 'historial') await renderRhHistorial();
+  else if(rhTab === 'organigrama') await renderRhOrganigrama();
+}
+
+async function renderRhDirectorio() {
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
   const usuarios = await getUsuarios();
   const proyectos = await getProyectos();
-  const content = document.getElementById('mainContent');
+  const content = document.getElementById('rhBody');
 
   const proyectosPorUsuario = (uid) => proyectos.filter(p => p.responsable_id === uid && p.estado === 'activo');
 
@@ -2682,20 +3069,20 @@ async function renderEquipo() {
       <div style="margin-bottom:12px;display:flex;justify-content:center;"><svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       <p style="font-size:.85rem">No hay miembros registrados.</p>
     </div>` : `
-    <div class="cli-grid">
+    <div class="cli-grid equipo-grid">
       ${usuarios.map(u => {
         const uProys = proyectosPorUsuario(u.id);
         return `
-        <div class="cli-card" onclick="abrirUsuarioModal(${u.id})">
+        <div class="cli-card equipo-card" onclick="abrirUsuarioModal(${u.id})">
           <div class="cli-card-top">
-            <div class="cli-avatar" style="background:var(--verde);color:var(--negro);font-size:.9rem;font-weight:800;">${initials(u.nombre)}</div>
-            <span class="cli-status ${u.rol==='admin'?'cs-cliente':'cs-contactado'}">${u.rol==='admin'?'Admin':'Colaborador'}</span>
+            <div class="cli-avatar" style="background:var(--verde);color:var(--negro);">${u.avatar?`<img src="${u.avatar}" alt="${u.nombre}">`:initials(u.nombre)}</div>
+            <span class="cli-status ${u.rol==='admin'?'cs-cliente':'cs-contactado'}">${{admin:'Admin',account_manager:'Account Manager',diseñador:'Diseñador'}[u.rol]||'Colaborador'}</span>
           </div>
           <div class="cli-name">${u.nombre}</div>
           <div class="cli-empresa">${u.cargo||'Sin cargo'}</div>
           <div class="cli-detail">
             ${u.email?`<span>${ICON.mail} ${u.email}</span>`:''}
-            ${u.celular?`<span>${ICON.phone} ${u.celular}</span>`:''}
+            ${u.celular?`<span>${ICON.phone} ${u.indicativo||''} ${u.celular}</span>`:''}
           </div>
           <div class="cli-footer">
             <span class="cli-fecha">${uProys.length} proyecto${uProys.length!==1?'s':''} activo${uProys.length!==1?'s':''}</span>
@@ -2706,22 +3093,86 @@ async function renderEquipo() {
 
     <!-- Modal Usuario -->
     <div class="cli-modal-overlay" id="userModalOverlay" onclick="closeUserModal(event)">
-      <div class="cli-modal" onclick="event.stopPropagation()">
+      <div class="cli-modal" style="max-width:640px" onclick="event.stopPropagation()">
         <div class="cli-modal-header">
           <span class="cli-modal-title" id="userModalTitle">Miembro</span>
           <button class="cli-modal-close" onclick="closeUserModal()">&times;</button>
         </div>
         <div class="cli-modal-body">
-          <div class="cli-form-grid">
-            <div class="cli-field full"><label>Nombre *</label><input id="userNombre" class="cli-input"></div>
-            <div class="cli-field"><label>Cargo</label><input id="userCargo" class="cli-input"></div>
-            <div class="cli-field"><label>Rol</label><select id="userRol" class="cli-input">
-              <option value="colaborador">Colaborador</option>
-              <option value="admin">Admin</option>
-            </select></div>
-            <div class="cli-field"><label>Email</label><input id="userEmail" class="cli-input" type="email"></div>
-            <div class="cli-field"><label>Celular</label><input id="userCelular" class="cli-input"></div>
+          <div class="avatar-upload">
+            <div class="avatar-upload-circle" id="userAvatarPreview"></div>
+            <div>
+              <button type="button" class="btn btn-outline" onclick="document.getElementById('userAvatarInput').click()" style="font-size:.72rem;">Subir foto</button>
+              <input type="file" id="userAvatarInput" accept="image/*" style="display:none" onchange="subirAvatarUsuario(event)">
+              <div id="userAvatarMsg" style="font-size:.66rem;color:var(--gris-t);margin-top:6px;"></div>
+            </div>
           </div>
+          <div class="form-section" style="margin-top:0;">Información personal</div>
+          <div class="cli-form-grid">
+            <div class="cli-field full"><label>Nombre completo *</label><input id="userNombre" class="cli-input" placeholder="Nombre y apellido"></div>
+            <div class="cli-field"><label>Tipo de documento</label><select id="userTipoDoc" class="cli-input">
+              <option value="">Seleccionar</option>
+              <option>C.C.</option><option>C.E.</option><option>Pasaporte</option>
+            </select></div>
+            <div class="cli-field"><label>Número de documento</label><input id="userNumDoc" class="cli-input"></div>
+            <div class="cli-field"><label>Fecha de nacimiento</label><input id="userFechaNac" type="date" class="cli-input"></div>
+            <div class="cli-field"><label>Email</label><input id="userEmail" class="cli-input" type="email"></div>
+            <div class="cli-field"><label>Celular</label>
+              <div style="display:flex;gap:6px;">
+                <select id="userIndicativo" class="cli-input" style="width:96px;flex-shrink:0;">
+                  <option value="+57">🇨🇴 +57</option>
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+52">🇲🇽 +52</option>
+                  <option value="+51">🇵🇪 +51</option>
+                  <option value="+56">🇨🇱 +56</option>
+                  <option value="+54">🇦🇷 +54</option>
+                  <option value="+593">🇪🇨 +593</option>
+                  <option value="+34">🇪🇸 +34</option>
+                </select>
+                <input id="userCelular" class="cli-input" placeholder="300 000 0000">
+              </div>
+            </div>
+            <div class="cli-field"><label>Dirección</label><input id="userDireccion" class="cli-input"></div>
+            <div class="cli-field"><label>Ciudad</label><input id="userCiudad" class="cli-input"></div>
+          </div>
+
+          <div class="form-section">Información laboral</div>
+          <div class="cli-form-grid">
+            <div class="cli-field"><label>Cargo</label><input id="userCargo" class="cli-input" placeholder="Account Manager"></div>
+            <div class="cli-field"><label>Rol</label><select id="userRol" class="cli-input" onchange="refrescarPermisosDefault()">
+              <option value="admin">Admin</option>
+              <option value="account_manager">Account Manager</option>
+              <option value="diseñador">Diseñador</option>
+            </select></div>
+            <div class="cli-field"><label>Fecha de ingreso</label><input id="userFechaIngreso" type="date" class="cli-input"></div>
+            <div class="cli-field"><label>Tipo de contrato</label><select id="userContrato" class="cli-input">
+              <option value="">Seleccionar</option>
+              <option>Término indefinido</option><option>Término fijo</option>
+              <option>Prestación de servicios</option><option>Freelance</option>
+            </select></div>
+            <div class="cli-field"><label>Reporta a</label><select id="userJefe" class="cli-input">
+              <option value="">Sin asignar</option>
+              ${usuarios.map(u2=>`<option value="${u2.id}" data-uid="${u2.id}">${u2.nombre}</option>`).join('')}
+            </select></div>
+            ${sess.rol === 'admin' ? `<div class="cli-field"><label>Salario</label><input id="userSalario" type="number" step="1" min="0" class="cli-input" placeholder="0"></div>` : ''}
+          </div>
+
+          <div class="form-section">Contacto de emergencia</div>
+          <div class="cli-form-grid">
+            <div class="cli-field"><label>Nombre</label><input id="userEmerNombre" class="cli-input"></div>
+            <div class="cli-field"><label>Teléfono</label><input id="userEmerTelefono" class="cli-input"></div>
+          </div>
+
+          ${sess.rol === 'admin' ? `
+          <div class="form-section">Acceso a módulos</div>
+          <div id="userPermisosBox" style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:4px;">
+            ${MODULOS.map(m => `
+              <label class="cli-checkbox-row">
+                <input type="checkbox" id="perm_${m.key}">
+                ${m.label}
+              </label>`).join('')}
+          </div>
+          <span style="display:block;font-size:.68rem;color:var(--gris-t);">Configuración queda siempre reservada al rol Admin.</span>` : ''}
         </div>
         <div class="cli-modal-footer">
           <button class="btn btn-primary" onclick="guardarUsuario()">Guardar</button>
@@ -2730,25 +3181,259 @@ async function renderEquipo() {
     </div>`;
 }
 
+// ── RH: Documentos ──────────────────────────────
+let docsEmpleadoSel = null;
+
+async function getDocumentosEmpleado(usuarioId) {
+  const { data } = await db.from('documentos_empleado').select('*').eq('usuario_id', usuarioId).order('created_at', { ascending: false });
+  return data || [];
+}
+
+async function renderRhDocumentos() {
+  const usuarios = await getUsuarios();
+  if(!docsEmpleadoSel && usuarios.length) docsEmpleadoSel = usuarios[0].id;
+  const documentos = docsEmpleadoSel ? await getDocumentosEmpleado(docsEmpleadoSel) : [];
+  const content = document.getElementById('rhBody');
+
+  content.innerHTML = `
+    <div class="cli-toolbar">
+      <select class="cli-input" style="width:220px;" onchange="docsEmpleadoSel=Number(this.value);renderRhDocumentos()">
+        ${usuarios.map(u => `<option value="${u.id}" ${u.id===docsEmpleadoSel?'selected':''}>${u.nombre}</option>`).join('')}
+      </select>
+      <button class="btn btn-primary" onclick="document.getElementById('docArchivoInput').click()">+ Subir documento</button>
+      <input type="file" id="docArchivoInput" style="display:none" onchange="subirDocumentoEmpleado(event)">
+    </div>
+    ${!documentos.length ? `<div class="rh-empty">Este empleado no tiene documentos cargados.</div>` : `
+    <div class="section-card" style="overflow:hidden">
+      <table class="rh-table">
+        <thead><tr><th>Nombre</th><th>Tipo</th><th>Fecha</th><th></th></tr></thead>
+        <tbody>
+          ${documentos.map(d => `
+            <tr>
+              <td>${d.nombre}</td>
+              <td>${d.tipo||'—'}</td>
+              <td>${new Date(d.created_at).toLocaleDateString('es-CO')}</td>
+              <td>
+                <button class="tbl-btn" onclick="verDocumentoEmpleado('${d.archivo_path}')">Ver</button>
+                <button class="tbl-btn" style="color:#dc2626;border-color:#fca5a5" onclick="eliminarDocumentoEmpleado(${d.id},'${d.archivo_path}')">Eliminar</button>
+              </td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`}`;
+}
+
+async function subirDocumentoEmpleado(event) {
+  const file = event.target.files?.[0];
+  if(!file || !docsEmpleadoSel) return;
+  const tipo = prompt('Tipo de documento (Contrato, Hoja de vida, Cédula, Certificado, Otro):', 'Otro') || 'Otro';
+  const path = `${docsEmpleadoSel}/${Date.now()}_${file.name}`;
+  const { error } = await db.storage.from('empleados-docs').upload(path, file);
+  if(error) { alert('No se pudo subir el documento.'); return; }
+  await db.from('documentos_empleado').insert({ usuario_id: docsEmpleadoSel, nombre: file.name, tipo, archivo_path: path });
+  renderRhDocumentos();
+}
+
+async function verDocumentoEmpleado(path) {
+  const { data, error } = await db.storage.from('empleados-docs').createSignedUrl(path, 60);
+  if(error || !data) { alert('No se pudo abrir el documento.'); return; }
+  window.open(data.signedUrl, '_blank');
+}
+
+async function eliminarDocumentoEmpleado(id, path) {
+  if(!confirm('¿Eliminar este documento?')) return;
+  await db.storage.from('empleados-docs').remove([path]);
+  await db.from('documentos_empleado').delete().eq('id', id);
+  renderRhDocumentos();
+}
+
+// ── RH: Historial laboral ──────────────────────────────
+let historialEmpleadoSel = null;
+const HISTORIAL_TIPOS = ['Evaluación', 'Llamado de atención', 'Logro', 'Cambio de cargo', 'Cambio de salario', 'Nota general'];
+
+async function getHistorialEmpleado(usuarioId) {
+  const { data } = await db.from('historial_empleado').select('*').eq('usuario_id', usuarioId).order('fecha', { ascending: false });
+  return data || [];
+}
+
+async function renderRhHistorial() {
+  const usuarios = await getUsuarios();
+  if(!historialEmpleadoSel && usuarios.length) historialEmpleadoSel = usuarios[0].id;
+  const historial = historialEmpleadoSel ? await getHistorialEmpleado(historialEmpleadoSel) : [];
+  const content = document.getElementById('rhBody');
+
+  content.innerHTML = `
+    <div class="cli-toolbar">
+      <select class="cli-input" style="width:220px;" onchange="historialEmpleadoSel=Number(this.value);renderRhHistorial()">
+        ${usuarios.map(u => `<option value="${u.id}" ${u.id===historialEmpleadoSel?'selected':''}>${u.nombre}</option>`).join('')}
+      </select>
+      <button class="btn btn-primary" onclick="abrirHistorialModal()">+ Agregar nota</button>
+    </div>
+    ${!historial.length ? `<div class="rh-empty">Sin registros en el historial de este empleado.</div>` : `
+    <div class="section-card">
+      ${historial.map(h => `
+        <div style="display:flex;gap:12px;padding:12px 18px;border-bottom:1px solid var(--gris-m);">
+          <div style="min-width:90px;font-size:.7rem;color:var(--gris-t);font-weight:600;">${new Date(h.fecha+'T00:00:00').toLocaleDateString('es-CO')}</div>
+          <div style="flex:1;">
+            <span class="cli-status cs-seguimiento" style="margin-bottom:6px;display:inline-block;">${h.tipo}</span>
+            <div style="font-size:.78rem;color:#444;line-height:1.5;">${h.descripcion||''}</div>
+          </div>
+        </div>`).join('')}
+    </div>`}
+
+    <div class="cli-modal-overlay" id="historialModalOverlay" onclick="closeHistorialModal(event)">
+      <div class="cli-modal" onclick="event.stopPropagation()">
+        <div class="cli-modal-header">
+          <span class="cli-modal-title">Agregar al historial</span>
+          <button class="cli-modal-close" onclick="closeHistorialModal()">&times;</button>
+        </div>
+        <div class="cli-modal-body">
+          <div class="cli-form-grid">
+            <div class="cli-field"><label>Tipo</label><select id="histTipo" class="cli-input">
+              ${HISTORIAL_TIPOS.map(t => `<option>${t}</option>`).join('')}
+            </select></div>
+            <div class="cli-field"><label>Fecha</label><input id="histFecha" type="date" class="cli-input"></div>
+            <div class="cli-field full"><label>Descripción</label><textarea id="histDescripcion" class="cli-input" rows="3"></textarea></div>
+          </div>
+        </div>
+        <div class="cli-modal-footer">
+          <button class="btn btn-primary" onclick="guardarHistorial()">Guardar</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function abrirHistorialModal() {
+  document.getElementById('histFecha').value = new Date().toISOString().slice(0,10);
+  document.getElementById('histDescripcion').value = '';
+  document.getElementById('historialModalOverlay').classList.add('open');
+}
+function closeHistorialModal(e) {
+  if(!e || e.target === document.getElementById('historialModalOverlay'))
+    document.getElementById('historialModalOverlay').classList.remove('open');
+}
+
+async function guardarHistorial() {
+  if(!historialEmpleadoSel) return;
+  const tipo = document.getElementById('histTipo').value;
+  const fecha = document.getElementById('histFecha').value || new Date().toISOString().slice(0,10);
+  const descripcion = document.getElementById('histDescripcion').value.trim();
+  if(!descripcion) { alert('Escribe una descripción.'); return; }
+  await db.from('historial_empleado').insert({ usuario_id: historialEmpleadoSel, tipo, fecha, descripcion });
+  closeHistorialModal();
+  renderRhHistorial();
+}
+
+// ── RH: Organigrama ──────────────────────────────
+async function renderRhOrganigrama() {
+  const usuarios = await getUsuarios();
+  const content = document.getElementById('rhBody');
+  if(!usuarios.length) { content.innerHTML = `<div class="rh-empty">No hay miembros registrados.</div>`; return; }
+
+  const nodo = (u) => `
+    <div class="org-node">
+      <div class="cli-avatar" style="background:var(--verde);color:var(--negro);width:44px;height:44px;">${u.avatar?`<img src="${u.avatar}" alt="">`:initials(u.nombre)}</div>
+      <div class="cli-name" style="font-size:.82rem;">${u.nombre}</div>
+      <div class="cli-empresa" style="margin-bottom:0;">${u.cargo||'Sin cargo'}</div>
+    </div>`;
+
+  function nivel(jefeId) {
+    const hijos = usuarios.filter(u => (u.jefe_id||null) === jefeId);
+    if(!hijos.length) return '';
+    return `<div class="org-level">${hijos.map(h => `<div>${nodo(h)}${nivel(h.id)}</div>`).join('')}</div>`;
+  }
+
+  content.innerHTML = `<div class="section-card" style="padding:30px;overflow-x:auto;"><div class="org-tree">${nivel(null)}</div></div>`;
+}
+
 let userEditId = null;
+
+function setPermisosCheckboxes(permisos) {
+  MODULOS.forEach(m => {
+    const el = document.getElementById('perm_'+m.key);
+    if(el) el.checked = !!permisos[m.key];
+  });
+}
+
+// Al cambiar el rol en el select, sugiere los permisos por defecto de ese rol
+function refrescarPermisosDefault() {
+  const rol = document.getElementById('userRol').value;
+  setPermisosCheckboxes(permisosDefaultRol(rol));
+}
+
+// Campos de texto/fecha simples: id del input -> columna en Supabase
+const USER_CAMPOS_EXTRA = {
+  userTipoDoc:'tipo_documento', userNumDoc:'numero_documento', userFechaNac:'fecha_nacimiento',
+  userDireccion:'direccion', userCiudad:'ciudad', userFechaIngreso:'fecha_ingreso',
+  userContrato:'tipo_contrato', userEmerNombre:'emergencia_nombre', userEmerTelefono:'emergencia_telefono'
+};
+
+let userAvatarUrl = null;
+
+function pintarAvatarPreview(nombre) {
+  const box = document.getElementById('userAvatarPreview');
+  if(!box) return;
+  box.innerHTML = userAvatarUrl ? `<img src="${userAvatarUrl}" alt="">` : initials(nombre || '?');
+}
+
+async function subirAvatarUsuario(event) {
+  const file = event.target.files?.[0];
+  if(!file) return;
+  const msg = document.getElementById('userAvatarMsg');
+  msg.textContent = 'Subiendo...';
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const path = `user_${Date.now()}.${ext}`;
+  const { error } = await db.storage.from('avatars').upload(path, file, { upsert: true });
+  if(error) { msg.textContent = 'No se pudo subir la foto.'; return; }
+  const { data: pub } = db.storage.from('avatars').getPublicUrl(path);
+  userAvatarUrl = pub.publicUrl;
+  pintarAvatarPreview(document.getElementById('userNombre').value);
+  msg.textContent = '✓ Foto lista';
+  setTimeout(() => { if(msg) msg.textContent = ''; }, 2000);
+}
 
 async function abrirUsuarioModal(id) {
   userEditId = id || null;
+  userAvatarUrl = null;
   document.getElementById('userModalTitle').textContent = id ? 'Editar miembro' : 'Nuevo miembro';
+  const camposBase = ['userNombre','userCargo','userEmail','userCelular'];
   if(id) {
     const usuarios = await getUsuarios();
     const u = usuarios.find(x => x.id === id);
     if(u) {
       document.getElementById('userNombre').value = u.nombre || '';
       document.getElementById('userCargo').value = u.cargo || '';
-      document.getElementById('userRol').value = u.rol || 'colaborador';
+      document.getElementById('userRol').value = u.rol || 'account_manager';
       document.getElementById('userEmail').value = u.email || '';
       document.getElementById('userCelular').value = u.celular || '';
+      document.getElementById('userIndicativo').value = u.indicativo || '+57';
+      Object.entries(USER_CAMPOS_EXTRA).forEach(([elId, col]) => {
+        const el = document.getElementById(elId);
+        if(el) el.value = u[col] || '';
+      });
+      const salEl = document.getElementById('userSalario');
+      if(salEl) salEl.value = u.salario || '';
+      document.getElementById('userJefe').value = u.jefe_id || '';
+      userAvatarUrl = u.avatar || null;
+      pintarAvatarPreview(u.nombre);
+      setPermisosCheckboxes(permisosEfectivos(u));
     }
   } else {
-    ['userNombre','userCargo','userEmail','userCelular'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('userRol').value = 'colaborador';
+    camposBase.forEach(fid => document.getElementById(fid).value = '');
+    Object.keys(USER_CAMPOS_EXTRA).forEach(elId => { const el = document.getElementById(elId); if(el) el.value = ''; });
+    const salEl = document.getElementById('userSalario');
+    if(salEl) salEl.value = '';
+    document.getElementById('userRol').value = 'account_manager';
+    document.getElementById('userIndicativo').value = '+57';
+    document.getElementById('userJefe').value = '';
+    pintarAvatarPreview('');
+    setPermisosCheckboxes(permisosDefaultRol('account_manager'));
   }
+  // Nadie puede ser jefe de sí mismo
+  document.querySelectorAll('#userJefe option[data-uid]').forEach(opt => {
+    opt.disabled = (id && Number(opt.dataset.uid) === id);
+  });
+  document.getElementById('userAvatarMsg').textContent = '';
   document.getElementById('userModalOverlay').classList.add('open');
 }
 
@@ -2763,9 +3448,24 @@ async function guardarUsuario() {
     cargo: document.getElementById('userCargo').value.trim(),
     rol: document.getElementById('userRol').value,
     email: document.getElementById('userEmail').value.trim(),
-    celular: document.getElementById('userCelular').value.trim()
+    celular: document.getElementById('userCelular').value.trim(),
+    indicativo: document.getElementById('userIndicativo').value,
+    avatar: userAvatarUrl
   };
   if(!data.nombre) { alert('El nombre es obligatorio.'); return; }
+  Object.entries(USER_CAMPOS_EXTRA).forEach(([elId, col]) => {
+    const el = document.getElementById(elId);
+    if(el) data[col] = el.value.trim() || null;
+  });
+  const salEl = document.getElementById('userSalario');
+  if(salEl) data.salario = salEl.value ? parseFloat(salEl.value) : null;
+  const jefeVal = document.getElementById('userJefe').value;
+  data.jefe_id = jefeVal ? Number(jefeVal) : null;
+  if(document.getElementById('perm_clientes')) {
+    const permisos = {};
+    MODULOS.forEach(m => { permisos[m.key] = !!document.getElementById('perm_'+m.key)?.checked; });
+    data.permisos = permisos;
+  }
   if(userEditId) {
     await db.from('Usuarios').update(data).eq('id', userEditId);
   } else {
@@ -2998,7 +3698,6 @@ function setMode(m) {
   document.getElementById('vigBanner').style.display = isCot?'flex':'none';
   document.getElementById('fiscalSec').style.display = isCot?'none':'block';
   document.getElementById('rfcBar').style.display = isCot?'none':'flex';
-  document.getElementById('clientRFC').style.display = isCot?'none':'block';
   document.getElementById('totalLabel').textContent = isCot?'TOTAL COTIZACIÓN':'TOTAL FACTURA';
   document.getElementById('footerMsg').textContent = isCot?'Gracias por considerar a MEEV ✦':'Gracias por confiar en MEEV ✦';
 }
@@ -3105,9 +3804,20 @@ function cargarEdicion() {
     const body = document.getElementById('itemsBody'); if(body) body.innerHTML = '';
     (e.items || []).forEach(it => addItem({ desc: it.desc, qty: it.qty, price: it.price, deliverables: it.deliverables || [] }));
     const notasEl = document.querySelector('.notes-text'); if(notasEl && e.notas) notasEl.value = e.notas;
+    if(e.vigencia){ const vig = document.getElementById('vigDate'); if(vig) vig.value = e.vigencia; }
+    // Datos de contacto en el "Para"
+    document.querySelectorAll('.party-detail input').forEach(inp => {
+      const ph = inp.placeholder || '';
+      if(ph.includes('Ciudad') && e.ciudad) inp.value = e.ciudad;
+      else if(ph.includes('Celular')) inp.value = e.celular || '';
+      else if(ph.includes('Correo')) inp.value = e.email || '';
+    });
+    document.querySelectorAll('select.id-type-select').forEach(sel => {
+      if([...sel.options].some(o => o.text === 'Colombia') && e.pais) sel.value = e.pais;
+    });
     currentClienteId = e.cliente_id || null;
     recalc();
-  } catch(err){}
+  } catch(err){ console.error('cargarEdicion:', err); }
   localStorage.removeItem('meev_editcot');
   return true;
 }
@@ -3198,12 +3908,15 @@ const _origSetMode = setMode;
     const { data: perfil } = await db.from('Usuarios').select('*').eq('email', email).single();
     if(perfil) {
       localStorage.setItem('meev_session', JSON.stringify({
+        id: perfil.id,
         email: perfil.email,
         nombre: perfil.nombre,
         cargo: perfil.cargo,
-        rol: perfil.rol
+        rol: perfil.rol,
+        permisos: permisosEfectivos(perfil)
       }));
     }
+    iniciarRealtime();
     navigateTo('app');
   } else {
     localStorage.removeItem('meev_session');
