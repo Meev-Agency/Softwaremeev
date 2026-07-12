@@ -1,0 +1,12 @@
+# Los assets estáticos (logos) no cambian sin cambiar de nombre de archivo:
+# se pueden cachear de forma agresiva y segura por mucho tiempo.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# index.html es el único punto de entrada de toda la app y cambia con cada
+# deploy: nunca debe quedar cacheado, o el usuario se queda atascado en una
+# versión vieja del software hasta que limpie caché a mano.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
