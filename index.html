@@ -25,6 +25,21 @@
   --sombra:rgba(22,20,20,.10);
 }
 
+/* ═══════════ TOAST (liquid glass) ═══════════ */
+#toastHost{position:fixed;top:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{font-family:'Poppins',sans-serif;font-size:.8rem;font-weight:600;padding:13px 18px;border-radius:14px;
+  background:rgba(22,20,20,.55);color:var(--blanco);
+  backdrop-filter:blur(18px) saturate(180%);-webkit-backdrop-filter:blur(18px) saturate(180%);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 10px 32px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08);
+  display:flex;align-items:center;gap:10px;max-width:340px;
+  opacity:0;transform:translateY(-16px);transition:opacity .3s cubic-bezier(.2,.7,.3,1),transform .3s cubic-bezier(.2,.7,.3,1)}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast-icon{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.toast.ok .toast-icon{background:var(--verde);color:var(--negro)}
+.toast.error .toast-icon{background:#dc2626;color:#fff}
+.toast-icon svg{width:12px;height:12px}
+
 /* ═══════════ VIEW SYSTEM ═══════════ */
 .view-container{display:none}
 .view-container.active{display:block;animation:viewIn .28s cubic-bezier(.2,.7,.3,1)}
@@ -68,14 +83,6 @@ body.body-app::before,body.body-facturador::before{content:none}
 .login-error{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:10px 14px;font-size:.75rem;color:#fca5a5;margin-top:12px;display:none}
 .login-error.show{display:block}
 
-.login-demo{margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06)}
-.login-demo-title{font-size:.65rem;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
-.demo-user{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:all .2s}
-.demo-user:hover{background:rgba(204,251,85,.06);border-color:rgba(204,251,85,.2)}
-.demo-user-name{font-size:.72rem;font-weight:600;color:rgba(255,255,255,.6)}
-.demo-user-role{font-size:.62rem;color:rgba(255,255,255,.3)}
-.demo-user-hint{font-size:.62rem;color:rgba(204,251,85,.5)}
-
 .login-footer{text-align:center;margin-top:24px;font-size:.65rem;color:rgba(255,255,255,.2)}
 
 /* ═══════════ APP VIEW STYLES ═══════════ */
@@ -103,6 +110,21 @@ body.body-app::before,body.body-facturador::before{content:none}
 
 /* MAIN */
 .main{margin-left:var(--sidebar-w);width:calc(100vw - var(--sidebar-w));min-height:100vh;display:flex;flex-direction:column}
+
+/* SIDEBAR COLLAPSE (escritorio) */
+@media(min-width:769px){
+  .sidebar{transition:transform .3s cubic-bezier(.4,0,.2,1)}
+  .sidebar.collapsed{transform:translateX(-100%)}
+  .main{transition:margin-left .3s cubic-bezier(.4,0,.2,1),width .3s cubic-bezier(.4,0,.2,1)}
+  .main.expanded{margin-left:0;width:100vw}
+  .btn-sidebar-toggle{left:calc(var(--sidebar-w) - 46px)}
+  .main.expanded .btn-sidebar-toggle{left:12px}
+  .main.expanded .topbar{padding-left:64px}
+}
+.btn-sidebar-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--negro);border:none;border-radius:8px;cursor:pointer;color:var(--verde);flex-shrink:0;position:fixed;top:12px;z-index:150;transition:left .3s cubic-bezier(.4,0,.2,1),background .2s}
+.btn-sidebar-toggle:hover{background:#2a2828}
+.btn-sidebar-toggle svg{width:16px;height:16px}
+@media(max-width:768px){.btn-sidebar-toggle{display:none}}
 .topbar{background:var(--blanco);border-bottom:1px solid var(--gris-m);padding:0 16px;height:60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .topbar-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.1rem}
 .topbar-actions{display:flex;gap:10px;align-items:center}
@@ -125,40 +147,22 @@ body.body-app::before,body.body-facturador::before{content:none}
 .kpi-sub{font-size:.68rem;color:var(--gris-t);margin-top:4px}
 .kpi-card.highlight .kpi-sub{color:rgba(255,255,255,.35)}
 
-/* GRID DE CONTENIDO */
-.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+/* IMPUESTOS E INGRESO NETO */
+.tax-breakdown{display:flex;align-items:stretch;gap:14px;padding:20px;flex-wrap:wrap}
+.tax-step{flex:1;min-width:110px;background:var(--gris);border-radius:10px;padding:14px 16px}
+.tax-step-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.5px;color:var(--gris-t);font-weight:600;margin-bottom:6px}
+.tax-step-value{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.25rem;color:var(--negro)}
+.tax-step-value.tax-neg{color:#c0392b}
+.tax-step.tax-final{background:var(--negro)}
+.tax-step.tax-final .tax-step-label{color:rgba(255,255,255,.45)}
+.tax-step.tax-final .tax-step-value{color:var(--verde)}
+.tax-op{display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:var(--gris-t);flex-shrink:0}
+.tax-note{padding:0 20px 16px;font-size:.68rem;color:var(--gris-t)}
+@media(max-width:700px){.tax-breakdown{flex-direction:column}.tax-op{transform:rotate(90deg);padding:2px 0}}
 
-/* PIPELINE */
 .section-card{background:var(--blanco);border-radius:12px;border:1.5px solid var(--gris-m);overflow:hidden}
 .section-header{padding:16px 20px;border-bottom:1px solid var(--gris-m);display:flex;align-items:center;justify-content:space-between}
 .section-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem}
-.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--gris-m)}
-.pipeline-col{border-right:1px solid var(--gris-m);padding:14px}
-.pipeline-col:last-child{border-right:none}
-.pipeline-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gris-t);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.pip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.pip-dot.borrador{background:#ccc}
-.pip-dot.enviada{background:#f59e0b}
-.pip-dot.anticipo{background:#3b82f6}
-.pip-dot.saldo_enviado{background:#f97316}
-.pip-dot.aprobada{background:#10b981}
-.pip-dot.cancelada{background:#ef4444}
-.pip-item{background:var(--gris);border-radius:8px;padding:10px 12px;margin-bottom:6px;font-size:.74rem}
-.pip-item-num{font-weight:700;color:var(--negro);font-size:.7rem}
-.pip-item-client{color:var(--gris-t);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pip-item-total{font-weight:700;color:var(--negro);margin-top:5px;font-size:.76rem}
-.pip-empty{font-size:.7rem;color:var(--gris-t);text-align:center;padding:16px 0}
-
-/* COBROS PENDIENTES */
-.cobro-item{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid var(--gris-m)}
-.cobro-item:last-child{border-bottom:none}
-.cobro-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#f59e0b}
-.cobro-dot.urgente{background:#ef4444}
-.cobro-dot.ok{background:#10b981}
-.cobro-info{flex:1;min-width:0}
-.cobro-client{font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cobro-tipo{font-size:.65rem;color:var(--gris-t);margin-top:1px}
-.cobro-monto{font-family:'Poppins',sans-serif;font-weight:700;font-size:.8rem;white-space:nowrap}
 
 
 
@@ -248,11 +252,6 @@ body.body-app::before,body.body-facturador::before{content:none}
 .module-name{font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;margin-bottom:4px}
 .module-desc{font-size:.7rem;color:var(--gris-t);line-height:1.5}
 
-/* EMPTY STATE */
-.empty-state{text-align:center;padding:40px 20px;color:var(--gris-t)}
-.empty-state .e-icon{font-size:2rem;margin-bottom:8px}
-.empty-state p{font-size:.8rem}
-
 /* ── MÓDULO CLIENTES ─────────────────────────── */
 .cli-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
 .cli-search{flex:1;min-width:200px;font-family:'Poppins',sans-serif;font-size:.8rem;padding:9px 14px;border:1.5px solid var(--gris-m);border-radius:9px;outline:none;transition:border-color .2s}
@@ -277,12 +276,15 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cli-detail{font-size:.71rem;color:#555;line-height:1.7}
 .cli-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 .cli-grid.equipo-grid{grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
-.cli-card.equipo-card{padding:22px}
-.equipo-card .cli-avatar{width:60px;height:60px;font-size:1.25rem;margin-bottom:4px}
-.equipo-card .cli-card-top{align-items:center}
-.equipo-card .cli-name{font-size:1.05rem}
-.equipo-card .cli-empresa{font-size:.78rem}
-.equipo-card .cli-detail{font-size:.76rem}
+.cli-card.equipo-card{padding:0;overflow:hidden;display:flex;flex-direction:column;height:460px}
+.equipo-photo{width:100%;height:80%;background:var(--negro);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.equipo-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.equipo-photo-initials{font-family:'Nunito',sans-serif;font-weight:900;font-size:3.2rem;color:var(--verde)}
+.equipo-photo-badge{position:absolute;top:10px;right:10px;font-size:.6rem;font-weight:700;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;background:rgba(22,20,20,.55);color:var(--verde);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.equipo-card-body{height:20%;padding:10px 16px;display:flex;flex-direction:column;justify-content:center;overflow:hidden;min-width:0}
+.equipo-card-body .cli-name{font-size:.95rem;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.equipo-card-body .cli-empresa{margin-bottom:6px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.equipo-card-body .cli-footer{margin-top:0;padding-top:6px}
 .avatar-upload{display:flex;align-items:center;gap:16px;margin-bottom:18px}
 .avatar-upload-circle{width:76px;height:76px;border-radius:50%;background:var(--negro);color:var(--verde);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative}
 .avatar-upload-circle img{width:100%;height:100%;object-fit:cover}
@@ -299,7 +301,67 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cli-cot-chip.pronto{background:#fef9c3;color:#854d0e}
 .cli-cot-chip.urgente{background:#ffedd5;color:#9a3412}
 .cli-cot-chip.vencida{background:#fee2e2;color:#991b1b}
-.cli-filter-cartera{padding-left:6px;border-left:1px solid var(--gris-m)}
+.cli-filtros-wrap{position:relative}
+.cli-filtros-btn{display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:600;padding:8px 14px;border-radius:9px;border:1.5px solid var(--gris-m);background:#fff;cursor:pointer;transition:all .2s;white-space:nowrap}
+.cli-filtros-btn svg{width:14px;height:14px}
+.cli-filtros-btn:hover,.cli-filtros-btn.active{border-color:var(--negro)}
+.cli-filtros-badge{background:var(--negro);color:var(--verde);font-size:.6rem;font-weight:800;border-radius:10px;padding:1px 6px;line-height:1.4}
+.cli-filtros-panel{position:absolute;top:calc(100% + 8px);left:0;z-index:60;background:#fff;border:1.5px solid var(--gris-m);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.12);padding:16px;min-width:340px;max-width:420px;display:flex;flex-direction:column;gap:14px}
+.cli-filtros-section-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.5px;color:var(--gris-t);font-weight:700;margin-bottom:6px}
+.cli-filtros-limpiar{align-self:flex-end;font-size:.68rem;font-weight:600;color:#dc2626;background:none;border:none;cursor:pointer;padding:2px 0}
+.cli-filtros-limpiar:hover{text-decoration:underline}
+@media(max-width:600px){.cli-filtros-panel{position:fixed;left:16px;right:16px;min-width:0;max-width:none}}
+/* ═══════════ CATÁLOGO DE SERVICIOS (lista) ═══════════
+   Proporción de columnas fija y deliberada (2.2 : 1 : 1.1), precios
+   agrupados en un solo bloque visual (proximidad = se leen como una unidad),
+   y la descripción se trunca a 2 líneas en reposo — se expande solo al
+   enfocarla para editar, en vez de mostrar una barra de scroll permanente. */
+.serv-panel{background:var(--blanco);border:1.5px solid var(--gris-m);border-radius:14px;overflow:hidden}
+.serv-panel-tabs{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 16px;border-bottom:1px solid var(--gris-m);flex-wrap:wrap;background:var(--gris)}
+.serv-tabs-row{display:flex;gap:4px;flex-wrap:wrap}
+.serv-tab{background:none;border:none;padding:8px 14px;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--gris-t);border-radius:8px;transition:all .15s;font-family:'Poppins',sans-serif}
+.serv-tab:hover{color:var(--negro);background:rgba(22,20,20,.05)}
+.serv-tab.active{background:var(--negro);color:var(--verde)}
+.serv-panel-desc{padding:14px 20px;border-bottom:1px solid var(--gris-m)}
+.serv-panel-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;color:var(--negro);display:flex;align-items:center;gap:10px}
+.serv-grupo-badge{font-family:'Poppins',sans-serif;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;background:var(--verde);color:var(--negro);padding:3px 9px;border-radius:20px}
+.serv-grupo-desc{font-size:.76rem;color:var(--gris-t);line-height:1.5;margin-top:4px;max-width:760px}
+.serv-list{background:none;border:none;border-radius:0}
+.serv-row{display:grid;grid-template-columns:4.2fr 2.5fr 3.3fr;gap:20px;padding:16px 20px;border-bottom:1px solid var(--gris-m);align-items:center;transition:background .15s}
+.serv-row:last-child{border-bottom:none}
+.serv-row:hover{background:#fafafa}
+.serv-row-main{min-width:0;display:flex;flex-direction:column;gap:6px}
+.serv-row-name-line{display:flex;align-items:center;gap:10px}
+.serv-name-input{font-family:'Nunito',sans-serif;font-weight:800;font-size:.92rem;border:none;outline:none;background:none;color:var(--negro);flex:1;min-width:0;padding:2px 0;border-bottom:1.5px dashed transparent;transition:border-color .2s}
+.serv-name-input:hover,.serv-name-input:focus{border-bottom-color:var(--verde)}
+.serv-name-input:disabled{color:var(--negro);opacity:1}
+.serv-del-btn{background:none;border:none;cursor:pointer;color:var(--gris-t);padding:2px;flex-shrink:0;transition:color .2s}
+.serv-del-btn:hover{color:#dc2626}
+.serv-del-btn svg{width:15px;height:15px}
+.serv-desc-input{width:100%;font-family:'Poppins',sans-serif;font-size:.74rem;color:#666;line-height:1.45;border:1.5px solid transparent;border-radius:7px;padding:4px 6px;resize:none;outline:none;overflow:hidden;background:none;transition:background .15s,border-color .15s}
+.serv-desc-input:hover{background:var(--gris)}
+.serv-desc-input:focus{background:var(--blanco);border-color:var(--negro);color:#444}
+.serv-desc-input:disabled{color:#777}
+.serv-desc-input:disabled:hover{background:none}
+.serv-row-tags{min-width:0;display:flex;flex-direction:column;gap:5px}
+.serv-section-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gris-t)}
+.serv-tags-wrap{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:24px}
+.serv-tag{background:var(--gris);color:var(--negro);font-size:.7rem;font-weight:600;padding:4px 7px 4px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;line-height:1.2;white-space:nowrap}
+.serv-tag-x{background:none;border:none;cursor:pointer;color:var(--gris-t);font-size:.9rem;line-height:1;padding:0 2px;font-weight:700}
+.serv-tag-x:hover{color:#dc2626}
+.serv-tag-input{border:1.5px dashed var(--gris-m);border-radius:20px;padding:4px 10px;font-size:.7rem;background:none;outline:none;width:100%;font-family:'Poppins',sans-serif;color:var(--negro);transition:border-color .2s}
+.serv-tag-input:focus{border-color:var(--verde);border-style:solid}
+.serv-row-priceblock{min-width:0;display:flex;flex-direction:column}
+.serv-row-prices{display:flex;border:1.5px solid var(--gris-m);border-radius:9px;overflow:hidden;background:var(--gris)}
+.serv-price-field{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding:7px 10px;border-right:1px solid var(--gris-m);background:var(--blanco)}
+.serv-price-field:last-child{border-right:none}
+.serv-price-field label{font-size:.56rem;font-weight:700;color:var(--gris-t);text-transform:uppercase;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.serv-price-field input{width:100%;font-family:'Poppins',sans-serif;font-size:.82rem;font-weight:700;border:none;outline:none;color:var(--negro);background:none;padding:0}
+.serv-price-field input:disabled{opacity:1}
+.serv-activo-toggle{display:flex;align-items:center;gap:5px;font-size:.66rem;color:var(--gris-t);cursor:pointer;user-select:none;flex-shrink:0}
+.serv-activo-toggle input{cursor:pointer}
+@media(max-width:1000px){.serv-row{grid-template-columns:1fr;gap:12px}}
+
 .cfg-wrap{max-width:760px}
 .cfg-intro{font-size:.8rem;color:var(--gris-t);margin-bottom:20px;line-height:1.5}
 .cfg-card{margin-bottom:18px}
@@ -403,20 +465,6 @@ body.body-app::before,body.body-facturador::before{content:none}
 .hist-total{font-weight:700;white-space:nowrap}
 .hist-est{padding:2px 8px;border-radius:10px;font-size:.62rem;font-weight:700;white-space:nowrap}
 
-/* COBRO PAGAR BUTTON */
-.btn-pagar{background:var(--negro);color:var(--verde);border:none;border-radius:6px;font-size:.65rem;font-weight:700;padding:4px 10px;cursor:pointer;white-space:nowrap;transition:opacity .2s}
-.btn-pagar:hover{opacity:.8}
-.btn-pagar.pagado{background:var(--gris-m);color:var(--gris-t);cursor:default}
-
-/* PIPELINE ITEM CLICKABLE */
-.pip-item{cursor:pointer;transition:transform .15s,box-shadow .15s}
-.pip-item:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.1)}
-.pip-item-actions{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
-.pip-btn{background:rgba(0,0,0,.06);border:none;border-radius:5px;font-size:.6rem;font-weight:600;padding:2px 7px;cursor:pointer;color:var(--negro);transition:background .15s}
-.pip-btn:hover{background:var(--negro);color:var(--verde)}
-.pip-btn.avanzar{background:rgba(16,185,129,.12);color:#059669}
-.pip-btn.avanzar:hover{background:#059669;color:#fff}
-
 /* RESET BUTTON */
 .btn-reset{display:block;width:100%;text-align:center;font-size:.65rem;color:rgba(255,255,255,.25);background:none;border:none;cursor:pointer;padding:8px 0;transition:color .2s}
 .btn-reset:hover{color:#ef4444}
@@ -492,6 +540,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 #view-facturador input[type="number"]{font-family:'Poppins',sans-serif;border:none;background:transparent;outline:none;color:inherit;font-size:inherit;font-weight:inherit;width:100%;text-align:right}
 .editable{border-bottom:1.5px dashed transparent;transition:border-color .2s;padding:1px 0;cursor:text}
 .editable:hover,.editable:focus{border-bottom-color:var(--verde)}
+.editable:disabled{color:var(--gris-t);cursor:not-allowed;-webkit-text-fill-color:var(--gris-t);opacity:1}
 .editable-dark{border-bottom:1.5px dashed transparent;transition:border-color .2s;padding:1px 0;cursor:text}
 .editable-dark:hover,.editable-dark:focus{border-bottom-color:rgba(204,251,85,.5)}
 
@@ -649,11 +698,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 /* Tablet */
 @media(max-width:1200px){
   .kpi-grid{grid-template-columns:repeat(2,1fr)}
-  .content-grid{grid-template-columns:1fr}
   .modules-preview{grid-template-columns:repeat(2,1fr)}
-  .pipeline{grid-template-columns:repeat(2,1fr)}
-  .pipeline-col{border-bottom:1px solid var(--gris-m)}
-  .pipeline-col:nth-child(2){border-right:none}
   .cli-grid{grid-template-columns:repeat(3,1fr)}
 }
 
@@ -665,13 +710,11 @@ body.body-app::before,body.body-facturador::before{content:none}
   .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999}
   .sidebar-overlay.open{display:block}
   .main{margin-left:0}
-  .topbar{padding:0 16px}
-  .btn-hamburger{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:none;border:1.5px solid var(--gris-m);border-radius:8px;cursor:pointer;font-size:1.2rem;color:var(--negro);margin-right:10px;flex-shrink:0}
+  .topbar{padding:0 16px 0 64px}
+  .btn-hamburger{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--negro);border:none;border-radius:8px;cursor:pointer;font-size:1.2rem;color:var(--verde);position:fixed;top:12px;left:12px;z-index:1001;flex-shrink:0}
   .cli-form-grid{grid-template-columns:1fr}
   .content{padding:16px}
   .kpi-grid{grid-template-columns:1fr}
-  .pipeline{grid-template-columns:1fr}
-  .pipeline-col{border-right:none;border-bottom:1px solid var(--gris-m)}
   .modules-preview{grid-template-columns:1fr}
   .cot-table{font-size:.7rem}
   .cot-table th,.cot-table td{padding:8px 8px}
@@ -690,6 +733,8 @@ body.body-app::before,body.body-facturador::before{content:none}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+
+<div id="toastHost"></div>
 
 <!-- ═══════════ LOGIN VIEW ═══════════ -->
 <div id="view-login" class="view-container">
@@ -743,7 +788,8 @@ body.body-app::before,body.body-facturador::before{content:none}
       <span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg></span> Finanzas & Ventas
     </a>
     <a class="nav-item" data-modulo="operaciones" onclick="showModule('operaciones')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/></svg></span> Operaciones</a>
-    <a class="nav-item" data-modulo="equipo" onclick="showModule('equipo')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> RH</a>
+    <a class="nav-item" data-modulo="equipo" onclick="showModule('equipo')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Equipo</a>
+    <a class="nav-item" data-modulo="servicios" onclick="showModule('servicios')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span> Servicios</a>
     <div class="nav-section" data-section="analisis">Análisis</div>
     <a class="nav-item" data-modulo="reportes" onclick="showModule('reportes')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><rect x="6" y="11" width="3" height="7"/><rect x="11" y="6" width="3" height="12"/><rect x="16" y="14" width="3" height="4"/></svg></span> Reportes</a>
     <div class="nav-section" data-section="admin">Administración</div>
@@ -765,6 +811,9 @@ body.body-app::before,body.body-facturador::before{content:none}
 <div class="main">
   <div class="topbar">
     <button class="btn-hamburger" id="btnHamburger" onclick="toggleSidebar()">☰</button>
+    <button class="btn-sidebar-toggle" id="sidebarCollapseBtn" onclick="toggleSidebarCollapse()" title="Ocultar/mostrar menú">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
     <span class="topbar-title" id="moduleTitle">Finanzas & Ventas</span>
     <div class="topbar-actions">
       <a href="javascript:void(0)" onclick="navigateTo('facturador')" class="btn btn-primary" id="btnNuevaCot">+ Nueva Cotización</a>
@@ -1161,6 +1210,17 @@ body.body-app::before,body.body-facturador::before{content:none}
 
       <div class="totals-section">
         <div class="totals-box">
+          <div class="t-row" style="background:#f9f9f9;">
+            <span class="t-label" style="color:var(--gris-t);">Subtotal</span>
+            <span id="subtotal" style="font-weight:600;font-size:.85rem;">$0</span>
+          </div>
+          <div class="t-row" style="background:#f9f9f9;">
+            <span class="t-label" style="color:var(--gris-t);">Descuento</span>
+            <span>
+              <input type="number" id="descuentoPct" class="editable price-input" value="0" min="0" max="100" step="any" oninput="recalc();this.nextElementSibling.nextElementSibling.textContent=(parseFloat(this.value)||0)+'%'" style="text-align:right;width:44px;"><span class="no-print" style="font-weight:600;font-size:.85rem;">%</span>
+              <span class="price-print" style="display:none;font-size:.81rem;">0%</span>
+            </span>
+          </div>
           <div class="t-row final"><span class="t-label" id="totalLabel">TOTAL COTIZACIÓN</span><span class="amt" id="total">$0</span></div>
           <div class="t-row" style="background:#f9f9f9;">
             <span class="t-label" style="color:var(--gris-t);">Anticipo 50% <span style="font-size:.65rem;color:var(--gris-t);font-weight:400;">— al aprobar</span></span>
@@ -1198,6 +1258,26 @@ const SUPABASE_URL = 'https://wwrczipwwrmptltlrams.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_jooX9Uk-Wq6xHPRsfwoAEg_1GlF9Afe';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+/* ═══════════ TOAST ═══════════ */
+const TOAST_ICONS = {
+  ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+};
+function mostrarToast(msg, tipo) {
+  const host = document.getElementById('toastHost');
+  if(!host) return;
+  tipo = tipo || 'ok';
+  const el = document.createElement('div');
+  el.className = `toast ${tipo}`;
+  el.innerHTML = `<span class="toast-icon">${TOAST_ICONS[tipo] || TOAST_ICONS.ok}</span><span>${msg}</span>`;
+  host.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, 3500);
+}
+
 /* ═══════════ SPA NAVIGATION SYSTEM ═══════════ */
 function navigateTo(view) {
   // Hide all views
@@ -1223,6 +1303,7 @@ function navigateTo(view) {
       }
     } catch(e){}
     aplicarPermisos();
+    restaurarSidebarCollapse();
     const modInicial = getModuloInicial();
     showModule(modInicial);
   } else if(view === 'facturador') {
@@ -1316,6 +1397,15 @@ function fmtNum(n) {
   return '$' + Number(n||0).toLocaleString('es-CO', {minimumFractionDigits:0, maximumFractionDigits:0});
 }
 
+// Formatea un input de texto con separador de miles mientras se escribe (COP: puntos, USD: comas)
+function formatearMiles(el, locale) {
+  const digits = el.value.replace(/\D/g,'');
+  el.value = digits ? Number(digits).toLocaleString(locale || 'es-CO') : '';
+}
+function parsearMiles(str) {
+  return parseInt((str||'').replace(/\D/g,''), 10) || 0;
+}
+
 /* ═══════════ ICONOS SVG (estilo trazo, color heredado) ═══════════ */
 function _ico(inner, fill) {
   return `<svg class="ic" viewBox="0 0 24 24" fill="${fill?'currentColor':'none'}" stroke="${fill?'none':'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
@@ -1342,6 +1432,7 @@ const ICON = {
   money:      _ico('<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'),
   lock:       _ico('<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'),
   check:      _ico('<polyline points="20 6 9 17 4 12"/>'),
+  filter:     _ico('<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>'),
   chart:      _ico('<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>'),
   play:       _ico('<polygon points="6 3 20 12 6 21 6 3"/>', true),
   pause:      _ico('<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>', true),
@@ -1366,11 +1457,52 @@ const CANAL_SVG = {
 };
 function canalIcon(name) { return CANAL_SVG[name] || ICON.tag; }
 
-let _cache = { docs: null, clientes: null, proyectos: null, usuarios: null, config: null };
+let _cache = { docs: null, clientes: null, proyectos: null, usuarios: null, config: null, servicios: null, gruposServicios: null };
 
 function invalidateCache(key) {
   if(key) _cache[key] = null;
-  else _cache = { docs: null, clientes: null, proyectos: null, usuarios: null, config: null };
+  else _cache = { docs: null, clientes: null, proyectos: null, usuarios: null, config: null, servicios: null, gruposServicios: null };
+}
+
+async function getServicios() {
+  if(_cache.servicios) return _cache.servicios;
+  const { data, error } = await db.from('servicios').select('*').order('nombre', { ascending: true });
+  if(error || !data) return [];
+  _cache.servicios = data;
+  return _cache.servicios;
+}
+
+async function getGruposServicios() {
+  if(_cache.gruposServicios) return _cache.gruposServicios;
+  const { data, error } = await db.from('grupos_servicios').select('*').order('orden', { ascending: true });
+  if(error || !data) return [];
+  _cache.gruposServicios = data;
+  return _cache.gruposServicios;
+}
+
+function _esAdminSesion() {
+  return (JSON.parse(localStorage.getItem('meev_session')||'{}')).rol === 'admin';
+}
+
+async function agregarServicio(grupoId) {
+  if(!_esAdminSesion()) return;
+  await db.from('servicios').insert({ nombre: 'Nuevo servicio', precio_nacional: 0, precio_internacional: 0, activo: true, grupo_id: grupoId || null });
+  invalidateCache('servicios');
+  renderServicios();
+}
+
+async function actualizarServicio(id, campo, valor) {
+  if(!_esAdminSesion()) return;
+  await db.from('servicios').update({ [campo]: valor }).eq('id', id);
+  invalidateCache('servicios');
+}
+
+async function eliminarServicio(id) {
+  if(!_esAdminSesion()) return;
+  if(!confirm('¿Eliminar este servicio del catálogo?')) return;
+  await db.from('servicios').delete().eq('id', id);
+  invalidateCache('servicios');
+  renderServicios();
 }
 
 async function getDocs() {
@@ -1385,14 +1517,18 @@ async function getDocs() {
     anticipo_monto: Number(d.anticipo_monto) || 0,
     anticipo_fecha: d.anticipo_fecha || null,
     saldo_fecha: d.saldo_fecha || null,
-    vigencia: d.vigencia || null
+    vigencia: d.vigencia || null,
+    descuento_pct: Number(d.descuento_pct) || 0
   }));
   return _cache.docs;
 }
 
 async function getClientes() {
   if(_cache.clientes) return _cache.clientes;
-  const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false });
+  // Se ordena también por id como criterio de desempate: si dos clientes
+  // comparten el mismo created_at (ej. una carga masiva), el orden por fecha
+  // sola no es estable y un cliente puede "saltar" de lugar tras cualquier update.
+  const { data, error } = await db.from('clientes').select('*').order('created_at', { ascending: false }).order('id', { ascending: false });
   if(error || !data) return [];
   _cache.clientes = data;
   return _cache.clientes;
@@ -1422,15 +1558,16 @@ const MODULOS = [
   {key:'clientes', label:'Clientes'},
   {key:'finanzas', label:'Finanzas & Ventas'},
   {key:'operaciones', label:'Operaciones'},
-  {key:'equipo', label:'RH'},
+  {key:'equipo', label:'Equipo'},
+  {key:'servicios', label:'Servicios'},
   {key:'reportes', label:'Reportes'}
 ];
 
 // Permisos por defecto según el rol, usados cuando el usuario no tiene overrides propios
 function permisosDefaultRol(rol) {
-  if(rol === 'admin') return {clientes:true, finanzas:true, operaciones:true, equipo:true, reportes:true};
-  if(rol === 'account_manager') return {clientes:true, finanzas:true, operaciones:true, equipo:false, reportes:false};
-  return {clientes:false, finanzas:false, operaciones:true, equipo:false, reportes:false};
+  if(rol === 'admin') return {clientes:true, finanzas:true, operaciones:true, equipo:true, servicios:true, reportes:true};
+  if(rol === 'account_manager') return {clientes:true, finanzas:true, operaciones:true, equipo:false, servicios:true, reportes:false};
+  return {clientes:false, finanzas:false, operaciones:true, equipo:false, servicios:false, reportes:false};
 }
 
 // Permisos efectivos de un usuario: sus overrides guardados, o el default de su rol
@@ -1477,6 +1614,20 @@ function toggleSidebar() {
   document.getElementById('sidebarOverlay').classList.toggle('open');
 }
 
+// Ocultar/mostrar el menú lateral en escritorio (independiente del hamburguesa móvil)
+function toggleSidebarCollapse() {
+  const sidebar = document.querySelector('.sidebar');
+  const main = document.querySelector('.main');
+  const collapsed = sidebar.classList.toggle('collapsed');
+  main.classList.toggle('expanded', collapsed);
+  localStorage.setItem('meev_sidebar_collapsed', collapsed ? '1' : '0');
+}
+function restaurarSidebarCollapse() {
+  if(localStorage.getItem('meev_sidebar_collapsed') !== '1') return;
+  document.querySelector('.sidebar')?.classList.add('collapsed');
+  document.querySelector('.main')?.classList.add('expanded');
+}
+
 let currentModule = 'clientes';
 function showModule(mod) {
   currentModule = mod;
@@ -1489,15 +1640,16 @@ function showModule(mod) {
   const navEl = event?.currentTarget || document.querySelector(`.nav-item[data-modulo="${mod}"]`);
   navEl?.classList.add('active');
   const btn = document.getElementById('btnNuevaCot');
-  if(btn) btn.style.display = (mod === 'clientes' || mod === 'operaciones' || mod === 'equipo' || mod === 'reportes') ? 'none' : '';
+  if(btn) btn.style.display = (mod === 'clientes' || mod === 'operaciones' || mod === 'equipo' || mod === 'servicios' || mod === 'reportes') ? 'none' : '';
   document.getElementById('moduleTitle').textContent = {
     finanzas: 'Finanzas & Ventas', clientes: 'Clientes', operaciones: 'Operaciones',
-    equipo: 'RH', reportes: 'Reportes', configuracion: 'Configuración'
+    equipo: 'Equipo', servicios: 'Servicios', reportes: 'Reportes', configuracion: 'Configuración'
   }[mod] || mod;
   if(mod === 'finanzas') renderFinanzas();
   else if(mod === 'clientes') renderClientes();
   else if(mod === 'operaciones') renderOperaciones();
   else if(mod === 'equipo') renderEquipo();
+  else if(mod === 'servicios') renderServicios();
   else if(mod === 'reportes') renderReportes();
   else if(mod === 'configuracion') renderConfiguracion();
 }
@@ -1512,12 +1664,24 @@ function iniciarRealtime() {
     if(tabla === 'clientes') invalidateCache('clientes');
     else if(tabla === 'cotizaciones') invalidateCache('docs');
     else if(tabla === 'proyectos') invalidateCache('proyectos');
+    else if(tabla === 'Usuarios') invalidateCache('usuarios');
+    else if(tabla === 'servicios') invalidateCache('servicios');
+    else if(tabla === 'grupos_servicios') invalidateCache('gruposServicios');
+    else if(tabla === 'configuracion') invalidateCache('config');
+    // documentos_empleado, historial_empleado y tareas no se cachean: solo se refresca la vista
     programarRefresco();
   };
   _realtimeChan = db.channel('meev-cambios')
-    .on('postgres_changes', { event:'*', schema:'public', table:'clientes' },     () => onCambio('clientes'))
-    .on('postgres_changes', { event:'*', schema:'public', table:'cotizaciones' }, () => onCambio('cotizaciones'))
-    .on('postgres_changes', { event:'*', schema:'public', table:'proyectos' },    () => onCambio('proyectos'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'clientes' },             () => onCambio('clientes'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'cotizaciones' },          () => onCambio('cotizaciones'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'proyectos' },             () => onCambio('proyectos'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'tareas' },                () => onCambio('tareas'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'Usuarios' },              () => onCambio('Usuarios'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'servicios' },             () => onCambio('servicios'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'grupos_servicios' },      () => onCambio('grupos_servicios'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'documentos_empleado' },   () => onCambio('documentos_empleado'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'historial_empleado' },    () => onCambio('historial_empleado'))
+    .on('postgres_changes', { event:'*', schema:'public', table:'configuracion' },         () => onCambio('configuracion'))
     .subscribe();
 }
 
@@ -1539,13 +1703,14 @@ function refrescarModuloActual() {
   if(!app || !app.classList.contains('active')) return; // no refrescar fuera de la app (ej. facturador)
   if(hayModalAbierto()) { programarRefresco(); return; }  // no interrumpir si hay un formulario abierto
   const fn = { finanzas:renderFinanzas, clientes:renderClientes, operaciones:renderOperaciones,
-               equipo:renderEquipo, reportes:renderReportes, configuracion:renderConfiguracion }[currentModule];
+               equipo:renderEquipo, servicios:renderServicios, reportes:renderReportes, configuracion:renderConfiguracion }[currentModule];
   if(fn) fn();
 }
 
 async function renderFinanzas() {
   await procesarVencimientos();
   const docs = await getDocs();
+  const cfg = await getConfig();
   const cots = docs.filter(d => d.modo === 'cot');
 
   // Populate table after render
@@ -1556,7 +1721,11 @@ async function renderFinanzas() {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--gris-t);font-size:.8rem;">No hay cotizaciones aún.</td></tr>';
       return;
     }
-    tbody.innerHTML = cots.map(d => {
+    // Ordena mostrando primero lo que necesita acción (anticipo por facturar, esperando pagos),
+    // luego lo aún no enviado, y al final lo ya cerrado o cancelado.
+    const PRIORIDAD_ESTADO = {anticipo:0, enviada:1, saldo_enviado:2, borrador:3, saldo_pagado:4, cancelada:5};
+    const cotsOrdenadas = [...cots].sort((a,b) => (PRIORIDAD_ESTADO[a.estado]??9) - (PRIORIDAD_ESTADO[b.estado]??9));
+    tbody.innerHTML = cotsOrdenadas.map(d => {
       const pagado = montoPagado(d);
       const pagadoCell = pagado > 0
         ? `${fmtNum(pagado)}${d.estado!=='saldo_pagado' && d.total ? `<br><span style="font-size:.6rem;font-weight:400;color:var(--gris-t)">de ${fmtNum(d.total)}</span>` : ''}`
@@ -1625,39 +1794,13 @@ async function renderFinanzas() {
     }
   });
 
-  // Pipeline
-  const PIPE_ORD = ['borrador','enviada','anticipo','saldo_enviado','saldo_pagado','cancelada'];
-  const pipeline = {}; PIPE_ORD.forEach(e => pipeline[e] = []);
-  cots.forEach(d => { if(pipeline[d.estado]) pipeline[d.estado].push(d); });
-
-  const pipCol = (estado) => {
-    const dotMap = {borrador:'borrador',enviada:'enviada',anticipo:'anticipo',saldo_enviado:'saldo_enviado',saldo_pagado:'aprobada',cancelada:'cancelada'};
-    return `
-    <div class="pipeline-col">
-      <div class="pipeline-label"><span class="pip-dot ${dotMap[estado]}"></span>${COT_LABEL[estado]} (${pipeline[estado].length})</div>
-      ${pipeline[estado].length ? pipeline[estado].map(d => {
-        const next = nextStepCot(d);
-        return `
-        <div class="pip-item">
-          <div class="pip-item-num">${d.num}</div>
-          <div class="pip-item-client">${d.cliente}</div>
-          <div class="pip-item-total">${fmtNum(d.total)}</div>
-          <div class="pip-item-actions">
-            ${next ? `<button class="pip-btn avanzar" onclick="${next.call}">${next.lbl}</button>` : ''}
-            <button class="pip-btn" onclick="verDocumento('${d.num}')">Ver</button>
-          </div>
-        </div>`;
-      }).join('') : '<div class="pip-empty">—</div>'}
-    </div>`;
-  };
-
-  // Cobros pendientes: cotizaciones que esperan una acción de cobro
-  const pendientes = [];
-  cots.forEach(d => {
-    if(d.estado==='enviada') pendientes.push({num:d.num, cliente:d.cliente, label:'Esperando anticipo', monto:d.total, accion:'anticipo'});
-    else if(d.estado==='anticipo') pendientes.push({num:d.num, cliente:d.cliente, label:'Falta enviar saldo', monto:(d.total||0)-(d.anticipo_monto||0), accion:'saldo_enviado'});
-    else if(d.estado==='saldo_enviado') pendientes.push({num:d.num, cliente:d.cliente, label:'Esperando saldo', monto:(d.total||0)-(d.anticipo_monto||0), accion:'saldo'});
-  });
+  // Desglose de impuestos sobre lo efectivamente cobrado en el período
+  // (los precios del catálogo ya incluyen IVA+ICA, por eso se dividen hacia atrás)
+  const ivaPct = cfg.iva||0, icaPct = cfg.ica||0;
+  const divisor = 1 + (ivaPct/100) + (icaPct/100);
+  const ingresoNeto = divisor ? cobradoPeriodo/divisor : cobradoPeriodo;
+  const ivaPeriodo = ingresoNeto * (ivaPct/100);
+  const icaPeriodo = ingresoNeto * (icaPct/100);
 
   const content = document.getElementById('mainContent');
   content.innerHTML = `
@@ -1691,66 +1834,53 @@ async function renderFinanzas() {
       </div>
     </div>
 
-    <div class="content-grid">
-      <div>
-        <div class="section-card" style="margin-bottom:20px;">
-          <div class="section-header">
-            <span class="section-title">Pipeline de Cotizaciones</span>
-          </div>
-          <div class="pipeline">
-            ${pipCol('borrador')}
-            ${pipCol('enviada')}
-            ${pipCol('anticipo')}
-            ${pipCol('saldo_enviado')}
-            ${pipCol('saldo_pagado')}
-            ${pipCol('cancelada')}
-          </div>
-        </div>
-
-        <!-- LISTA DE COTIZACIONES -->
-        <div class="section-card" style="margin-top:20px;">
-          <div class="section-header">
-            <span class="section-title">Todas las Cotizaciones</span>
-          </div>
-          <table class="cot-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Cliente</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th class="r">Total</th>
-                <th class="r">Pagado</th>
-                <th class="r">Acción</th>
-              </tr>
-            </thead>
-            <tbody id="cotTableBody"></tbody>
-          </table>
-        </div>
-
+    <div class="section-card tax-card" style="margin-bottom:20px;">
+      <div class="section-header">
+        <span class="section-title">Impuestos e ingreso neto</span>
+        <span style="font-size:.68rem;color:var(--gris-t);">${{mes:'Este mes',trimestre:'Este trimestre',anio:'Este año',todo:'Histórico'}[currentPeriod]}</span>
       </div>
-
-      <div class="section-card">
-        <div class="section-header">
-          <span class="section-title">Cobros Pendientes</span>
+      <div class="tax-breakdown">
+        <div class="tax-step">
+          <div class="tax-step-label">Cobrado (bruto)</div>
+          <div class="tax-step-value">${fmtNum(cobradoPeriodo)}</div>
         </div>
-        ${pendientes.length ? pendientes.map(p => `
-          <div class="cobro-item">
-            <span class="cobro-dot ${p.accion==='saldo_enviado'?'urgente':''}"></span>
-            <div class="cobro-info">
-              <div class="cobro-client">${p.cliente}</div>
-              <div class="cobro-tipo">${p.label} · ${p.num}</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-              <span class="cobro-monto">${fmtNum(p.monto)}</span>
-              ${p.accion==='anticipo' ? `<button class="btn-pagar" onclick="abrirRegistrarPago('${p.num}','anticipo')">Registrar anticipo</button>`
-                : p.accion==='saldo_enviado' ? `<button class="btn-pagar" onclick="marcarSaldoEnviado('${p.num}')">Marcar saldo enviado</button>`
-                : `<button class="btn-pagar" onclick="abrirRegistrarPago('${p.num}','saldo')">Registrar saldo</button>`}
-            </div>
-          </div>`).join('')
-          : '<div class="empty-state"><div class="e-icon"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><p>Sin cobros pendientes</p></div>'
-        }
+        <div class="tax-op">−</div>
+        <div class="tax-step">
+          <div class="tax-step-label">IVA (${ivaPct}%)</div>
+          <div class="tax-step-value tax-neg">${fmtNum(Math.round(ivaPeriodo))}</div>
+        </div>
+        <div class="tax-op">−</div>
+        <div class="tax-step">
+          <div class="tax-step-label">ICA (${icaPct}%)</div>
+          <div class="tax-step-value tax-neg">${fmtNum(Math.round(icaPeriodo))}</div>
+        </div>
+        <div class="tax-op">=</div>
+        <div class="tax-step tax-final">
+          <div class="tax-step-label">Ingreso neto</div>
+          <div class="tax-step-value">${fmtNum(Math.round(ingresoNeto))}</div>
+        </div>
       </div>
+      <div class="tax-note">Calculado sobre lo efectivamente cobrado en el período, asumiendo precios en pesos con IVA e ICA incluidos.</div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">Todas las Cotizaciones</span>
+      </div>
+      <table class="cot-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th class="r">Total</th>
+            <th class="r">Pagado</th>
+            <th class="r">Acción</th>
+          </tr>
+        </thead>
+        <tbody id="cotTableBody"></tbody>
+      </table>
     </div>`;
 }
 
@@ -1782,6 +1912,7 @@ async function editarCotizacion(num) {
   localStorage.setItem('meev_editcot', JSON.stringify({
     numero: d.num, cliente: d.cliente, cliente_id: d.cliente_id,
     items: d.items || [], notas: d.notas || '', vigencia: d.vigencia || null,
+    descuento_pct: d.descuento_pct || 0,
     pais: c.pais || '', ciudad: c.ciudad || '', celular: c.celular || '', email: c.email || ''
   }));
   closeCliDetail();
@@ -1994,7 +2125,13 @@ async function cerrarSesion() {
 let cliEditId = null;
 let cliDetailId = null;
 let cliFilterEstado = 'todos';
-let cliFilterCartera = 'todos';
+let cliFilterResponsable = 'todos'; // 'todos' | 'mia' | 'sin' | id de usuario (string)
+let cliFilterCanal = 'todos';
+let cliFilterPresupuesto = 'todos'; // 'todos' | '' (no definido) | uno de CLI_PRESUPUESTOS
+let cliOrden = 'reciente'; // 'reciente' | 'antiguo' | 'nombre' | 'cotizaciones'
+let cliFiltrosAbiertos = false;
+const CLI_CANALES = ['Instagram','Facebook Ads','Google Ads','Sitio web','WhatsApp','Referido','LinkedIn','TikTok','Evento','Otro'];
+const CLI_PRESUPUESTOS = ['Menos de $1.000.000','$1.000.000 – $2.000.000','$2.000.000 – $5.000.000','$5.000.000 – $10.000.000','$10.000.000 – $20.000.000','Más de $20.000.000'];
 
 // Returns the current logged-in user's Usuarios.id (falls back to email lookup
 // for sessions created before the id was stored).
@@ -2080,8 +2217,11 @@ async function enviarCorreoCotizacion(num) {
           from: `${nombreRemitente} <${correoRemitente}>`,
           reply_to: cfg.email_reply_to || undefined }
       });
-      if(error || res?.error) { alert('La cotización se marcó como enviada, pero el correo falló. Intenta reenviarlo más tarde.'); }
-    } catch(e) { alert('La cotización se marcó como enviada, pero el correo falló. Intenta reenviarlo más tarde.'); }
+      if(error || res?.error) { mostrarToast('La cotización se marcó como enviada, pero el correo falló.', 'error'); }
+      else { mostrarToast(`Correo enviado a ${cliente.nombre || d.cliente}`, 'ok'); }
+    } catch(e) { mostrarToast('La cotización se marcó como enviada, pero el correo falló.', 'error'); }
+  } else {
+    mostrarToast('Cotización marcada como enviada (el cliente no tiene correo registrado).', 'ok');
   }
   const upd = { estado:'enviada' };
   if(!d.vigencia) {
@@ -2251,8 +2391,11 @@ async function renderClientes() {
   const amCorto = (uid) => { const n = amNombre(uid); return n ? n.split(' ')[0] : null; };
 
   if(cliFilterEstado !== 'todos') clientes = clientes.filter(c => c.estado === cliFilterEstado);
-  if(cliFilterCartera === 'mia') clientes = clientes.filter(c => c.asignado_a == miId);
-  else if(cliFilterCartera === 'sin') clientes = clientes.filter(c => !c.asignado_a);
+  if(cliFilterResponsable === 'mia') clientes = clientes.filter(c => c.asignado_a == miId);
+  else if(cliFilterResponsable === 'sin') clientes = clientes.filter(c => !c.asignado_a);
+  else if(cliFilterResponsable !== 'todos') clientes = clientes.filter(c => c.asignado_a == cliFilterResponsable);
+  if(cliFilterCanal !== 'todos') clientes = clientes.filter(c => c.canal === cliFilterCanal);
+  if(cliFilterPresupuesto !== 'todos') clientes = clientes.filter(c => (c.presupuesto||'') === cliFilterPresupuesto);
   if(query) clientes = clientes.filter(c =>
     (c.nombre||'').toLowerCase().includes(query) ||
     (c.empresa||'').toLowerCase().includes(query) ||
@@ -2260,24 +2403,70 @@ async function renderClientes() {
   );
 
   const cotCount = (id) => docs.filter(d => d.cliente_id == id).length;
+
+  // getClientes() ya entrega los más recientes primero; el resto de órdenes se aplican encima.
+  if(cliOrden === 'antiguo') clientes = [...clientes].reverse();
+  else if(cliOrden === 'nombre') clientes = [...clientes].sort((a,b) => (a.nombre||'').localeCompare(b.nombre||''));
+  else if(cliOrden === 'cotizaciones') clientes = [...clientes].sort((a,b) => cotCount(b.id) - cotCount(a.id));
+
   const amBadge = (c) => c.asignado_a
     ? `<span class="cli-am asignado">${ICON.user} ${amCorto(c.asignado_a)}</span>`
     : `<span class="cli-am sin">● Sin asignar</span>`;
 
+  const filtrosActivos = [cliFilterEstado!=='todos', cliFilterResponsable!=='todos', cliFilterCanal!=='todos', cliFilterPresupuesto!=='todos', cliOrden!=='reciente'].filter(Boolean).length;
+  const ORDEN_LABEL = {reciente:'Más recientes',antiguo:'Más antiguos',nombre:'Nombre (A-Z)',cotizaciones:'Más cotizaciones'};
+
+  const pill = (activo, label, onclick) => `<button class="cli-filter-btn ${activo?'active':''}" onclick="${onclick}">${label}</button>`;
+
   const toolbar = `
     <div class="cli-toolbar">
       <input class="cli-search" id="cliSearchInput" placeholder="Buscar por nombre, empresa o email..." oninput="renderClientes()" value="${(document.getElementById('cliSearchInput')?.value||'')}">
-      <div class="cli-filter">
-        ${['todos','nuevo','seguimiento','cliente','inactivo'].map(e => `
-          <button class="cli-filter-btn ${e!=='todos'?'f-'+e:''} ${cliFilterEstado===e?'active':''}" onclick="setCliFilter('${e}')">
-            ${e==='todos'?'Todos':EST_LABEL[e]}
-          </button>`).join('')}
+      <div class="cli-filtros-wrap">
+        <button class="cli-filtros-btn ${cliFiltrosAbiertos?'active':''}" onclick="toggleCliFiltros(event)">
+          ${ICON.filter||''} Filtros ${filtrosActivos ? `<span class="cli-filtros-badge">${filtrosActivos}</span>` : ''}
+        </button>
+        ${cliFiltrosAbiertos ? `
+        <div class="cli-filtros-panel" onclick="event.stopPropagation()">
+          <div>
+            <div class="cli-filtros-section-label">Estado</div>
+            <div class="cli-filter">
+              ${['todos','nuevo','seguimiento','cliente','inactivo'].map(e => pill(cliFilterEstado===e, e==='todos'?'Todos':EST_LABEL[e], `setCliFilter('${e}')`)).join('')}
+            </div>
+          </div>
+          <div>
+            <div class="cli-filtros-section-label">Responsable</div>
+            <div class="cli-filter">
+              ${pill(cliFilterResponsable==='todos','Todos',`setCliResponsable('todos')`)}
+              ${pill(cliFilterResponsable==='mia','Mi cartera',`setCliResponsable('mia')`)}
+              ${pill(cliFilterResponsable==='sin','Sin asignar',`setCliResponsable('sin')`)}
+              ${usuarios.map(u => pill(cliFilterResponsable==String(u.id), u.nombre?u.nombre.split(' ')[0]:'—', `setCliResponsable('${u.id}')`)).join('')}
+            </div>
+          </div>
+          <div>
+            <div class="cli-filtros-section-label">Canal de origen</div>
+            <div class="cli-filter">
+              ${pill(cliFilterCanal==='todos','Todos',`setCliCanal('todos')`)}
+              ${CLI_CANALES.map(c => pill(cliFilterCanal===c, c, `setCliCanal('${c.replace(/'/g,"\\'")}')`)).join('')}
+            </div>
+          </div>
+          <div>
+            <div class="cli-filtros-section-label">Presupuesto</div>
+            <div class="cli-filter">
+              ${pill(cliFilterPresupuesto==='todos','Todos',`setCliPresupuesto('todos')`)}
+              ${pill(cliFilterPresupuesto==='','No definido',`setCliPresupuesto('')`)}
+              ${CLI_PRESUPUESTOS.map(p => pill(cliFilterPresupuesto===p, p, `setCliPresupuesto('${p.replace(/'/g,"\\'")}')`)).join('')}
+            </div>
+          </div>
+          <div>
+            <div class="cli-filtros-section-label">Ordenar por</div>
+            <div class="cli-filter">
+              ${Object.keys(ORDEN_LABEL).map(o => pill(cliOrden===o, ORDEN_LABEL[o], `setCliOrden('${o}')`)).join('')}
+            </div>
+          </div>
+          ${filtrosActivos ? `<button class="cli-filtros-limpiar" onclick="limpiarCliFiltros()">Limpiar filtros</button>` : ''}
+        </div>` : ''}
       </div>
-      <div class="cli-filter cli-filter-cartera">
-        ${[['todos','Todos'],['mia','Mi cartera'],['sin','Sin asignar']].map(([k,lbl]) => `
-          <button class="cli-filter-btn ${cliFilterCartera===k?'active':''}" onclick="setCliCartera('${k}')">${lbl}</button>`).join('')}
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;">
+      <div style="display:flex;gap:8px;align-items:center;margin-left:auto;">
         <div class="view-toggle">
           <button onclick="toggleView('cards')" class="${cliViewMode==='cards'?'active':''}">⊞ Tarjetas</button>
           <button onclick="toggleView('lista')" class="${cliViewMode==='lista'?'active':''}">☰ Lista</button>
@@ -2351,10 +2540,48 @@ function setCliFilter(estado) {
   renderClientes();
 }
 
-function setCliCartera(k) {
-  cliFilterCartera = k;
+function setCliResponsable(k) {
+  cliFilterResponsable = k;
   renderClientes();
 }
+
+function setCliCanal(c) {
+  cliFilterCanal = c;
+  renderClientes();
+}
+
+function setCliPresupuesto(p) {
+  cliFilterPresupuesto = p;
+  renderClientes();
+}
+
+function setCliOrden(o) {
+  cliOrden = o;
+  renderClientes();
+}
+
+function toggleCliFiltros(e) {
+  if(e) e.stopPropagation();
+  cliFiltrosAbiertos = !cliFiltrosAbiertos;
+  renderClientes();
+}
+
+function limpiarCliFiltros() {
+  cliFilterEstado = 'todos';
+  cliFilterResponsable = 'todos';
+  cliFilterCanal = 'todos';
+  cliFilterPresupuesto = 'todos';
+  cliOrden = 'reciente';
+  renderClientes();
+}
+
+// Cierra el panel de filtros al hacer clic fuera de él
+document.addEventListener('click', (e) => {
+  if(cliFiltrosAbiertos && typeof currentModule !== 'undefined' && currentModule === 'clientes' && !e.target.closest('.cli-filtros-wrap')) {
+    cliFiltrosAbiertos = false;
+    renderClientes();
+  }
+});
 
 async function asignarme(id) {
   const miId = await currentUserId();
@@ -2529,7 +2756,7 @@ async function getUsuarios() {
   return _cache.usuarios;
 }
 
-const CONFIG_DEFAULT = { iva:19, retefuente:1.5, reteiva:15, com_nacional:2.65, com_nacional_fijo:0, com_internacional:1.0, com_internacional_fijo:0, vigencia_dias:30,
+const CONFIG_DEFAULT = { iva:19, ica:0, retefuente:1.5, reteiva:15, com_nacional:2.65, com_nacional_fijo:0, com_internacional:1.0, com_internacional_fijo:0, vigencia_dias:30,
   email_asunto:'Tu cotización {numero} de MEEV',
   email_mensaje:'Gracias por confiar en MEEV. Preparamos esta propuesta a la medida de {empresa}. A continuación encontrarás el detalle de los servicios y la inversión.',
   email_cta:'Ver cotización completa' };
@@ -2725,6 +2952,7 @@ async function renderConfiguracion() {
         <div class="section-header"><span class="section-title">Impuestos y retenciones</span></div>
         <div class="cfg-grid">
           ${fld('iva','IVA', cfg.iva, 'Solo aplica a clientes nacionales. Internacionales = exento.')}
+          ${fld('ica','ICA', cfg.ica, 'Impuesto municipal sobre tus ingresos. Aplica a nacionales e internacionales.')}
           ${fld('retefuente','Retención en la fuente', cfg.retefuente, 'Sobre la base, en ventas con tarjeta.')}
           ${fld('reteiva','ReteIVA', cfg.reteiva, 'Sobre el valor del IVA.')}
         </div>
@@ -2799,6 +3027,117 @@ async function renderConfiguracion() {
   actualizarPreviewCorreo();
 }
 
+// Catálogo de servicios: los AM pueden verlo (permiso de módulo), solo admin puede editarlo
+function _servTagsHTML(s, esAdmin) {
+  const tags = s.entregables || [];
+  const chips = tags.map((t,i) => `
+    <span class="serv-tag">${(t||'').replace(/</g,'&lt;')}${esAdmin ? `<button type="button" class="serv-tag-x" onclick="quitarEntregable(${s.id},${i})">&times;</button>` : ''}</span>`).join('');
+  const input = esAdmin ? `<input type="text" class="serv-tag-input" placeholder="+ agregar y Enter" onkeydown="if(event.key==='Enter'){event.preventDefault();agregarEntregable(${s.id},this)}">` : '';
+  return chips + input || (esAdmin ? '' : '<span style="color:var(--gris-t);font-size:.72rem;">Sin entregables definidos.</span>');
+}
+
+function _servRowHTML(s, esAdmin, cfg) {
+  const dis = esAdmin ? '' : 'disabled';
+  return `
+        <div class="serv-row">
+          <div class="serv-row-main">
+            <div class="serv-row-name-line">
+              <label class="serv-activo-toggle" title="Visible al armar una cotización">
+                <input type="checkbox" ${s.activo?'checked':''} onchange="actualizarServicio(${s.id},'activo',this.checked)" ${dis}>
+                <span>Activo</span>
+              </label>
+              <input type="text" class="serv-name-input" value="${(s.nombre||'').replace(/"/g,'&quot;')}" placeholder="Nombre del servicio" onchange="actualizarServicio(${s.id},'nombre',this.value)" ${dis}>
+              ${esAdmin ? `<button class="serv-del-btn" title="Eliminar servicio" onclick="eliminarServicio(${s.id})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>` : ''}
+            </div>
+            <textarea class="serv-desc-input" placeholder="Descripción breve del servicio..." oninput="autoSizeTextarea(this)" onchange="actualizarServicio(${s.id},'descripcion',this.value)" ${dis}>${s.descripcion||''}</textarea>
+          </div>
+          <div class="serv-row-tags">
+            <div class="serv-section-label">Entregables</div>
+            <div class="serv-tags-wrap">${_servTagsHTML(s, esAdmin)}</div>
+          </div>
+          <div class="serv-row-priceblock">
+            <div class="serv-row-prices">
+              <div class="serv-price-field">
+                <label>Precio nacional (COP)</label>
+                <input type="text" inputmode="numeric" id="servPrecioNac-${s.id}" value="${Number(s.precio_nacional||0).toLocaleString('es-CO')}" oninput="formatearMiles(this,'es-CO')" onchange="actualizarServicio(${s.id},'precio_nacional',parsearMiles(this.value))" ${dis}>
+              </div>
+              <div class="serv-price-field">
+                <label>Precio internacional (USD)</label>
+                <input type="text" inputmode="numeric" value="${Number(s.precio_internacional||0).toLocaleString('en-US')}" oninput="formatearMiles(this,'en-US')" onchange="actualizarServicio(${s.id},'precio_internacional',parsearMiles(this.value))" ${dis}>
+              </div>
+            </div>
+          </div>
+        </div>`;
+}
+
+let servTab = null;
+function setServTab(id) { servTab = id; renderServicios(); }
+
+async function renderServicios() {
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  const esAdmin = sess.rol === 'admin';
+  const [servicios, grupos, cfg] = await Promise.all([getServicios(), getGruposServicios(), getConfig()]);
+  const content = document.getElementById('mainContent');
+
+  const sinGrupo = servicios.filter(s => !s.grupo_id);
+  const tabs = [...grupos, ...(sinGrupo.length ? [{id:'sin-grupo', nombre:'Sin categoría'}] : [])];
+  if(servTab === null || !tabs.some(t => String(t.id) === String(servTab))) servTab = tabs[0] ? String(tabs[0].id) : null;
+
+  const tabsHTML = tabs.map(t => `<button class="serv-tab ${String(servTab)===String(t.id)?'active':''}" onclick="setServTab('${t.id}')">${t.nombre}</button>`).join('');
+
+  const g = grupos.find(x => String(x.id) === String(servTab));
+  let descHTML, listHTML, addBtnHTML = '';
+  if(g) {
+    const serviciosGrupo = servicios.filter(s => s.grupo_id === g.id);
+    descHTML = `<div class="serv-panel-title">${g.nombre}${g.es_standalone ? '<span class="serv-grupo-badge">Servicio individual</span>' : ''}</div><p class="serv-grupo-desc">${g.descripcion||''}</p>`;
+    listHTML = serviciosGrupo.length ? serviciosGrupo.map(s => _servRowHTML(s, esAdmin, cfg)).join('')
+      : `<div style="text-align:center;color:var(--gris-t);padding:28px;font-size:.8rem;">Aún no hay servicios en este pilar.</div>`;
+    if(esAdmin && !g.es_standalone) addBtnHTML = `<button class="btn btn-primary" style="flex-shrink:0;" onclick="agregarServicio(${g.id})">+ Agregar servicio</button>`;
+  } else if(servTab === 'sin-grupo') {
+    descHTML = `<div class="serv-panel-title">Sin categoría</div>`;
+    listHTML = sinGrupo.map(s => _servRowHTML(s, esAdmin, cfg)).join('');
+  } else {
+    descHTML = ''; listHTML = '';
+  }
+
+  content.innerHTML = `
+    <div class="serv-panel">
+      <div class="serv-panel-tabs">
+        <div class="serv-tabs-row">${tabsHTML}</div>
+        ${addBtnHTML}
+      </div>
+      <div class="serv-panel-desc">${descHTML}</div>
+      <div class="serv-list">${listHTML}</div>
+    </div>`;
+  document.querySelectorAll('.serv-desc-input').forEach(autoSizeTextarea);
+}
+
+// Ajusta la altura de la descripción a su contenido, siempre visible sin scroll
+function autoSizeTextarea(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+async function agregarEntregable(id, inputEl) {
+  const val = inputEl.value.trim();
+  if(!val) return;
+  const servicios = await getServicios();
+  const s = servicios.find(x => x.id === id);
+  const nuevos = [...(s?.entregables||[]), val];
+  await actualizarServicio(id, 'entregables', nuevos);
+  renderServicios();
+}
+
+async function quitarEntregable(id, idx) {
+  const servicios = await getServicios();
+  const s = servicios.find(x => x.id === id);
+  const nuevos = (s?.entregables||[]).filter((_,i) => i !== idx);
+  await actualizarServicio(id, 'entregables', nuevos);
+  renderServicios();
+}
+
 // Actualiza la vista previa del correo en vivo mientras se editan los textos
 function actualizarPreviewCorreo() {
   const iframe = document.getElementById('emailPreview');
@@ -2826,7 +3165,7 @@ async function guardarConfig() {
   const num = (id) => parseFloat(document.getElementById('cfg_'+id).value) || 0;
   const val = (id) => (document.getElementById('cfg_'+id)?.value || '').trim();
   const data = {
-    iva: num('iva'), retefuente: num('retefuente'), reteiva: num('reteiva'),
+    iva: num('iva'), ica: num('ica'), retefuente: num('retefuente'), reteiva: num('reteiva'),
     com_nacional: num('com_nacional'), com_nacional_fijo: num('com_nacional_fijo'),
     com_internacional: num('com_internacional'), com_internacional_fijo: num('com_internacional_fijo'),
     vigencia_dias: Math.max(1, Math.round(num('vigencia_dias')) || 30),
@@ -3130,18 +3469,16 @@ async function renderRhDirectorio() {
         const uProys = proyectosPorUsuario(u.id);
         return `
         <div class="cli-card equipo-card" onclick="abrirUsuarioModal(${u.id})">
-          <div class="cli-card-top">
-            <div class="cli-avatar" style="background:var(--verde);color:var(--negro);">${u.avatar?`<img src="${u.avatar}" alt="${u.nombre}">`:initials(u.nombre)}</div>
-            <span class="cli-status ${u.rol==='admin'?'cs-cliente':'cs-contactado'}">${{admin:'Admin',account_manager:'Account Manager',diseñador:'Diseñador'}[u.rol]||'Colaborador'}</span>
+          <div class="equipo-photo">
+            ${u.avatar?`<img src="${u.avatar}" alt="${u.nombre}">`:`<span class="equipo-photo-initials">${initials(u.nombre)}</span>`}
+            <span class="equipo-photo-badge">${{admin:'Admin',account_manager:'Account Manager',diseñador:'Diseñador'}[u.rol]||'Colaborador'}</span>
           </div>
-          <div class="cli-name">${u.nombre}</div>
-          <div class="cli-empresa">${u.cargo||'Sin cargo'}</div>
-          <div class="cli-detail">
-            ${u.email?`<span>${ICON.mail} ${u.email}</span>`:''}
-            ${u.celular?`<span>${ICON.phone} ${u.indicativo||''} ${u.celular}</span>`:''}
-          </div>
-          <div class="cli-footer">
-            <span class="cli-fecha">${uProys.length} proyecto${uProys.length!==1?'s':''} activo${uProys.length!==1?'s':''}</span>
+          <div class="equipo-card-body">
+            <div class="cli-name">${u.nombre}</div>
+            <div class="cli-empresa">${u.cargo||'Sin cargo'}</div>
+            <div class="cli-footer">
+              <span class="cli-fecha">${uProys.length} proyecto${uProys.length!==1?'s':''} activo${uProys.length!==1?'s':''}</span>
+            </div>
           </div>
         </div>`;
       }).join('')}
@@ -3667,12 +4004,19 @@ async function renderReportes() {
 
 
 /* ═══════════ FACTURADOR MODULE ═══════════ */
-const SERVICES = [{"nombre": "Diseño de Logotipo", "precio": 1000000, "entregables": ["Logotipo principal en versión completa", "Variaciones del logo: horizontal, vertical e isotipo", "Versión en blanco y negro", "Versión en negativo (invertida)", "Favicon e icono para web y redes sociales", "Archivos editables y exportaciones en PNG, SVG y PDF"]}, {"nombre": "Manual de Identidad Visual", "precio": 1300000, "entregables": ["Normas de uso correcto e incorrecto del logo", "Paleta de colores principales y complementarios", "Colores de fondo recomendados", "Selección tipográfica para títulos y textos generales", "Espaciado, proporciones y área de seguridad del logo", "Guía de estilo fotográfico", "Aplicaciones en papelería, oficina, indumentaria, valla y redes sociales"]}, {"nombre": "Diseño de Tipografía", "precio": 1400000, "entregables": ["Fuente tipográfica exclusiva para la marca", "Juego completo: mayúsculas, minúsculas, números y símbolos", "Variantes de peso: Regular, Bold, Italic y más", "Ajuste de espaciado y kerning", "Archivos finales en formatos OTF y TTF listos para instalación", "Versión webfont para uso en páginas web"]}, {"nombre": "Material Corporativo Impreso", "precio": 850000, "entregables": ["Tarjetas de presentación personalizadas", "Hojas membretadas para documentos corporativos", "Sobres corporativos con branding", "Carpetas institucionales para presentación de documentos", "Portada genérica para dossiers y manuales", "Archivos listos para impresión (300 dpi, CMYK, sangrados)", "Mockups de presentación de todas las piezas"]}, {"nombre": "Diseño de Ecosistema eMail", "precio": 900000, "entregables": ["Firma de correo en HTML (Gmail, Outlook, Apple Mail)", "Plantillas para correos transaccionales: bienvenida, confirmación, seguimiento", "Adaptación visual al manual de identidad", "Versiones optimizadas para dispositivos móviles", "Botones CTA y enlaces a redes sociales integrados", "Archivos compatibles con Mailchimp, Klaviyo, HubSpot y similares"]}, {"nombre": "Brochure / Presentación de Negocios", "precio": 1000000, "entregables": ["Presentación corporativa con misión, visión, valores e historia", "Slide deck editable en Google Slides, PowerPoint y Canva", "Versión para impresión con sangría, márgenes y colores CMYK", "Resumen de productos o servicios con descripciones clave", "Diseño de imágenes e ilustraciones de apoyo", "Llamados a la acción (CTA) integrados"]}, {"nombre": "Diseño de Empaque", "precio": 1000000, "entregables": ["Diseño gráfico del empaque principal alineado a la identidad de marca", "Diseño de etiquetas adhesivas, sleeves o contraetiquetas", "Adaptación a múltiples tamaños y formatos del producto", "Organización de textos legales, código de barras, íconos y sellos", "Mockups 3D fotorrealistas del producto con empaque", "Archivos editables y finales en AI, PDF y EPS (300 dpi, CMYK, troqueles)", "Recomendaciones de materiales y terminados (mate, brillante, kraft)"]}, {"nombre": "Diseño de Señalización", "precio": 1000000, "entregables": ["Señalización para oficinas, tiendas y eventos", "Diseño de arquitectura efímera", "Iconografía personalizada para uso interno y externo", "Adaptación de la identidad visual en letreros y elementos direccionales", "Archivos listos para impresión en múltiples formatos"]}, {"nombre": "Diseño de Marca Aplicada", "precio": 1100000, "entregables": ["Diseño para indumentaria: camisetas, polos, gorras, chaquetas y más", "Diseño de artículos promocionales: mugs, agendas, termos, tote bags, stickers", "Adaptación gráfica según material, color y forma del producto", "Mockups realistas de cada prenda u objeto", "Guía de producción: colores Pantone, medidas y márgenes de impresión", "Aplicación fiel al manual de identidad visual"]}, {"nombre": "Diseño Editorial", "precio": 1100000, "entregables": ["Diseño de revistas, catálogos, manuales o informes anuales", "Maquetación profesional por secciones con jerarquía visual clara", "Integración completa de la identidad visual de la marca", "Diagramación con retícula editorial y ritmo de lectura", "Revisión y ajustes sobre el contenido del cliente", "Mockups visuales de la publicación terminada", "Archivos en PDF alta resolución (CMYK para impresión, RGB para digital)"]}, {"nombre": "Diseño de Tienda Shopify", "precio": 3000000, "entregables": ["Diseño UX/UI de la tienda alineado a la identidad de marca", "Configuración inicial completa en Shopify", "Carga y estructura de productos", "Integración de pasarelas de pago", "Configuración de envíos y políticas", "Optimización responsive para móviles", "Instalación de apps esenciales", "Configuración de páginas legales", "SEO técnico: estructura y metadatos", "Automatización de emails y carrito abandonado", "Configuración de login y cuentas de usuario"]}];
+// El catálogo ya no vive hardcodeado aquí: se carga desde la tabla `servicios`
+// (administrable en Configuración > Catálogo de servicios).
+let _catalogoServicios = [];
 let mode = 'cot';
 let counters = {cot:1, fac:1};
 
 async function initFacturador() {
-  renderCatalog(SERVICES);
+  try {
+    const servicios = await getServicios();
+    _catalogoServicios = servicios.filter(s => s.activo !== false)
+      .map(s => ({ nombre: s.nombre, precio: s.precio_nacional || 0, entregables: s.entregables || [] }));
+  } catch(e) { _catalogoServicios = []; }
+  renderCatalog(_catalogoServicios);
   try { const cfg = await getConfig(); _vigenciaDias = cfg.vigencia_dias || 30; } catch(e){}
   setDefaultDates();
   recalc();
@@ -3699,7 +4043,7 @@ function renderCatalog(list) {
           <div class="cat-price">${fmtNum(s.precio)}</div>
         </div>
         <div class="cat-actions">
-          <button class="btn-add-cat" onclick="addFromCatalog(${i})" title="Agregar a cotización">+</button>
+          <button class="btn-add-cat" onclick="addFromCatalog(${s._idx ?? i})" title="Agregar a cotización">+</button>
           ${items.length ? `<button class="btn-expand" onclick="toggleDesc(${i})">▾ ver</button>` : ''}
         </div>
       </div>
@@ -3717,15 +4061,16 @@ function toggleDesc(i) {
 }
 
 function filterCatalog(q) {
-  const filtered = q 
-    ? SERVICES.map((s,i)=>{s._idx=i;return s;}).filter(s=>s.nombre.toLowerCase().includes(q.toLowerCase()))
-    : SERVICES.map((s,i)=>{s._idx=i;return s;});
+  const withIdx = _catalogoServicios.map((s,i) => ({...s, _idx:i}));
+  const filtered = q
+    ? withIdx.filter(s => s.nombre.toLowerCase().includes(q.toLowerCase()))
+    : withIdx;
   renderCatalog(filtered);
 }
 
 function addFromCatalog(i) {
-  const s = SERVICES[i];
-  addItem({ desc: s.nombre, deliverables: s.entregables || [], qty: 1, price: s.precio });
+  const s = _catalogoServicios[i];
+  addItem({ desc: s.nombre, deliverables: s.entregables || [], qty: 1, price: s.precio, fromCatalog: true });
 }
 
 let _vigenciaDias = 30;
@@ -3763,17 +4108,24 @@ function addItem(data={}) {
   const idx = Date.now();
   const tr = document.createElement('tr');
   tr.dataset.idx = idx;
+  tr.dataset.fromCatalog = data.fromCatalog ? '1' : '0';
   const deliverables = data.deliverables || [];
   const delHTML = deliverables.length
     ? `<ul class="item-deliverables">${deliverables.map(d=>`<li>${d}</li>`).join('')}</ul>`
     : '';
+  // Los servicios traídos del catálogo tienen precio fijo (no editable) para
+  // mantener el precio estándar; cualquier ajuste al cliente se hace con el
+  // descuento general, no editando la línea. Los servicios manuales sí permiten precio libre.
+  const priceInput = data.fromCatalog
+    ? `<input type="number" class="editable price-input" value="${data.price??0}" disabled title="Precio fijo del catálogo — usa el descuento general para ajustarlo" style="text-align:right;width:85px;">`
+    : `<input type="number" class="editable price-input" value="${data.price??0}" min="0" step="any" oninput="recalc();this.nextElementSibling.textContent=fmtNum(parseFloat(this.value)||0)" style="text-align:right;width:85px;">`;
   tr.innerHTML = `
     <td class="td-desc">
       <div class="item-main"><input type="text" class="editable" placeholder="Nombre del servicio" value="${data.desc||''}" oninput="recalc()"></div>
       ${delHTML}
     </td>
     <td class="td-qty"><input type="number" class="editable" value="${data.qty??1}" min="0" step="any" oninput="recalc()" style="text-align:right;width:44px;"></td>
-    <td class="td-price"><input type="number" class="editable price-input" value="${data.price??0}" min="0" step="any" oninput="recalc();this.nextElementSibling.textContent=fmtNum(parseFloat(this.value)||0)" style="text-align:right;width:85px;"><span class="price-print" style="display:none;font-size:.81rem;">${fmtNum(data.price??0)}</span></td>
+    <td class="td-price">${priceInput}<span class="price-print" style="display:none;font-size:.81rem;">${fmtNum(data.price??0)}</span></td>
     <td class="td-total"><span class="row-total">${fmtNum((data.qty||1)*(data.price||0))}</span></td>
     <td class="td-act no-print"><button class="btn-rm" onclick="removeItem('${idx}')">✕</button></td>
   `;
@@ -3796,10 +4148,12 @@ function recalc() {
     const s=tr.querySelector('.row-total');
     if(s) s.textContent=fmtNum(t);
   });
-  const iva=0;
-  document.getElementById('total').textContent=fmtNum(sub);
-  document.getElementById('anticipo').textContent=fmtNum(sub*0.5);
-  document.getElementById('saldo').textContent=fmtNum(sub*0.5);
+  const descPct = Math.min(100, Math.max(0, parseFloat(document.getElementById('descuentoPct')?.value) || 0));
+  const total = sub * (1 - descPct/100);
+  document.getElementById('subtotal').textContent=fmtNum(sub);
+  document.getElementById('total').textContent=fmtNum(total);
+  document.getElementById('anticipo').textContent=fmtNum(total*0.5);
+  document.getElementById('saldo').textContent=fmtNum(total*0.5);
 }
 
 // fmtNum already defined in app module above
@@ -3810,6 +4164,8 @@ function nuevoDoc() {
   document.getElementById('docNumInput').value=String(counters[mode]).padStart(4,'0');
   document.getElementById('clientName').value='';
   document.getElementById('itemsBody').innerHTML='';
+  const descEl = document.getElementById('descuentoPct');
+  if(descEl) { descEl.value = 0; const dp = descEl.nextElementSibling?.nextElementSibling; if(dp) dp.textContent = '0%'; }
   currentClienteId = null;
   setDefaultDates();recalc();loadAM();cargarPrecarga();
 }
@@ -3858,7 +4214,9 @@ function cargarEdicion() {
     const ni = document.getElementById('docNumInput'); if(ni) ni.value = numSolo;
     const cn = document.getElementById('clientName'); if(cn) cn.value = e.cliente || '';
     const body = document.getElementById('itemsBody'); if(body) body.innerHTML = '';
-    (e.items || []).forEach(it => addItem({ desc: it.desc, qty: it.qty, price: it.price, deliverables: it.deliverables || [] }));
+    (e.items || []).forEach(it => addItem({ desc: it.desc, qty: it.qty, price: it.price, deliverables: it.deliverables || [], fromCatalog: !!it.fromCatalog }));
+    const descEl = document.getElementById('descuentoPct');
+    if(descEl) { descEl.value = e.descuento_pct || 0; const dp = descEl.nextElementSibling?.nextElementSibling; if(dp) dp.textContent = (e.descuento_pct||0)+'%'; }
     const notasEl = document.querySelector('.notes-text'); if(notasEl && e.notas) notasEl.value = e.notas;
     if(e.vigencia){ const vig = document.getElementById('vigDate'); if(vig) vig.value = e.vigencia; }
     // Datos de contacto en el "Para"
@@ -3927,19 +4285,20 @@ async function guardarDocActual() {
     const ins = tr.querySelectorAll('input[type="number"]');
     const qty = parseFloat(ins[0]?.value) || 0;
     const price = parseFloat(ins[1]?.value) || 0;
-    items.push({desc, qty, price});
+    items.push({desc, qty, price, fromCatalog: tr.dataset.fromCatalog === '1'});
   });
 
   const notasEl = document.querySelector('.notes-text');
   const notas = notasEl?.value || '';
   const vigencia = document.getElementById('vigDate')?.value || null;
+  const descuento_pct = parseFloat(document.getElementById('descuentoPct')?.value) || 0;
 
   const { data: existing } = await db.from('cotizaciones').select('id').eq('numero', num).single();
 
   const doc = {
     numero: num, cliente_nombre: cliente, total, tipo: currentMode === 'fac' ? 'factura' : 'cotizacion',
     items, estado: currentMode === 'cot' ? 'borrador' : 'emitida', notas,
-    cliente_id: currentClienteId || null, vigencia
+    cliente_id: currentClienteId || null, vigencia, descuento_pct
   };
   // Una cotización editada vuelve a Borrador, así que se anula cualquier pago previo
   if(currentMode === 'cot') { doc.anticipo_monto = 0; doc.anticipo_fecha = null; doc.saldo_fecha = null; }
