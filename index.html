@@ -482,9 +482,10 @@ body.body-app::before,body.body-facturador::before{content:none}
 
 
 /* ═══════════ FACTURADOR VIEW STYLES ═══════════ */
-#view-facturador .toolbar{background:var(--negro);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px var(--sombra)}
-#view-facturador .toolbar-brand{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.2rem;color:var(--verde)}
-#view-facturador .toolbar-brand span{color:rgba(255,255,255,.45);font-weight:400;font-size:.82rem;margin-left:8px}
+#view-facturador .toolbar{background:var(--negro);padding:12px 28px;margin-left:290px;display:flex;align-items:center;justify-content:flex-end;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px var(--sombra)}
+#view-facturador .toolbar-brand{display:flex;align-items:center;gap:10px}
+#view-facturador .toolbar-brand img{height:22px;display:block}
+#view-facturador .toolbar-brand span{color:rgba(255,255,255,.45);font-weight:400;font-size:.82rem;font-family:'Nunito',sans-serif}
 #view-facturador .toolbar-actions{display:flex;gap:8px;align-items:center}
 .doc-type-tabs{display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid var(--gris-m)}
 .doc-type-tab{font-family:'Poppins',sans-serif;font-size:.78rem;font-weight:600;padding:8px 22px;border:none;background:none;cursor:pointer;color:var(--gris-t);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
@@ -494,17 +495,30 @@ body.body-app::before,body.body-facturador::before{content:none}
 
 .layout{display:flex;gap:0;max-width:1320px;margin:28px auto;padding:0 20px 60px;align-items:flex-start}
 
-/* CATALOG */
-.catalog-panel{width:290px;flex-shrink:0;background:var(--blanco);border-radius:14px;box-shadow:0 4px 24px var(--sombra);overflow:hidden;position:sticky;top:72px;max-height:calc(100vh - 100px);display:flex;flex-direction:column}
+/* CATALOG — anclado al borde izquierdo de la pantalla, como el sidebar de la app,
+   en vez de flotar como una tarjeta más dentro del contenido centrado. */
+.catalog-panel{width:290px;flex-shrink:0;background:var(--blanco);border-radius:0;box-shadow:4px 0 24px var(--sombra);overflow:hidden;position:fixed;left:0;top:0;bottom:0;z-index:210;display:flex;flex-direction:column}
 .catalog-header{background:var(--negro);padding:16px 18px;flex-shrink:0}
+.catalog-back{display:block;font-size:.68rem;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:12px;transition:color .2s}
+.catalog-back:hover{color:var(--verde)}
 .catalog-title{font-family:'Nunito',sans-serif;font-weight:800;color:var(--verde);font-size:.95rem;margin-bottom:2px}
-.catalog-sub{font-size:.67rem;color:rgba(255,255,255,.58);letter-spacing:.3px}
+.catalog-sub{font-size:.67rem;color:rgba(255,255,255,.58);letter-spacing:.3px;line-height:1.6}
+.catalog-descuento{padding:10px 14px;border-top:1px solid var(--gris-m);background:var(--gris);flex-shrink:0;display:flex;align-items:center;gap:6px;overflow:hidden}
+.catalog-descuento label{font-size:.68rem;font-weight:600;color:var(--gris-t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto;min-width:0}
+.catalog-descuento input{flex:0 0 32px;width:32px;max-width:32px;box-sizing:border-box;border:1.5px solid var(--gris-m);border-radius:6px;padding:3px 4px;text-align:right;font-family:'Poppins',sans-serif;font-size:.75rem;font-weight:600;color:var(--negro)}
+.catalog-descuento input::-webkit-outer-spin-button,.catalog-descuento input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.catalog-descuento span{font-size:.72rem;color:var(--gris-t);flex:0 0 auto}
 .catalog-search{padding:10px 12px;border-bottom:1px solid var(--gris-m);flex-shrink:0}
 .catalog-search input{width:100%;padding:7px 12px;border:1.5px solid var(--gris-m);border-radius:7px;font-family:'Poppins',sans-serif;font-size:.77rem;outline:none}
 .catalog-search input:focus{border-color:var(--verde)}
 .catalog-list{overflow-y:auto;flex:1}
 
+.catalog-group-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gris-t);background:var(--gris);padding:8px 14px;position:sticky;top:0}
+.catalog-empty{padding:20px 14px;font-size:.75rem;color:var(--gris-t);text-align:center}
 .catalog-item{border-bottom:1px solid var(--gris-m);transition:background .15s}
+.catalog-item.catalog-item-star{background:rgba(204,251,85,.1)}
+.catalog-item.catalog-item-star .cat-name{color:#7a9a00}
+.catalog-item-star-tag{margin:-6px 14px 8px;font-size:.62rem;font-weight:700;color:#7a9a00}
 .catalog-item-header{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .catalog-item:hover .catalog-item-header{background:#f8ffe8}
 .cat-info{flex:1;min-width:0}
@@ -523,7 +537,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cat-desc-list li::before{content:'·';position:absolute;left:0;color:var(--verde);font-weight:900}
 
 /* INVOICE */
-.invoice-wrap{flex:1;min-width:0;margin-left:22px}
+.invoice-wrap{flex:1;min-width:0;margin-left:320px}
 .invoice-card{background:var(--blanco);border-radius:14px;box-shadow:0 4px 28px var(--sombra);overflow:hidden}
 .invoice-header{background:var(--negro);padding:32px 36px 26px;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
 .brand-tagline{font-size:.66rem;color:rgba(255,255,255,.58);letter-spacing:2px;text-transform:uppercase;margin-top:5px}
@@ -589,6 +603,8 @@ body.body-app::before,body.body-facturador::before{content:none}
 .t-label{color:var(--gris-t);font-size:.75rem}
 .t-row.final .t-label{color:rgba(255,255,255,.55);font-size:.78rem}
 
+.pago-info{font-size:.74rem;color:var(--gris-t);line-height:1.6;margin-bottom:16px}
+.pago-info span{font-weight:700;color:var(--negro)}
 .notes-section{background:var(--gris);border-radius:9px;padding:16px 20px;margin-bottom:24px}
 .notes-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:7px}
 .notes-text{font-size:.77rem;color:var(--gris-t);line-height:1.7;width:100%;min-height:46px}
@@ -721,8 +737,9 @@ body.body-app::before,body.body-facturador::before{content:none}
   .cli-grid{grid-template-columns:1fr}
   .parties-grid{grid-template-columns:1fr}
   .layout{flex-direction:column;padding:0 12px 40px}
-  .catalog-panel{width:100%;position:relative;top:0;max-height:none;margin-bottom:16px}
+  .catalog-panel{width:100%;position:relative;top:0;bottom:auto;max-height:none;margin-bottom:16px}
   .invoice-wrap{margin-left:0}
+  #view-facturador .toolbar{margin-left:0}
   .invoice-header{grid-template-columns:1fr}
   .invoice-body{padding:16px}
   .company-bar{padding:10px 16px}
@@ -781,19 +798,19 @@ body.body-app::before,body.body-facturador::before{content:none}
   </div>
   <nav class="nav">
     <div class="nav-section" data-section="flujo">Flujo de trabajo</div>
-    <a class="nav-item" data-modulo="clientes" onclick="showModule('clientes')">
+    <a class="nav-item" href="#clientes" data-modulo="clientes" onclick="showModule('clientes');return false">
       <span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18a4 4 0 0 0-8 0"/><circle cx="12" cy="9" r="3"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg></span> Clientes
     </a>
-    <a class="nav-item" data-modulo="finanzas" onclick="showModule('finanzas')">
+    <a class="nav-item" href="#finanzas" data-modulo="finanzas" onclick="showModule('finanzas');return false">
       <span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg></span> Finanzas & Ventas
     </a>
-    <a class="nav-item" data-modulo="operaciones" onclick="showModule('operaciones')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/></svg></span> Operaciones</a>
-    <a class="nav-item" data-modulo="equipo" onclick="showModule('equipo')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Equipo</a>
-    <a class="nav-item" data-modulo="servicios" onclick="showModule('servicios')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span> Servicios</a>
+    <a class="nav-item" href="#operaciones" data-modulo="operaciones" onclick="showModule('operaciones');return false"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/></svg></span> Operaciones</a>
+    <a class="nav-item" href="#equipo" data-modulo="equipo" onclick="showModule('equipo');return false"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Equipo</a>
+    <a class="nav-item" href="#servicios" data-modulo="servicios" onclick="showModule('servicios');return false"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span> Servicios</a>
     <div class="nav-section" data-section="analisis">Análisis</div>
-    <a class="nav-item" data-modulo="reportes" onclick="showModule('reportes')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><rect x="6" y="11" width="3" height="7"/><rect x="11" y="6" width="3" height="12"/><rect x="16" y="14" width="3" height="4"/></svg></span> Reportes</a>
+    <a class="nav-item" href="#reportes" data-modulo="reportes" onclick="showModule('reportes');return false"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><rect x="6" y="11" width="3" height="7"/><rect x="11" y="6" width="3" height="12"/><rect x="16" y="14" width="3" height="4"/></svg></span> Reportes</a>
     <div class="nav-section" data-section="admin">Administración</div>
-    <a class="nav-item" data-modulo="configuracion" onclick="showModule('configuracion')"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Configuración</a>
+    <a class="nav-item" href="#configuracion" data-modulo="configuracion" onclick="showModule('configuracion');return false"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span> Configuración</a>
   </nav>
   <div class="sidebar-bottom">
     <div style="margin-bottom:10px;">
@@ -816,7 +833,7 @@ body.body-app::before,body.body-facturador::before{content:none}
     </button>
     <span class="topbar-title" id="moduleTitle">Finanzas & Ventas</span>
     <div class="topbar-actions">
-      <a href="javascript:void(0)" onclick="navigateTo('facturador')" class="btn btn-primary" id="btnNuevaCot">+ Nueva Cotización</a>
+      <a href="#facturador" onclick="navigateTo('facturador');return false" class="btn btn-primary" id="btnNuevaCot">+ Nueva Cotización</a>
     </div>
   </div>
 
@@ -1032,10 +1049,8 @@ body.body-app::before,body.body-facturador::before{content:none}
 <div id="view-facturador" class="view-container">
 
 <div class="toolbar no-print">
-  <div style="display:flex;align-items:center;gap:14px;"><a href="javascript:void(0)" onclick="navigateTo('app')" style="font-size:.72rem;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s;" onmouseover="this.style.color='#ccfb55'" onmouseout="this.style.color='rgba(255,255,255,.45)'">← Volver</a><div class="toolbar-brand">MEEV <span id="toolbarLabel">Cotizador</span></div></div>
   <div class="toolbar-actions">
-<button class="btn btn-outline" onclick="nuevoDoc()">+ Nuevo</button>
-    <button class="btn btn-outline" onclick="guardarDocActual()">Guardar borrador</button>
+<button class="btn btn-outline" onclick="guardarDocActual()">Guardar borrador</button>
     <button class="btn btn-primary" onclick="guardarYVolver()" style="background:var(--verde);color:var(--negro);">✓ Guardar y enviar a Finanzas</button>
     <button class="btn btn-outline" onclick="window.print()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.14em;margin-right:5px;"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>PDF</button>
   </div>
@@ -1045,13 +1060,19 @@ body.body-app::before,body.body-facturador::before{content:none}
 
   <div class="catalog-panel no-print">
     <div class="catalog-header">
+      <a href="#" onclick="navigateTo('app');return false" class="catalog-back">← Volver</a>
       <div class="catalog-title">Catálogo de Servicios</div>
-      <div class="catalog-sub">Clic en + para agregar · Ver entregables con ▾</div>
+      <div class="catalog-sub">Clic en + para agregar<br>Ver entregables con ▾</div>
     </div>
     <div class="catalog-search">
       <input type="text" id="catalogSearch" placeholder="Buscar servicio..." oninput="filterCatalog(this.value)">
     </div>
     <div class="catalog-list" id="catalogList"></div>
+    <div class="catalog-descuento">
+      <label for="descuentoPct">Descuento gral.</label>
+      <input type="number" id="descuentoPct" min="0" max="100" step="any" value="0" oninput="recalc()">
+      <span>%</span>
+    </div>
   </div>
 
   <div class="invoice-wrap">
@@ -1067,7 +1088,7 @@ body.body-app::before,body.body-facturador::before{content:none}
         <div class="brand-tagline">Marketing enfocado en ventas</div>
       </div>
       <div style="text-align:right">
-        <div id="docBadge" class="doc-badge badge-cot">Cotización</div>
+        <div id="docBadge" class="doc-badge badge-cot">Borrador</div>
         <div class="doc-title" id="docTitle">COTIZACIÓN</div>
         <div class="doc-number">
           <span id="numPrefix">COT-</span><input id="docNumInput" type="text" class="editable-dark" value="0001" style="width:65px;text-align:right;font-family:'Nunito',sans-serif;font-size:1.8rem;font-weight:900;color:var(--verde);">
@@ -1082,10 +1103,9 @@ body.body-app::before,body.body-facturador::before{content:none}
     </div>
 
     <div class="company-bar">
-      <div class="co-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><input type="text" class="editable" value="Ciudad de México, CDMX" style="min-width:140px;"></div>
-      <div class="co-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg><input type="text" class="editable" value="+52 55 0000 0000" style="min-width:115px;"></div>
-      <div class="co-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><input type="text" class="editable" value="hola@www.meevagency.com" style="min-width:120px;"></div>
+      <div class="co-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><input type="text" class="editable" value="Barranquilla, Colombia" style="min-width:140px;"></div>
       <div class="co-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg><input type="text" class="editable" value="www.meevagency.com" style="min-width:85px;"></div>
+      <div class="co-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg><input type="text" class="editable" value="@meevagency" style="min-width:100px;"></div>
       <div class="co-item" id="rfcBar" style="display:none;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>RFC:&nbsp;</span><input type="text" class="editable" placeholder="MEEV000000XXX" style="min-width:115px;"></div>
     </div>
 
@@ -1093,7 +1113,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 
       <div class="vigencia-banner" id="vigBanner">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7a9a00" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span>Esta cotización tiene una <strong>vigencia de 15 días</strong> a partir de la fecha de emisión. Precios sujetos a cambios.</span>
+        <span>Esta cotización tiene una <strong id="vigDiasTexto">vigencia de 30 días</strong> a partir de la fecha de emisión. Precios sujetos a cambios.</span>
       </div>
 
       <div class="fiscal-section" id="fiscalSec" style="display:none;">
@@ -1120,8 +1140,9 @@ body.body-app::before,body.body-facturador::before{content:none}
         <!-- CLIENTE -->
         <div>
           <div class="party-label">PARA</div>
-          <div class="party-name"><input type="text" class="editable" id="clientName" placeholder="Nombre del cliente o empresa" style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;"></div>
+          <div class="party-name"><input type="text" class="editable" id="clientName" placeholder="Nombre del cliente" style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;"></div>
           <div class="party-detail">
+            <input type="text" class="editable" id="clientEmpresa" placeholder="Marca / Empresa" style="display:block;">
             <div style="display:flex;align-items:center;border-bottom:1.5px dashed transparent;transition:border-color .2s;" onmouseenter="this.style.borderBottomColor='var(--verde)'" onmouseleave="this.style.borderBottomColor='transparent'">
               <select class="id-type-select" style="flex:0 0 auto;">
                 <option value="">País</option>
@@ -1214,28 +1235,21 @@ body.body-app::before,body.body-facturador::before{content:none}
             <span class="t-label" style="color:var(--gris-t);">Subtotal</span>
             <span id="subtotal" style="font-weight:600;font-size:.85rem;">$0</span>
           </div>
-          <div class="t-row" style="background:#f9f9f9;">
+          <div class="t-row" id="descuentoRow" style="background:#f9f9f9;display:none;">
             <span class="t-label" style="color:var(--gris-t);">Descuento</span>
-            <span>
-              <input type="number" id="descuentoPct" class="editable price-input" value="0" min="0" max="100" step="any" oninput="recalc();this.nextElementSibling.nextElementSibling.textContent=(parseFloat(this.value)||0)+'%'" style="text-align:right;width:44px;"><span class="no-print" style="font-weight:600;font-size:.85rem;">%</span>
-              <span class="price-print" style="display:none;font-size:.81rem;">0%</span>
-            </span>
+            <span id="descuentoDisplay" style="font-weight:600;font-size:.85rem;">0%</span>
           </div>
           <div class="t-row final"><span class="t-label" id="totalLabel">TOTAL COTIZACIÓN</span><span class="amt" id="total">$0</span></div>
-          <div class="t-row" style="background:#f9f9f9;">
-            <span class="t-label" style="color:var(--gris-t);">Anticipo 50% <span style="font-size:.65rem;color:var(--gris-t);font-weight:400;">— al aprobar</span></span>
-            <span id="anticipo" style="font-weight:600;font-size:.85rem;">$0</span>
-          </div>
-          <div class="t-row" style="background:#f9f9f9;border-bottom:none;">
-            <span class="t-label" style="color:var(--gris-t);">Saldo 50% <span style="font-size:.65rem;color:var(--gris-t);font-weight:400;">— al entregar</span></span>
-            <span id="saldo" style="font-weight:600;font-size:.85rem;">$0</span>
-          </div>
         </div>
+      </div>
+
+      <div class="pago-info" id="pagoInfoMsg">
+        Forma de pago: anticipo del 50% (<span id="anticipo">$0</span>) al aprobar esta propuesta, y saldo del 50% (<span id="saldo">$0</span>) al momento de la entrega.
       </div>
 
       <div class="notes-section">
         <div class="notes-lbl">Notas &amp; Condiciones</div>
-        <textarea class="notes-text editable" rows="3">Cotización válida por 15 días naturales. Precios en MXN. El inicio del proyecto queda sujeto a la aprobación formal de esta propuesta.</textarea>
+        <textarea class="notes-text editable" rows="3" placeholder="Escribe aquí las notas y condiciones de esta cotización..."></textarea>
       </div>
 
     </div>
@@ -1308,8 +1322,45 @@ function navigateTo(view) {
     showModule(modInicial);
   } else if(view === 'facturador') {
     if(typeof initFacturador === 'function') initFacturador();
+    if(_sincronizandoHash) history.replaceState(null, '', '#facturador');
+    else history.pushState(null, '', '#facturador');
   }
+  // El hash NO se limpia al ir a "login": si alguien abre un enlace directo
+  // (ej. #finanzas) sin sesión, queremos conservarlo para aterrizar ahí mismo
+  // apenas inicie sesión (ver doLogin/irSegunHash). Se limpia solo al cerrar sesión.
 }
+
+// ═══════════ RUTAS POR HASH ═══════════
+// Cada módulo/pantalla tiene su propia URL (#clientes, #facturador, etc.) para
+// que clic derecho → abrir en pestaña nueva, recargar, o compartir el enlace
+// lleven al lugar correcto. showModule() y navigateTo() actualizan el hash;
+// esta función hace el camino inverso: hash → pantalla, al cargar o navegar.
+const MODULOS_CON_HASH = ['clientes','finanzas','operaciones','equipo','servicios','reportes','configuracion'];
+// true mientras navigateTo()/showModule() se disparan PORQUE el hash ya cambió
+// (carga inicial, login, o botón atrás/adelante): ahí solo hay que sincronizar
+// la vista con la URL, sin empujar un historial nuevo. Un clic normal en el
+// menú (que no pasa por irSegunHash) sí empuja, para que "atrás" funcione.
+let _sincronizandoHash = false;
+function tieneAccesoModulo(mod) {
+  const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
+  const rol = sess.rol || 'diseñador';
+  const permisos = sess.permisos || permisosDefaultRol(rol);
+  return mod === 'configuracion' ? rol === 'admin' : !!permisos[mod];
+}
+function irSegunHash() {
+  const h = (location.hash || '').slice(1);
+  const esFacturador = h === 'facturador';
+  const esModulo = MODULOS_CON_HASH.includes(h) && tieneAccesoModulo(h);
+  if(!esFacturador && !esModulo) return false;
+  _sincronizandoHash = true;
+  if(esFacturador) navigateTo('facturador');
+  else { navigateTo('app'); showModule(h); }
+  _sincronizandoHash = false;
+  return true;
+}
+window.addEventListener('hashchange', () => {
+  if(localStorage.getItem('meev_session')) irSegunHash();
+});
 
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
@@ -1343,7 +1394,7 @@ async function doLogin() {
   }
   if(btn) { btn.disabled = false; btn.textContent = 'Ingresar al sistema'; }
   iniciarRealtime();
-  navigateTo('app');
+  if(!irSegunHash()) navigateTo('app');
 }
 
 document.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
@@ -1632,6 +1683,8 @@ let currentModule = 'clientes';
 function showModule(mod) {
   currentModule = mod;
   localStorage.setItem('meev_lastModulo', mod);
+  if(_sincronizandoHash) history.replaceState(null, '', '#' + mod);
+  else history.pushState(null, '', '#' + mod);
   if(window.innerWidth <= 768) {
     document.querySelector('.sidebar').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('open');
@@ -1891,9 +1944,10 @@ async function crearCotDesdeCliente(id) {
   const { data: c } = await db.from('clientes').select('*').eq('id', id).single();
   if(!c) return;
   localStorage.setItem('meev_precarga', JSON.stringify({
-    nombre: c.nombre + (c.empresa ? ' — ' + c.empresa : ''),
+    nombre: c.nombre || '', empresa: c.empresa || '',
     pais: c.pais || '', ciudad: c.ciudad || '',
-    celular: c.celular || '', email: c.email || '', clienteId: c.id
+    celular: c.celular || '', email: c.email || '', clienteId: c.id,
+    servicio: c.servicio || ''
   }));
   navigateTo('facturador');
 }
@@ -1912,22 +1966,17 @@ async function editarCotizacion(num) {
   localStorage.setItem('meev_editcot', JSON.stringify({
     numero: d.num, cliente: d.cliente, cliente_id: d.cliente_id,
     items: d.items || [], notas: d.notas || '', vigencia: d.vigencia || null,
-    descuento_pct: d.descuento_pct || 0,
-    pais: c.pais || '', ciudad: c.ciudad || '', celular: c.celular || '', email: c.email || ''
+    descuento_pct: d.descuento_pct || 0, estado: d.estado || 'borrador',
+    empresa: d.empresa || c.empresa || '',
+    pais: c.pais || '', ciudad: c.ciudad || '', celular: c.celular || '', email: c.email || '',
+    servicio: c.servicio || ''
   }));
   closeCliDetail();
   navigateTo('facturador');
 }
 
-// Logos servidos como archivos estáticos reales (no incrustados en base64):
-// el navegador los descarga una vez y los cachea aparte del HTML/JS de la app.
-// En emails (fuera del origen del sitio) se necesita URL absoluta; dentro de la
-// app, la ruta relativa resuelve igual contra el origen donde está desplegado.
 const LOGO_BLANCO = 'assets/logo-blanco.png';
 const LOGO_VERDE = 'assets/logo-verde.png';
-function logoUrlAbsoluto(nombreArchivo) {
-  return new URL('assets/' + nombreArchivo, window.location.href).href;
-}
 
 
 function fmtN(n){ return '$'+Number(n||0).toLocaleString('es-CO',{minimumFractionDigits:0,maximumFractionDigits:0}); }
@@ -1984,6 +2033,7 @@ async function verDocumento(num) {
           <div>
             <div class="dp-party-label">Para</div>
             <div class="dp-party-name">${d.cliente}</div>
+            ${d.empresa ? `<div class="dp-party-detail">${d.empresa}</div>` : ''}
           </div>
         </div>
         <table class="dp-table">
@@ -2119,6 +2169,7 @@ async function cerrarSesion() {
   const passField = document.getElementById('loginPass');
   if(emailField) emailField.value = '';
   if(passField) passField.value = '';
+  history.replaceState(null, '', location.pathname);
   navigateTo('login');
 }
 
@@ -2188,6 +2239,10 @@ function accionesCot(d) {
 
 // Envía la cotización por correo al cliente (Resend) y la marca como enviada.
 // Si el cliente no tiene correo registrado, solo marca el estado (sin bloquear al usuario).
+// El diseño y contenido del correo viven en la plantilla de Resend (ver Comunicaciones);
+// aquí solo se calculan los valores reales de esta cotización y se le pasan a Resend.
+const RESEND_TEMPLATE_COTIZACION = '17928ad3-683d-4745-b889-2aa271056035';
+
 async function enviarCorreoCotizacion(num) {
   const docs = await getDocs();
   const d = docs.find(x => x.num === num);
@@ -2201,21 +2256,29 @@ async function enviarCorreoCotizacion(num) {
     const vigenciaFecha = d.vigencia ? new Date(d.vigencia+'T00:00:00') : (() => {
       const v = new Date(); v.setDate(v.getDate() + (cfg.vigencia_dias || 30)); return v;
     })();
-    const datos = {
-      cliente: cliente.nombre || d.cliente, empresa: cliente.empresa || d.empresa,
-      numero: d.num, fecha: new Date().toLocaleDateString('es-CO', {day:'numeric',month:'long',year:'numeric'}),
-      total: d.total, vigencia: vigenciaFecha.toLocaleDateString('es-CO', {day:'numeric',month:'long',year:'numeric'}),
-      am: am?.nombre || '', link: '#', items: d.items || []
+    const items = d.items || [];
+    const itemsHtml = items.map(it => `
+      <div style="padding:14px 20px;border-bottom:1px solid #f2f2ef;">
+        <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
+          <td style="font-size:13.5px;color:#1a1a1a;font-weight:600;padding:0;">${it.desc||'Servicio'}</td>
+          <td style="font-size:13.5px;color:#1a1a1a;font-weight:700;text-align:right;white-space:nowrap;padding:0;">${fmtNum(it.price||0)}</td>
+        </tr></table>
+      </div>`).join('');
+    const variables = {
+      PRIMER_NOMBRE: (cliente.nombre || d.cliente || '').trim().split(' ')[0] || 'cliente',
+      EMPRESA: cliente.empresa || d.empresa || '',
+      NUMERO: d.num,
+      FECHA: new Date().toLocaleDateString('es-CO', {day:'numeric',month:'long',year:'numeric'}),
+      TOTAL: fmtNum(d.total||0),
+      VIGENCIA: vigenciaFecha.toLocaleDateString('es-CO', {day:'numeric',month:'long',year:'numeric'}),
+      AM: am?.nombre || 'Equipo MEEV',
+      NUM_SERVICIOS: items.length,
+      ITEMS_HTML: itemsHtml,
+      LINK: 'https://www.meevagency.com'
     };
-    const asunto = aplicarComodines(cfg.email_asunto || CONFIG_DEFAULT.email_asunto, datos);
-    const html = construirCorreoCotizacion(datos, cfg, logoUrlAbsoluto('logo-blanco.png'));
-    const nombreRemitente = cfg.email_remitente_nombre || 'Meev Agency';
-    const correoRemitente = cfg.email_remitente_correo || 'cotizaciones@meevagency.com';
     try {
       const { data: res, error } = await db.functions.invoke('enviar-email', {
-        body: { to: cliente.email, subject: asunto, html,
-          from: `${nombreRemitente} <${correoRemitente}>`,
-          reply_to: cfg.email_reply_to || undefined }
+        body: { to: cliente.email, template: { id: RESEND_TEMPLATE_COTIZACION, variables } }
       });
       if(error || res?.error) { mostrarToast('La cotización se marcó como enviada, pero el correo falló.', 'error'); }
       else { mostrarToast(`Correo enviado a ${cliente.nombre || d.cliente}`, 'ok'); }
@@ -2756,155 +2819,13 @@ async function getUsuarios() {
   return _cache.usuarios;
 }
 
-const CONFIG_DEFAULT = { iva:19, ica:0, retefuente:1.5, reteiva:15, com_nacional:2.65, com_nacional_fijo:0, com_internacional:1.0, com_internacional_fijo:0, vigencia_dias:30,
-  email_asunto:'Tu cotización {numero} de MEEV',
-  email_mensaje:'Gracias por confiar en MEEV. Preparamos esta propuesta a la medida de {empresa}. A continuación encontrarás el detalle de los servicios y la inversión.',
-  email_cta:'Ver cotización completa' };
+const CONFIG_DEFAULT = { iva:19, ica:0, retefuente:1.5, reteiva:15, com_nacional:2.65, com_nacional_fijo:0, com_internacional:1.0, com_internacional_fijo:0, vigencia_dias:30 };
 
 async function getConfig() {
   if(_cache.config) return _cache.config;
   const { data, error } = await db.from('configuracion').select('*').eq('id', 1).single();
   _cache.config = (error || !data) ? { ...CONFIG_DEFAULT } : data;
   return _cache.config;
-}
-
-// Reemplaza comodines {cliente}, {numero}, etc. por datos reales
-function aplicarComodines(txt, d) {
-  return (txt||'').replace(/\{(\w+)\}/g, (m, k) => (d[k] != null ? d[k] : m));
-}
-
-// Arma el HTML del correo de cotización (misma fuente para vista previa y envío real)
-function construirCorreoCotizacion(d, cfg, logoUrl) {
-  const primerNombre = (d.cliente||'').trim().split(' ')[0] || '';
-  const itemsHTML = (d.items||[]).map(it => `
-    <div style="padding:14px 20px;border-bottom:1px solid #f2f2ef;">
-      <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
-        <td style="font-size:13.5px;color:#1a1a1a;font-weight:600;padding:0;">${it.desc||'Servicio'}${it.detalle?`<div style="font-size:12px;color:#999;font-weight:400;margin-top:3px;">${it.detalle}</div>`:''}</td>
-        <td style="font-size:13.5px;color:#1a1a1a;font-weight:700;text-align:right;white-space:nowrap;padding:0;">${fmtNum(it.price||0)}</td>
-      </tr></table>
-    </div>`).join('');
-  const mensaje = aplicarComodines(cfg.email_mensaje || CONFIG_DEFAULT.email_mensaje, d);
-  const cta = cfg.email_cta || CONFIG_DEFAULT.email_cta;
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;background:#dedcd4;font-family:'Poppins',Helvetica,Arial,sans-serif;padding:32px 12px;-webkit-font-smoothing:antialiased;">
-  <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;">
-    <div style="display:none;max-height:0;overflow:hidden;">Tu cotización ${d.numero||''} está lista — ${fmtNum(d.total||0)} · válida hasta el ${d.vigencia||''}</div>
-
-    <div style="background:#1a1a1a;padding:32px 38px 36px;text-align:left;">
-      <table role="presentation" width="100%" style="border-collapse:collapse;margin-bottom:34px;"><tr>
-        <td style="vertical-align:middle;">
-          <img src="${logoUrl}" alt="MEEV" style="height:22px;width:auto;display:block;">
-        </td>
-        <td style="text-align:right;vertical-align:middle;">
-          <span style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;">${d.fecha||''}</span>
-        </td>
-      </tr></table>
-      <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
-        <td style="vertical-align:middle;width:62%;">
-          <p style="font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:30px;font-weight:900;color:#fff;margin:0 0 14px;line-height:1.2;">Gracias por confiar en nosotros, ${primerNombre}</p>
-          <p style="font-size:14px;color:rgba(255,255,255,.65);margin:0;line-height:1.6;">Preparamos una propuesta pensada para ${d.empresa||d.cliente||''}.</p>
-        </td>
-        <td style="vertical-align:middle;width:38%;text-align:right;">
-          ${d.imagenUrl ? `<img src="${d.imagenUrl}" alt="" style="max-width:150px;width:100%;height:auto;display:inline-block;">` : ''}
-        </td>
-      </tr></table>
-    </div>
-    <div style="height:3px;background:#ccfb55;"></div>
-
-    <div style="background:#f7f7f2;padding:15px 38px;border-bottom:1px solid #ececec;">
-      <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
-        <td style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#8a8a80;font-weight:700;">Cotización ${d.numero||''}</td>
-        <td style="font-size:12px;color:#555;font-weight:500;text-align:right;">${d.fecha||''}</td>
-      </tr></table>
-    </div>
-
-    <div style="padding:34px 38px 6px;">
-      <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#6f8f22;font-weight:700;margin:0 0 10px;">Para ${d.empresa||d.cliente||''}</p>
-      <p style="font-size:15px;color:#0d0d0d;line-height:1.6;margin:0 0 26px;">Hola ${primerNombre}, ${mensaje}</p>
-
-      <table role="presentation" width="100%" style="border-collapse:separate;border-spacing:8px 0;margin:0 -8px 26px;"><tr>
-        <td style="width:33.3%;background:#f7f7f2;border-radius:10px;padding:16px 14px;text-align:center;">
-          <div style="width:30px;height:30px;border-radius:50%;background:#e8f2d1;margin:0 auto 8px;line-height:30px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f7d1e" stroke-width="2" style="vertical-align:middle;"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></div>
-          <p style="font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:17px;font-weight:900;color:#0d0d0d;margin:0 0 2px;">${(d.items||[]).length}</p>
-          <p style="font-size:10.5px;color:#8a8a80;font-weight:600;margin:0;">Servicios</p>
-        </td>
-        <td style="width:33.3%;background:#f7f7f2;border-radius:10px;padding:16px 14px;text-align:center;">
-          <div style="width:30px;height:30px;border-radius:50%;background:#e8f2d1;margin:0 auto 8px;line-height:30px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f7d1e" stroke-width="2" style="vertical-align:middle;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-          <p style="font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:17px;font-weight:900;color:#0d0d0d;margin:0 0 2px;">${fmtNum(d.total||0)}</p>
-          <p style="font-size:10.5px;color:#8a8a80;font-weight:600;margin:0;">Inversión</p>
-        </td>
-        <td style="width:33.3%;background:#f7f7f2;border-radius:10px;padding:16px 14px;text-align:center;">
-          <div style="width:30px;height:30px;border-radius:50%;background:#e8f2d1;margin:0 auto 8px;line-height:30px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f7d1e" stroke-width="2" style="vertical-align:middle;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-          <p style="font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:13.5px;font-weight:900;color:#0d0d0d;margin:0 0 2px;">${d.vigencia||''}</p>
-          <p style="font-size:10.5px;color:#8a8a80;font-weight:600;margin:0;">Vigencia</p>
-        </td>
-      </tr></table>
-
-      <div style="border:1px solid #e9e9e5;border-radius:12px;overflow:hidden;margin-bottom:26px;">
-        <div style="background:#f7f7f2;padding:14px 20px;border-bottom:1px solid #ececec;">
-          <span style="font-size:13.5px;font-weight:800;color:#0d0d0d;">Detalle de la propuesta</span>
-        </div>
-        ${itemsHTML}
-        <div style="background:#0d0d0d;padding:18px 20px;">
-          <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
-            <td style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:600;">Total a invertir</td>
-            <td style="font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:23px;font-weight:900;color:#ccfb55;text-align:right;">${fmtNum(d.total||0)}</td>
-          </tr></table>
-        </div>
-      </div>
-
-      <p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#b0b0b0;font-weight:700;margin:0 0 16px;">Qué sigue</p>
-      <table role="presentation" width="100%" style="border-collapse:collapse;margin-bottom:28px;"><tr>
-        <td style="width:33.3%;text-align:center;vertical-align:top;">
-          <div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:#ccfb55;font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:12px;font-weight:900;line-height:26px;margin:0 auto 8px;">1</div>
-          <p style="font-size:11.5px;color:#666;line-height:1.5;margin:0;padding:0 6px;">Revisas la<br>propuesta</p>
-        </td>
-        <td style="width:33.3%;text-align:center;vertical-align:top;">
-          <div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:#ccfb55;font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:12px;font-weight:900;line-height:26px;margin:0 auto 8px;">2</div>
-          <p style="font-size:11.5px;color:#666;line-height:1.5;margin:0;padding:0 6px;">Confirmas y<br>pagas el anticipo</p>
-        </td>
-        <td style="width:33.3%;text-align:center;vertical-align:top;">
-          <div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:#ccfb55;font-family:'Nunito',Helvetica,Arial,sans-serif;font-size:12px;font-weight:900;line-height:26px;margin:0 auto 8px;">3</div>
-          <p style="font-size:11.5px;color:#666;line-height:1.5;margin:0;padding:0 6px;">Iniciamos tu<br>proyecto</p>
-        </td>
-      </tr></table>
-
-      <div style="text-align:center;margin:0 0 8px;">
-        <a href="${d.link||'#'}" style="display:inline-block;background:#ccfb55;color:#0d0d0d;font-family:'Nunito',Helvetica,Arial,sans-serif;font-weight:800;font-size:14.5px;padding:15px 40px;border-radius:9px;text-decoration:none;">${cta}</a>
-      </div>
-      <p style="font-size:11.5px;color:#a3a39a;text-align:center;margin:12px 0 30px;">También puedes responder este correo con tus comentarios</p>
-    </div>
-
-    <hr style="border:none;border-top:1px solid #ececec;margin:0 38px;">
-
-    <div style="padding:26px 38px;">
-      <p style="font-size:14px;color:#0d0d0d;font-weight:700;margin:0 0 2px;">${d.am||'Equipo MEEV'}</p>
-      <p style="font-size:12px;color:#999;margin:0 0 12px;">Account Manager · Meev Agency</p>
-      <p style="font-size:12px;color:#666;margin:0;">hola@meevagency.com&nbsp;&nbsp;·&nbsp;&nbsp;www.meevagency.com</p>
-    </div>
-
-    <div style="background:#0d0d0d;padding:34px 38px;">
-      <table role="presentation" width="100%" style="border-collapse:collapse;margin-bottom:30px;"><tr>
-        <td style="vertical-align:top;">
-          <p style="font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.7;margin:0;">Meev Agency<br>Bogotá, Colombia</p>
-        </td>
-        <td style="vertical-align:top;text-align:right;">
-          <p style="margin:0 0 10px;"><a href="#" style="font-size:12.5px;color:rgba(255,255,255,.75);text-decoration:none;">Nuestros servicios</a></p>
-          <p style="margin:0;"><a href="#" style="font-size:12.5px;color:rgba(255,255,255,.75);text-decoration:none;">Política de privacidad</a></p>
-        </td>
-      </tr></table>
-      <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
-        <td style="vertical-align:middle;">
-          <img src="${logoUrl}" alt="MEEV" style="height:22px;width:auto;display:block;">
-        </td>
-        <td style="vertical-align:middle;text-align:right;">
-          <a href="#" style="display:inline-block;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);text-align:center;line-height:30px;margin-left:8px;text-decoration:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" style="vertical-align:middle;"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a><a href="#" style="display:inline-block;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);text-align:center;line-height:30px;margin-left:8px;text-decoration:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff" style="vertical-align:middle;"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a href="#" style="display:inline-block;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);text-align:center;line-height:30px;margin-left:8px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="#ffffff" style="vertical-align:middle;"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.43 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a><a href="#" style="display:inline-block;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);text-align:center;line-height:30px;margin-left:8px;text-decoration:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff" style="vertical-align:middle;"><path d="M22 8.5s-.2-1.6-.9-2.3c-.8-.9-1.8-.9-2.2-1C16 5 12 5 12 5h0s-4 0-6.9.2c-.4 0-1.4.1-2.2 1C2.2 6.9 2 8.5 2 8.5S1.8 10.3 1.8 12.2v1.7C1.8 15.7 2 17.5 2 17.5s.2 1.6.9 2.3c.8.9 1.9.9 2.4 1 1.7.2 7.2.2 7.2.2s4 0 6.9-.2c.4 0 1.4-.1 2.2-1 .7-.7.9-2.3.9-2.3s.2-1.8.2-3.6v-1.7C22.2 10.3 22 8.5 22 8.5zM9.9 15.4V9l5.8 3.2-5.8 3.2z"/></svg></a>
-        </td>
-      </tr></table>
-      <p style="font-size:10.5px;color:rgba(255,255,255,.32);margin:24px 0 0;text-align:center;">© ${new Date().getFullYear()} Meev Agency</p>
-    </div>
-  </div>
-</body></html>`;
 }
 
 async function renderConfiguracion() {
@@ -2980,51 +2901,11 @@ async function renderConfiguracion() {
         </div>
       </div>
 
-      <div class="section-card cfg-card">
-        <div class="section-header"><span class="section-title">Correo de cotización</span></div>
-        <div style="padding:18px;">
-          <p style="font-size:.78rem;color:var(--gris-t);margin:0 0 16px;line-height:1.5;">Edita el texto del correo que se le envía al cliente con la cotización. Usa comodines entre llaves y se reemplazan solos con los datos reales: <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{cliente}</code> <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{empresa}</code> <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{numero}</code> <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{total}</code> <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{vigencia}</code> <code style="background:var(--gris);padding:1px 5px;border-radius:4px;">{am}</code></p>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;">
-            <div class="cfg-field">
-              <label class="cfg-label">Nombre del remitente</label>
-              <input type="text" id="cfg_email_remitente_nombre" value="${(cfg.email_remitente_nombre||'Meev Agency').replace(/"/g,'&quot;')}" class="cfg-input cfg-input-money" style="padding-left:12px;" placeholder="Meev Agency">
-            </div>
-            <div class="cfg-field">
-              <label class="cfg-label">Correo del remitente</label>
-              <input type="email" id="cfg_email_remitente_correo" value="${(cfg.email_remitente_correo||'cotizaciones@meevagency.com').replace(/"/g,'&quot;')}" class="cfg-input cfg-input-money" style="padding-left:12px;" placeholder="cotizaciones@meevagency.com">
-              <span class="cfg-help">Debe terminar en @meevagency.com — ese dominio ya está verificado para enviar correos.</span>
-            </div>
-            <div class="cfg-field">
-              <label class="cfg-label">Responder a (Reply-To)</label>
-              <input type="email" id="cfg_email_reply_to" value="${(cfg.email_reply_to||'').replace(/"/g,'&quot;')}" class="cfg-input cfg-input-money" style="padding-left:12px;" placeholder="tucorreo@ejemplo.com">
-              <span class="cfg-help">A dónde llegan las respuestas del cliente cuando le da "Responder" — invisible para él.</span>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
-            <div class="cfg-field">
-              <label class="cfg-label">Asunto del correo</label>
-              <input type="text" id="cfg_email_asunto" value="${(cfg.email_asunto||'').replace(/"/g,'&quot;')}" class="cfg-input cfg-input-money" style="padding-left:12px;" oninput="actualizarPreviewCorreo()">
-            </div>
-            <div class="cfg-field">
-              <label class="cfg-label">Mensaje</label>
-              <textarea id="cfg_email_mensaje" rows="1" class="cfg-input cfg-input-money" style="padding:9px 12px;resize:vertical;line-height:1.5;" oninput="actualizarPreviewCorreo()">${cfg.email_mensaje||''}</textarea>
-            </div>
-            <div class="cfg-field">
-              <label class="cfg-label">Texto del botón</label>
-              <input type="text" id="cfg_email_cta" value="${(cfg.email_cta||'').replace(/"/g,'&quot;')}" class="cfg-input cfg-input-money" style="padding-left:12px;" oninput="actualizarPreviewCorreo()">
-            </div>
-          </div>
-          <div class="cfg-label" style="margin-bottom:8px;">Vista previa</div>
-          <iframe id="emailPreview" style="width:100%;height:1400px;border:1px solid var(--gris-m);border-radius:10px;background:#dedcd4;"></iframe>
-        </div>
-      </div>
-
       <div class="cfg-actions">
         <span id="cfgMsg" class="cfg-msg"></span>
         <button class="btn btn-primary" onclick="guardarConfig()">Guardar cambios</button>
       </div>
     </div>`;
-  actualizarPreviewCorreo();
 }
 
 // Catálogo de servicios: los AM pueden verlo (permiso de módulo), solo admin puede editarlo
@@ -3138,27 +3019,6 @@ async function quitarEntregable(id, idx) {
   renderServicios();
 }
 
-// Actualiza la vista previa del correo en vivo mientras se editan los textos
-function actualizarPreviewCorreo() {
-  const iframe = document.getElementById('emailPreview');
-  if(!iframe) return;
-  const cfg = {
-    email_asunto: document.getElementById('cfg_email_asunto')?.value || '',
-    email_mensaje: document.getElementById('cfg_email_mensaje')?.value || '',
-    email_cta: document.getElementById('cfg_email_cta')?.value || ''
-  };
-  const ejemplo = {
-    cliente: 'María López', empresa: 'Café Orgánico SAS', numero: 'COT-006',
-    fecha: '1 de julio, 2026', total: 8000000, vigencia: '15 de julio de 2026',
-    am: 'Daniela Sinning', link: '#',
-    items: [
-      {desc:'Manual de Identidad Visual', price:5000000, detalle:'Logotipo, paleta de color, tipografía y lineamientos de marca'},
-      {desc:'Diseño de Logotipo', price:3000000, detalle:'3 propuestas iniciales, 2 rondas de ajustes y archivos finales'}
-    ]
-  };
-  iframe.srcdoc = construirCorreoCotizacion(ejemplo, cfg, LOGO_BLANCO);
-}
-
 async function guardarConfig() {
   const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
   if(sess.rol !== 'admin') return;
@@ -3169,10 +3029,6 @@ async function guardarConfig() {
     com_nacional: num('com_nacional'), com_nacional_fijo: num('com_nacional_fijo'),
     com_internacional: num('com_internacional'), com_internacional_fijo: num('com_internacional_fijo'),
     vigencia_dias: Math.max(1, Math.round(num('vigencia_dias')) || 30),
-    email_asunto: val('email_asunto'), email_mensaje: val('email_mensaje'), email_cta: val('email_cta'),
-    email_remitente_nombre: val('email_remitente_nombre') || 'Meev Agency',
-    email_remitente_correo: val('email_remitente_correo') || 'cotizaciones@meevagency.com',
-    email_reply_to: val('email_reply_to'),
     updated_at: new Date().toISOString()
   };
   const { error } = await db.from('configuracion').update(data).eq('id', 1);
@@ -4007,21 +3863,34 @@ async function renderReportes() {
 // El catálogo ya no vive hardcodeado aquí: se carga desde la tabla `servicios`
 // (administrable en Configuración > Catálogo de servicios).
 let _catalogoServicios = [];
+let _gruposCatalogo = [];
+let _clienteServicioInteres = null; // nombre del servicio por el que llegó el cliente, para destacarlo en el catálogo
 let mode = 'cot';
 let counters = {cot:1, fac:1};
+let docEstadoActual = 'borrador';
+
+// El badge junto al título ya no repite "Cotización"/"Factura" (eso lo dice el
+// título grande): muestra el estado real del documento (Borrador, Enviada, etc.).
+function actualizarBadgeEstado(estado) {
+  docEstadoActual = estado || 'borrador';
+  const badge = document.getElementById('docBadge');
+  if(!badge) return;
+  badge.textContent = mode === 'cot' ? (COT_LABEL[docEstadoActual] || 'Borrador') : 'Factura';
+}
 
 async function initFacturador() {
   try {
-    const servicios = await getServicios();
+    const [servicios, grupos] = await Promise.all([getServicios(), getGruposServicios()]);
+    _gruposCatalogo = grupos || [];
     _catalogoServicios = servicios.filter(s => s.activo !== false)
-      .map(s => ({ nombre: s.nombre, precio: s.precio_nacional || 0, entregables: s.entregables || [] }));
-  } catch(e) { _catalogoServicios = []; }
+      .map(s => ({ nombre: s.nombre, precio: s.precio_nacional || 0, entregables: s.entregables || [], grupo_id: s.grupo_id || null }));
+  } catch(e) { _catalogoServicios = []; _gruposCatalogo = []; }
   renderCatalog(_catalogoServicios);
   try { const cfg = await getConfig(); _vigenciaDias = cfg.vigencia_dias || 30; } catch(e){}
   setDefaultDates();
   recalc();
   loadAM();
-  if(!cargarEdicion()) cargarPrecarga();
+  if(!cargarEdicion()) { actualizarBadgeEstado('borrador'); cargarPrecarga(); }
 }
 document.addEventListener('DOMContentLoaded', () => {
   // Facturador init will be called by navigateTo('facturador') or on DOMContentLoaded if already on facturador view
@@ -4032,24 +3901,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function renderCatalog(list) {
   const el = document.getElementById('catalogList');
-  el.innerHTML = list.map((s,i) => {
+  if(!list.length) { el.innerHTML = '<div class="catalog-empty">Sin resultados.</div>'; return; }
+
+  // Cada servicio conserva su índice real en _catalogoServicios (_idx), incluso
+  // cuando luego se reordena por grupo o se filtra por búsqueda.
+  const norm = list.map((s,i) => s._idx != null ? s : { ...s, _idx: i });
+  const interes = (_clienteServicioInteres||'').trim().toLowerCase();
+
+  const renderItem = (s, i) => {
     const items = s.entregables || [];
     const listHTML = items.map(it => `<li>${it}</li>`).join('');
+    const destacado = interes && (s.nombre||'').trim().toLowerCase() === interes;
     return `
-    <div class="catalog-item" id="cat-${i}">
+    <div class="catalog-item ${destacado?'catalog-item-star':''}" id="cat-${i}">
       <div class="catalog-item-header">
         <div class="cat-info">
-          <div class="cat-name">${s.nombre}</div>
+          <div class="cat-name">${destacado?'★ ':''}${s.nombre}</div>
           <div class="cat-price">${fmtNum(s.precio)}</div>
         </div>
         <div class="cat-actions">
-          <button class="btn-add-cat" onclick="addFromCatalog(${s._idx ?? i})" title="Agregar a cotización">+</button>
+          <button class="btn-add-cat" onclick="addFromCatalog(${s._idx})" title="Agregar a cotización">+</button>
           ${items.length ? `<button class="btn-expand" onclick="toggleDesc(${i})">▾ ver</button>` : ''}
         </div>
       </div>
+      ${destacado ? `<div class="catalog-item-star-tag">★ Por este servicio llegó el cliente</div>` : ''}
       ${items.length ? `<div class="cat-desc-panel" id="desc-${i}"><ul class="cat-desc-list">${listHTML}</ul></div>` : ''}
     </div>`;
-  }).join('');
+  };
+
+  // Agrupa por grupos_servicios (mismo orden que el panel de Servicios); lo sin grupo va al final.
+  const gruposOrdenados = [..._gruposCatalogo].sort((a,b) => (a.orden||0)-(b.orden||0));
+  const porGrupo = new Map();
+  gruposOrdenados.forEach(g => porGrupo.set(g.id, []));
+  const sinGrupo = [];
+  norm.forEach(s => {
+    if(s.grupo_id != null && porGrupo.has(s.grupo_id)) porGrupo.get(s.grupo_id).push(s);
+    else sinGrupo.push(s);
+  });
+
+  let i = 0;
+  let html = '';
+  gruposOrdenados.forEach(g => {
+    const items = porGrupo.get(g.id);
+    if(!items.length) return;
+    html += `<div class="catalog-group-label">${g.nombre}</div>`;
+    items.forEach(s => { html += renderItem(s, i++); });
+  });
+  if(sinGrupo.length) {
+    html += gruposOrdenados.length ? `<div class="catalog-group-label">Otros servicios</div>` : '';
+    sinGrupo.forEach(s => { html += renderItem(s, i++); });
+  }
+  el.innerHTML = html;
 }
 
 function toggleDesc(i) {
@@ -4080,6 +3982,8 @@ function setDefaultDates() {
   document.getElementById('docDate').value = fmt(today);
   const v = new Date(today); v.setDate(v.getDate() + (_vigenciaDias || 30));
   document.getElementById('vigDate').value = fmt(v);
+  const vt = document.getElementById('vigDiasTexto');
+  if(vt) vt.textContent = `vigencia de ${_vigenciaDias || 30} días`;
 }
 
 function setMode(m) {
@@ -4089,12 +3993,11 @@ function setMode(m) {
   document.getElementById('btnCot').classList.toggle('active',isCot);
   document.getElementById('btnFac').classList.toggle('active',!isCot);
   const badge = document.getElementById('docBadge');
-  badge.textContent = isCot?'Cotización':'Factura';
   badge.className = 'doc-badge '+(isCot?'badge-cot':'badge-fac');
+  actualizarBadgeEstado(docEstadoActual);
   document.getElementById('docTitle').textContent = isCot?'COTIZACIÓN':'FACTURA';
   document.getElementById('numPrefix').textContent = isCot?'COT-':'FAC-';
   document.getElementById('docNumInput').value = String(counters[m]).padStart(4,'0');
-  document.getElementById('toolbarLabel').textContent = isCot?'Cotizador':'Facturador';
   document.getElementById('vigLabel').textContent = isCot?'Vigencia':'Vence';
   document.getElementById('vigBanner').style.display = isCot?'flex':'none';
   document.getElementById('fiscalSec').style.display = isCot?'none':'block';
@@ -4151,25 +4054,14 @@ function recalc() {
   const descPct = Math.min(100, Math.max(0, parseFloat(document.getElementById('descuentoPct')?.value) || 0));
   const total = sub * (1 - descPct/100);
   document.getElementById('subtotal').textContent=fmtNum(sub);
+  const descDisp = document.getElementById('descuentoDisplay'); if(descDisp) descDisp.textContent = descPct + '%';
+  const descRow = document.getElementById('descuentoRow'); if(descRow) descRow.style.display = descPct > 0 ? 'flex' : 'none';
   document.getElementById('total').textContent=fmtNum(total);
   document.getElementById('anticipo').textContent=fmtNum(total*0.5);
   document.getElementById('saldo').textContent=fmtNum(total*0.5);
 }
 
 // fmtNum already defined in app module above
-
-function nuevoDoc() {
-  if(!confirm('¿Crear un nuevo documento? Se borrarán los datos actuales.')) return;
-  counters[mode]++;
-  document.getElementById('docNumInput').value=String(counters[mode]).padStart(4,'0');
-  document.getElementById('clientName').value='';
-  document.getElementById('itemsBody').innerHTML='';
-  const descEl = document.getElementById('descuentoPct');
-  if(descEl) { descEl.value = 0; const dp = descEl.nextElementSibling?.nextElementSibling; if(dp) dp.textContent = '0%'; }
-  currentClienteId = null;
-  setDefaultDates();recalc();loadAM();cargarPrecarga();
-}
-
 
 
 
@@ -4181,6 +4073,8 @@ function cargarPrecarga() {
     if(!p.nombre) return;
     const cn = document.getElementById('clientName');
     if(cn) cn.value = p.nombre;
+    const ce = document.getElementById('clientEmpresa');
+    if(ce) ce.value = p.empresa || '';
     // Fill Para fields by placeholder
     document.querySelectorAll('.party-detail input').forEach(inp => {
       if(inp.placeholder.includes('País') && inp.tagName === 'SELECT') return;
@@ -4199,6 +4093,8 @@ function cargarPrecarga() {
       }
     });
     currentClienteId = p.clienteId || null;
+    _clienteServicioInteres = p.servicio || null;
+    renderCatalog(_catalogoServicios);
     localStorage.removeItem('meev_precarga');
   } catch(e){}
 }
@@ -4213,10 +4109,11 @@ function cargarEdicion() {
     const numSolo = (e.numero || '').replace(/^(COT-|FAC-)/, '');
     const ni = document.getElementById('docNumInput'); if(ni) ni.value = numSolo;
     const cn = document.getElementById('clientName'); if(cn) cn.value = e.cliente || '';
+    const ce = document.getElementById('clientEmpresa'); if(ce) ce.value = e.empresa || '';
     const body = document.getElementById('itemsBody'); if(body) body.innerHTML = '';
     (e.items || []).forEach(it => addItem({ desc: it.desc, qty: it.qty, price: it.price, deliverables: it.deliverables || [], fromCatalog: !!it.fromCatalog }));
     const descEl = document.getElementById('descuentoPct');
-    if(descEl) { descEl.value = e.descuento_pct || 0; const dp = descEl.nextElementSibling?.nextElementSibling; if(dp) dp.textContent = (e.descuento_pct||0)+'%'; }
+    if(descEl) descEl.value = e.descuento_pct || 0;
     const notasEl = document.querySelector('.notes-text'); if(notasEl && e.notas) notasEl.value = e.notas;
     if(e.vigencia){ const vig = document.getElementById('vigDate'); if(vig) vig.value = e.vigencia; }
     // Datos de contacto en el "Para"
@@ -4230,6 +4127,9 @@ function cargarEdicion() {
       if([...sel.options].some(o => o.text === 'Colombia') && e.pais) sel.value = e.pais;
     });
     currentClienteId = e.cliente_id || null;
+    actualizarBadgeEstado(e.estado);
+    _clienteServicioInteres = e.servicio || null;
+    renderCatalog(_catalogoServicios);
     recalc();
   } catch(err){ console.error('cargarEdicion:', err); }
   localStorage.removeItem('meev_editcot');
@@ -4266,16 +4166,19 @@ async function loadAM() {
 let currentMode = 'cot';
 
 async function guardarYVolver() {
-  await guardarDocActual();
+  const num = await guardarDocActual();
+  if(num) await enviarCorreoCotizacion(num);
   navigateTo('app');
 }
 
 async function guardarDocActual() {
   const numInput = document.getElementById('docNumInput');
   const clientEl = document.getElementById('clientName');
+  const empresaEl = document.getElementById('clientEmpresa');
   const prefix = currentMode === 'fac' ? 'FAC-' : 'COT-';
   const num = prefix + (numInput?.value || '0001');
   const cliente = clientEl?.value || 'Cliente sin nombre';
+  const empresa = empresaEl?.value || '';
   const totalEl = document.getElementById('total');
   const total = parseFloat((totalEl?.textContent||'').replace(/[^0-9]/g,'')) || 0;
 
@@ -4296,7 +4199,7 @@ async function guardarDocActual() {
   const { data: existing } = await db.from('cotizaciones').select('id').eq('numero', num).single();
 
   const doc = {
-    numero: num, cliente_nombre: cliente, total, tipo: currentMode === 'fac' ? 'factura' : 'cotizacion',
+    numero: num, cliente_nombre: cliente, empresa, total, tipo: currentMode === 'fac' ? 'factura' : 'cotizacion',
     items, estado: currentMode === 'cot' ? 'borrador' : 'emitida', notas,
     cliente_id: currentClienteId || null, vigencia, descuento_pct
   };
@@ -4309,6 +4212,7 @@ async function guardarDocActual() {
     await db.from('cotizaciones').insert(doc);
   }
   invalidateCache('docs');
+  return num;
 }
 
 // Override setMode to track currentMode
@@ -4332,7 +4236,7 @@ const _origSetMode = setMode;
       }));
     }
     iniciarRealtime();
-    navigateTo('app');
+    if(!irSegunHash()) navigateTo('app');
   } else {
     localStorage.removeItem('meev_session');
     navigateTo('login');
