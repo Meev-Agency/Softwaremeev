@@ -1051,7 +1051,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 <div class="toolbar no-print">
   <div class="toolbar-actions">
 <button class="btn btn-outline" onclick="guardarDocActual()">Guardar borrador</button>
-    <button class="btn btn-primary" onclick="guardarYVolver()" style="background:var(--verde);color:var(--negro);">✓ Guardar y enviar a Finanzas</button>
+    <button class="btn btn-primary" onclick="guardarYVolver()" style="background:var(--verde);color:var(--negro);">✓ Guardar y enviar</button>
     <button class="btn btn-outline" onclick="window.print()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.14em;margin-right:5px;"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>PDF</button>
   </div>
 </div>
@@ -2257,13 +2257,9 @@ async function enviarCorreoCotizacion(num) {
       const v = new Date(); v.setDate(v.getDate() + (cfg.vigencia_dias || 30)); return v;
     })();
     const items = d.items || [];
-    const itemsHtml = items.map(it => `
-      <div style="padding:14px 20px;border-bottom:1px solid #f2f2ef;">
-        <table role="presentation" width="100%" style="border-collapse:collapse;"><tr>
-          <td style="font-size:13.5px;color:#1a1a1a;font-weight:600;padding:0;">${it.desc||'Servicio'}</td>
-          <td style="font-size:13.5px;color:#1a1a1a;font-weight:700;text-align:right;white-space:nowrap;padding:0;">${fmtNum(it.price||0)}</td>
-        </tr></table>
-      </div>`).join('');
+    const itemsHtml = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">' +
+      items.map((it, i) => `<tr><td style="padding:14px;${i<items.length-1?'border-bottom:1px solid #f0f0ec;':''}font-size:13px;font-weight:bold;color:#1a1a1a;font-family:Arial,sans-serif;">${it.desc||'Servicio'}</td><td align="right" style="padding:14px;${i<items.length-1?'border-bottom:1px solid #f0f0ec;':''}font-size:13px;font-weight:bold;color:#1a1a1a;font-family:Arial,sans-serif;">${fmtNum(it.price||0)}</td></tr>`).join('') +
+      '</table>';
     const variables = {
       PRIMER_NOMBRE: (cliente.nombre || d.cliente || '').trim().split(' ')[0] || 'cliente',
       EMPRESA: cliente.empresa || d.empresa || '',
@@ -2277,8 +2273,15 @@ async function enviarCorreoCotizacion(num) {
       LINK: 'https://www.meevagency.com'
     };
     try {
+      const nombreRemitente = cfg.email_remitente_nombre || 'Meev Agency';
+      const correoRemitente = cfg.email_remitente_correo || 'cotizaciones@meevagency.com';
       const { data: res, error } = await db.functions.invoke('enviar-email', {
-        body: { to: cliente.email, template: { id: RESEND_TEMPLATE_COTIZACION, variables } }
+        body: {
+          to: cliente.email,
+          from: `${nombreRemitente} <${correoRemitente}>`,
+          reply_to: am?.email || cfg.email_reply_to || undefined,
+          template: { id: RESEND_TEMPLATE_COTIZACION, variables }
+        }
       });
       if(error || res?.error) { mostrarToast('La cotización se marcó como enviada, pero el correo falló.', 'error'); }
       else { mostrarToast(`Correo enviado a ${cliente.nombre || d.cliente}`, 'ok'); }
