@@ -2266,7 +2266,7 @@ async function enviarCorreoCotizacion(num) {
       NUMERO: d.num,
       FECHA: new Date().toLocaleDateString('es-CO', {day:'numeric',month:'long',year:'numeric'}),
       TOTAL: fmtNum(d.total||0),
-      VIGENCIA: vigenciaFecha.toLocaleDateString('es-CO', {day:'numeric',month:'long',year:'numeric'}),
+      VIGENCIA: `${vigenciaFecha.getDate()} ${['ene','feb','mar','abr','may','jun','jul','ago','sept','oct','nov','dic'][vigenciaFecha.getMonth()]}.`,
       AM: am?.nombre || 'Equipo MEEV',
       NUM_SERVICIOS: items.length,
       ITEMS_HTML: itemsHtml,
