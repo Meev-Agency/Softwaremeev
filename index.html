@@ -2263,6 +2263,7 @@ function accionesCot(d) {
   const next = nextStepCot(d);
   if(next) btns += `<button class="tbl-btn green" onclick="${next.call}">${next.lbl}</button>`;
   if(d.estado==='enviada') btns += `<button class="tbl-btn" onclick="abrirRegistrarPago('${d.num}','total')">Pago total</button>`;
+  if(d.estado!=='borrador' && d.estado!=='cancelada') btns += `<button class="tbl-btn" onclick="enviarCotizacion('${d.num}')">Reenviar correo</button>`;
   if(d.estado!=='cancelada' && d.estado!=='saldo_pagado') btns += `<button class="tbl-btn" style="color:#dc2626;border-color:#fca5a5" onclick="cancelarCotizacion('${d.num}')">Cancelar</button>`;
   btns += `<button class="tbl-btn" onclick="verDocumento('${d.num}')">Ver doc</button>`;
   if(d.pdf_enviado_path) btns += `<button class="tbl-btn" onclick="descargarPdfEnviado('${d.pdf_enviado_path}')">PDF enviado</button>`;
@@ -3932,6 +3933,19 @@ let mode = 'cot';
 let counters = {cot:1, fac:1};
 let docEstadoActual = 'borrador';
 
+// El número sugerido para un documento nuevo se calcula desde la base de datos
+// (el máximo existente + 1), no desde un contador en memoria — ese se reseteaba
+// a 0001 en cada recarga y podía pisar una cotización real con el mismo número.
+async function calcularSiguienteNumero(prefix) {
+  const { data } = await db.from('cotizaciones').select('numero').ilike('numero', prefix + '%');
+  let max = 0;
+  (data||[]).forEach(row => {
+    const n = parseInt((row.numero||'').replace(prefix, ''), 10);
+    if(!isNaN(n) && n > max) max = n;
+  });
+  return max + 1;
+}
+
 // El badge junto al título ya no repite "Cotización"/"Factura" (eso lo dice el
 // título grande): muestra el estado real del documento (Borrador, Enviada, etc.).
 function actualizarBadgeEstado(estado) {
@@ -3953,7 +3967,14 @@ async function initFacturador() {
   setDefaultDates();
   recalc();
   loadAM();
-  if(!cargarEdicion()) { actualizarBadgeEstado('borrador'); cargarPrecarga(); }
+  if(!cargarEdicion()) {
+    actualizarBadgeEstado('borrador');
+    const siguiente = await calcularSiguienteNumero(mode === 'fac' ? 'FAC-' : 'COT-');
+    counters[mode] = siguiente;
+    const ni = document.getElementById('docNumInput');
+    if(ni) ni.value = String(siguiente).padStart(4,'0');
+    cargarPrecarga();
+  }
 }
 document.addEventListener('DOMContentLoaded', () => {
   // Facturador init will be called by navigateTo('facturador') or on DOMContentLoaded if already on facturador view
