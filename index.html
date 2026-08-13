@@ -2318,7 +2318,12 @@ async function enviarCorreoCotizacion(num) {
           const pdfBlob = await (await fetch(`data:application/pdf;base64,${pdfBase64}`)).blob();
           const path = `${d.num}.pdf`;
           const { error: upErr } = await db.storage.from('cotizaciones-pdf').upload(path, pdfBlob, { contentType:'application/pdf', upsert:true });
-          if(!upErr) pdfPath = path;
+          if(!upErr) {
+            pdfPath = path;
+            // El botón "Ver cotización completa" del correo debe abrir el documento real, no la home.
+            const { data: signed } = await db.storage.from('cotizaciones-pdf').createSignedUrl(path, 60*60*24*365);
+            if(signed?.signedUrl) variables.LINK = signed.signedUrl;
+          }
         } catch(e) { /* si falla el guardado, el correo se envía igual */ }
       } catch(e) { /* si falla el PDF, el correo se envía igual sin adjunto */ }
       const { data: res, error } = await db.functions.invoke('enviar-email', {
