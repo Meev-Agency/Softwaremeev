@@ -260,7 +260,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cli-filter-btn{font-size:.68rem;font-weight:600;padding:7px 13px;border-radius:20px;border:1.5px solid var(--gris-m);background:#fff;cursor:pointer;transition:all .2s;white-space:nowrap}
 .cli-filter-btn:hover,.cli-filter-btn.active{background:var(--negro);color:#fff;border-color:var(--negro)}
 .cli-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-.cli-card{background:#fff;border:1.5px solid var(--gris-m);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s ease}
+.cli-card{background:#fff;border:1.5px solid var(--gris-m);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s ease;display:flex;flex-direction:column}
 .cli-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.1);transform:translateY(-2px);border-color:rgba(204,251,85,.4)}
 .cli-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
 .cli-avatar{width:38px;height:38px;border-radius:50%;background:var(--negro);color:var(--verde);font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -382,7 +382,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 .cfg-actions{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:8px}
 .cfg-msg{font-size:.78rem;font-weight:600}
 @media(max-width:768px){.cfg-grid{grid-template-columns:1fr}}
-.cli-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--gris-m)}
+.cli-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:10px;border-top:1px solid var(--gris-m)}
 .cli-fecha{font-size:.62rem;color:var(--gris-t)}
 .cli-cots{font-size:.65rem;font-weight:600;color:var(--gris-t)}
 .cli-modal-overlay{display:none;position:fixed;inset:0;background:rgba(22,20,20,.6);z-index:300;backdrop-filter:blur(3px);opacity:0;transition:opacity .2s ease}
@@ -748,6 +748,7 @@ body.body-app::before,body.body-facturador::before{content:none}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -1569,7 +1570,8 @@ async function getDocs() {
     anticipo_fecha: d.anticipo_fecha || null,
     saldo_fecha: d.saldo_fecha || null,
     vigencia: d.vigencia || null,
-    descuento_pct: Number(d.descuento_pct) || 0
+    descuento_pct: Number(d.descuento_pct) || 0,
+    pdf_enviado_path: d.pdf_enviado_path || null
   }));
   return _cache.docs;
 }
@@ -1981,11 +1983,8 @@ const LOGO_VERDE = 'assets/logo-verde.png';
 
 function fmtN(n){ return '$'+Number(n||0).toLocaleString('es-CO',{minimumFractionDigits:0,maximumFractionDigits:0}); }
 
-async function verDocumento(num) {
-  const docs = await getDocs();
-  const d = docs.find(x => x.num === num);
-  if(!d) return;
-
+// Genera el HTML del documento de cotización/factura (usado en el modal "Ver doc" y en el PDF adjunto al correo).
+function docPreviewHtml(d, amNameHtml, amDetailHtml) {
   const isCot = d.modo === 'cot';
   const prefix = isCot ? 'COTIZACIÓN' : 'FACTURA';
   const docCode = d.num;
@@ -2001,8 +2000,7 @@ async function verDocumento(num) {
   const total = d.total || 0;
   const mitad = total * 0.5;
 
-  document.getElementById('docModalTitle').textContent = docCode + ' — ' + d.cliente;
-  document.getElementById('docModalBody').innerHTML = `
+  return `
     <div class="doc-preview">
       <div class="dp-header">
         <div class="dp-logo">
@@ -2027,8 +2025,8 @@ async function verDocumento(num) {
         <div class="dp-parties">
           <div>
             <div class="dp-party-label">Account Manager</div>
-            <div class="dp-party-name" id="dpAMName">—</div>
-            <div class="dp-party-detail" id="dpAMDetail"></div>
+            <div class="dp-party-name" id="dpAMName">${amNameHtml||'—'}</div>
+            <div class="dp-party-detail" id="dpAMDetail">${amDetailHtml||''}</div>
           </div>
           <div>
             <div class="dp-party-label">Para</div>
@@ -2061,6 +2059,15 @@ async function verDocumento(num) {
         <span class="dp-footer-msg">Precios incluyen todos los impuestos.</span>
       </div>
     </div>`;
+}
+
+async function verDocumento(num) {
+  const docs = await getDocs();
+  const d = docs.find(x => x.num === num);
+  if(!d) return;
+
+  document.getElementById('docModalTitle').textContent = d.num + ' — ' + d.cliente;
+  document.getElementById('docModalBody').innerHTML = docPreviewHtml(d, '—', '');
 
   // Fill AM data from Supabase
   const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
@@ -2073,6 +2080,30 @@ async function verDocumento(num) {
   }
 
   document.getElementById('docModalOverlay').classList.add('open');
+}
+
+// Genera el PDF del documento (misma vista de "Ver doc") y devuelve su contenido en base64,
+// para adjuntarlo al correo de cotización.
+async function generarPdfDocumentoBase64(d, amName, amDetail) {
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;left:-10000px;top:0;width:750px;background:#fff;';
+  container.innerHTML = docPreviewHtml(d, amName||'Equipo MEEV', amDetail||'');
+  document.body.appendChild(container);
+  try {
+    const imgs = container.querySelectorAll('img');
+    await Promise.all(Array.from(imgs).map(img => img.complete ? Promise.resolve() :
+      new Promise(res => { img.onload = img.onerror = res; })));
+    const dataUri = await html2pdf().set({
+      margin: 0,
+      filename: `Cotizacion-${d.num}.pdf`,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+    }).from(container.firstElementChild).outputPdf('datauristring');
+    return dataUri.split(',')[1];
+  } finally {
+    document.body.removeChild(container);
+  }
 }
 
 function closeDocModal(e) {
@@ -2234,6 +2265,7 @@ function accionesCot(d) {
   if(d.estado==='enviada') btns += `<button class="tbl-btn" onclick="abrirRegistrarPago('${d.num}','total')">Pago total</button>`;
   if(d.estado!=='cancelada' && d.estado!=='saldo_pagado') btns += `<button class="tbl-btn" style="color:#dc2626;border-color:#fca5a5" onclick="cancelarCotizacion('${d.num}')">Cancelar</button>`;
   btns += `<button class="tbl-btn" onclick="verDocumento('${d.num}')">Ver doc</button>`;
+  if(d.pdf_enviado_path) btns += `<button class="tbl-btn" onclick="descargarPdfEnviado('${d.pdf_enviado_path}')">PDF enviado</button>`;
   return btns;
 }
 
@@ -2249,6 +2281,7 @@ async function enviarCorreoCotizacion(num) {
   if(!d) return;
   const clientes = await getClientes();
   const cliente = clientes.find(c => c.id === d.cliente_id);
+  let pdfPath;
   if(cliente && cliente.email) {
     const usuarios = await getUsuarios();
     const am = usuarios.find(u => u.id === cliente.asignado_a);
@@ -2275,12 +2308,26 @@ async function enviarCorreoCotizacion(num) {
     try {
       const nombreRemitente = cfg.email_remitente_nombre || 'Meev Agency';
       const correoRemitente = cfg.email_remitente_correo || 'cotizaciones@meevagency.com';
+      let attachments;
+      try {
+        const amDetail = [am?.cargo, am?.celular, am?.email].filter(Boolean).join(' · ');
+        const pdfBase64 = await generarPdfDocumentoBase64(d, am?.nombre, amDetail);
+        attachments = [{ filename: `Cotizacion-${d.num}.pdf`, content: pdfBase64 }];
+        // Guarda un snapshot del PDF exacto enviado, ya que la cotización se puede seguir editando después.
+        try {
+          const pdfBlob = await (await fetch(`data:application/pdf;base64,${pdfBase64}`)).blob();
+          const path = `${d.num}.pdf`;
+          const { error: upErr } = await db.storage.from('cotizaciones-pdf').upload(path, pdfBlob, { contentType:'application/pdf', upsert:true });
+          if(!upErr) pdfPath = path;
+        } catch(e) { /* si falla el guardado, el correo se envía igual */ }
+      } catch(e) { /* si falla el PDF, el correo se envía igual sin adjunto */ }
       const { data: res, error } = await db.functions.invoke('enviar-email', {
         body: {
           to: cliente.email,
           from: `${nombreRemitente} <${correoRemitente}>`,
           reply_to: am?.email || cfg.email_reply_to || undefined,
-          template: { id: RESEND_TEMPLATE_COTIZACION, variables }
+          template: { id: RESEND_TEMPLATE_COTIZACION, variables },
+          attachments
         }
       });
       if(error || res?.error) { mostrarToast('La cotización se marcó como enviada, pero el correo falló.', 'error'); }
@@ -2295,9 +2342,17 @@ async function enviarCorreoCotizacion(num) {
     const v = new Date(); v.setDate(v.getDate() + (cfg.vigencia_dias || 30));
     upd.vigencia = v.toISOString().slice(0,10);
   }
+  if(pdfPath) upd.pdf_enviado_path = pdfPath;
   await db.from('cotizaciones').update(upd).eq('numero', num);
   if(d.cliente_id) await reactivarSiInactivo(d.cliente_id);
   invalidateCache('docs');
+}
+
+// Descarga el PDF exacto que se envió al cliente (snapshot guardado en Storage al momento del envío).
+async function descargarPdfEnviado(path) {
+  const { data, error } = await db.storage.from('cotizaciones-pdf').createSignedUrl(path, 60);
+  if(error || !data) { alert('No se pudo abrir el PDF enviado.'); return; }
+  window.open(data.signedUrl, '_blank');
 }
 
 async function enviarCotizacion(num) {
