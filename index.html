@@ -1518,7 +1518,7 @@ function invalidateCache(key) {
 
 async function getServicios() {
   if(_cache.servicios) return _cache.servicios;
-  const { data, error } = await db.from('servicios').select('*').order('nombre', { ascending: true });
+  const { data, error } = await db.from('servicios').select('*').order('orden', { ascending: true }).order('nombre', { ascending: true });
   if(error || !data) return [];
   _cache.servicios = data;
   return _cache.servicios;
