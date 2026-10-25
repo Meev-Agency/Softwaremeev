@@ -808,6 +808,7 @@ body.body-app::before,body.body-facturador::before{content:none}
     <a class="nav-item" href="#operaciones" data-modulo="operaciones" onclick="showModule('operaciones');return false"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/></svg></span> Operaciones</a>
     <a class="nav-item" href="#equipo" data-modulo="equipo" onclick="showModule('equipo');return false"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Equipo</a>
     <a class="nav-item" href="#servicios" data-modulo="servicios" onclick="showModule('servicios');return false"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span> Servicios</a>
+    <a class="nav-item" href="#oficina" data-modulo="oficina" onclick="showModule('oficina');return false"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="11" r=".6"/><circle cx="17.5" cy="13" r=".6"/></svg></span> Oficina Virtual</a>
     <div class="nav-section" data-section="analisis">Análisis</div>
     <a class="nav-item" href="#reportes" data-modulo="reportes" onclick="showModule('reportes');return false"><span class="icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><rect x="6" y="11" width="3" height="7"/><rect x="11" y="6" width="3" height="12"/><rect x="16" y="14" width="3" height="4"/></svg></span> Reportes</a>
     <div class="nav-section" data-section="admin">Administración</div>
@@ -1336,7 +1337,9 @@ function navigateTo(view) {
 // que clic derecho → abrir en pestaña nueva, recargar, o compartir el enlace
 // lleven al lugar correcto. showModule() y navigateTo() actualizan el hash;
 // esta función hace el camino inverso: hash → pantalla, al cargar o navegar.
-const MODULOS_CON_HASH = ['clientes','finanzas','operaciones','equipo','servicios','reportes','configuracion'];
+const MODULOS_CON_HASH = ['clientes','finanzas','operaciones','equipo','servicios','oficina','reportes','configuracion'];
+// La Oficina Virtual no tiene permiso propio: la ve quien puede ver Servicios
+const permisoDeModulo = mod => mod === 'oficina' ? 'servicios' : mod;
 // true mientras navigateTo()/showModule() se disparan PORQUE el hash ya cambió
 // (carga inicial, login, o botón atrás/adelante): ahí solo hay que sincronizar
 // la vista con la URL, sin empujar un historial nuevo. Un clic normal en el
@@ -1346,7 +1349,7 @@ function tieneAccesoModulo(mod) {
   const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
   const rol = sess.rol || 'diseñador';
   const permisos = sess.permisos || permisosDefaultRol(rol);
-  return mod === 'configuracion' ? rol === 'admin' : !!permisos[mod];
+  return mod === 'configuracion' ? rol === 'admin' : !!permisos[permisoDeModulo(mod)];
 }
 function irSegunHash() {
   const h = (location.hash || '').slice(1);
@@ -1635,7 +1638,7 @@ function aplicarPermisos() {
   document.querySelectorAll('.nav-item[data-modulo]').forEach(el => {
     const mod = el.getAttribute('data-modulo');
     if(mod === 'configuracion') { el.style.display = rol === 'admin' ? '' : 'none'; return; }
-    el.style.display = permisos[mod] ? '' : 'none';
+    el.style.display = permisos[permisoDeModulo(mod)] ? '' : 'none';
   });
   document.querySelectorAll('.nav-section[data-section]').forEach(el => {
     const sec = el.getAttribute('data-section');
@@ -1652,7 +1655,7 @@ function getModuloInicial() {
   const sess = JSON.parse(localStorage.getItem('meev_session')||'{}');
   const rol = sess.rol || 'diseñador';
   const permisos = sess.permisos || permisosDefaultRol(rol);
-  const tieneAcceso = (mod) => mod === 'configuracion' ? rol === 'admin' : !!permisos[mod];
+  const tieneAcceso = (mod) => mod === 'configuracion' ? rol === 'admin' : !!permisos[permisoDeModulo(mod)];
 
   // Si veníamos de un módulo (recarga de página) y aún tenemos acceso, volvemos ahí
   const ultimo = localStorage.getItem('meev_lastModulo');
@@ -1695,16 +1698,17 @@ function showModule(mod) {
   const navEl = event?.currentTarget || document.querySelector(`.nav-item[data-modulo="${mod}"]`);
   navEl?.classList.add('active');
   const btn = document.getElementById('btnNuevaCot');
-  if(btn) btn.style.display = (mod === 'clientes' || mod === 'operaciones' || mod === 'equipo' || mod === 'servicios' || mod === 'reportes') ? 'none' : '';
+  if(btn) btn.style.display = (mod === 'clientes' || mod === 'operaciones' || mod === 'equipo' || mod === 'servicios' || mod === 'oficina' || mod === 'reportes') ? 'none' : '';
   document.getElementById('moduleTitle').textContent = {
     finanzas: 'Finanzas & Ventas', clientes: 'Clientes', operaciones: 'Operaciones',
-    equipo: 'Equipo', servicios: 'Servicios', reportes: 'Reportes', configuracion: 'Configuración'
+    equipo: 'Equipo', servicios: 'Servicios', oficina: 'Oficina Virtual', reportes: 'Reportes', configuracion: 'Configuración'
   }[mod] || mod;
   if(mod === 'finanzas') renderFinanzas();
   else if(mod === 'clientes') renderClientes();
   else if(mod === 'operaciones') renderOperaciones();
   else if(mod === 'equipo') renderEquipo();
   else if(mod === 'servicios') renderServicios();
+  else if(mod === 'oficina') renderOficina();
   else if(mod === 'reportes') renderReportes();
   else if(mod === 'configuracion') renderConfiguracion();
 }
@@ -4328,5 +4332,6 @@ const _origSetMode = setMode;
 })();
 </script>
 
+<script src="oficina.js"></script>
 </body>
 </html>
